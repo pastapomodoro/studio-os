@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%}
+
+:root{
+  --sidebar-w:232px;
+  --topbar-h:54px;
+  --ink:       #0E0D0B;
+  --ink-2:     #2E2C28;
+  --ink-3:     #6E6A62;
+  --ink-4:     #AAA49A;
+  --ink-5:     #C8C2B8;
+  --parchment: #EFEDE4;
+  --parchment-2:#E8E5DB;
+  --paper:     #F8F6F0;
+  --white:     #FDFCF8;
+  --rule:      #E2DDD3;
+  --rule-2:    #CCC7BB;
+  --sb-bg:     #0E0D0B;
+  --sb-border: rgba(255,255,255,0.055);
+  --sb-text:   #6A6860;
+  --sb-active: #EDE9E0;
+  --sb-hover:  rgba(255,255,255,0.04);
+  --sb-accent: rgba(201,149,42,0.15);
+  --s-planning: #3B5BDB;
+  --s-active:   #2A9D5C;
+  --s-hold:     #7C7C7C;
+  --s-done:     #1A1A18;
+  --gold:      #C9952A;
+  --gold-dk:   #A87820;
+  --gold-lt:   #FAF0DC;
+  --gold-mid:  #F0D99A;
+  --gold-text: #6B4A08;
+  --danger:    #C0392B;
+  --danger-lt: #FEF0EE;
+  --info:      #2563EB;
+  --info-lt:   #EFF4FF;
+  --r-xs: 4px;
+  --r-sm: 7px;
+  --r-md: 11px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans:  'DM Sans', system-ui, sans-serif;
+  --mono:  'DM Mono', monospace;
+  --shadow-xs: 0 1px 3px rgba(14,13,11,.07);
+  --shadow-sm: 0 2px 8px rgba(14,13,11,.08), 0 0 0 1px rgba(14,13,11,.04);
+  --shadow-md: 0 6px 24px rgba(14,13,11,.11), 0 0 0 1px rgba(14,13,11,.05);
+  --shadow-lg: 0 20px 60px rgba(14,13,11,.18), 0 0 0 1px rgba(14,13,11,.07);
+  --shadow-card: 0 1px 3px rgba(14,13,11,.06), 0 0 0 1px var(--rule);
+}
+
+body{font-family:var(--sans);background:var(--parchment);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--rule-2);border-radius:2px}
+
+/* ── INPUTS ── */
+input,select,textarea{
+  font-family:var(--sans);font-size:13px;color:var(--ink);
+  background:var(--white);border:1.5px solid var(--rule-2);
+  border-radius:var(--r-sm);padding:8px 11px;outline:none;width:100%;
+  transition:border-color .15s,box-shadow .15s
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,149,42,.12)
+}
+input.err,select.err,textarea.err{border-color:var(--danger)!important}
+input::placeholder,textarea::placeholder{color:var(--ink-4)}
+input[type=range]{padding:0;border:none;background:transparent;box-shadow:none;cursor:pointer;accent-color:var(--gold)}
+input[type=file]{display:none}
+textarea{resize:vertical;min-height:76px;line-height:1.65}
+select{
+  cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23B8B4AC' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;padding-right:28px
+}
+.form-group{margin-bottom:15px}
+.form-label{display:block;font-size:11.5px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.form-hint{font-size:11px;color:var(--ink-4);margin-top:4px}
+.err-msg{font-size:11.5px;color:var(--danger);margin-top:4px;display:flex;align-items:center;gap:4px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--sans);font-size:13px;font-weight:500;
+  padding:7px 14px;border-radius:var(--r-sm);
+  border:1.5px solid var(--rule-2);
+  background:var(--white);color:var(--ink-2);
+  cursor:pointer;transition:all .14s;white-space:nowrap;line-height:1;letter-spacing:-.01em
+}
+.btn:hover{background:var(--parchment);border-color:var(--rule-2);color:var(--ink)}
+.btn:active{transform:scale(.98)}
+.btn i{font-size:15px}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:var(--r-xs)}
+.btn-sm i{font-size:13px}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:var(--r-xs)}
+.btn-primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn-primary:hover{background:var(--ink-2);color:var(--paper)}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-gold:hover{background:#b8841f;color:#fff}
+.btn-ghost{border-color:transparent;background:transparent}
+.btn-ghost:hover{background:var(--parchment);border-color:transparent}
+.btn-danger{color:var(--danger);border-color:rgba(201,42,42,.2)}
+.btn-danger:hover{background:var(--danger-lt)}
+
+/* ── LAYOUT ── */
+.shell{display:flex;height:100vh;overflow:hidden}
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--sb-bg);display:flex;flex-direction:column;
+  border-right:1px solid var(--sb-border);overflow-y:auto
+}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--parchment);background-image:radial-gradient(circle at 100% 0%,rgba(201,149,42,.03) 0%,transparent 50%)}
+.topbar{
+  background:var(--white);border-bottom:1.5px solid var(--rule);
+  padding:0 32px;height:var(--topbar-h);display:flex;align-items:center;
+  gap:12px;flex-shrink:0;position:sticky;top:0;z-index:10
+}
+.page{flex:1;overflow-y:auto;padding:36px 32px;max-width:100%}
+
+/* ── SIDEBAR ── */
+.sb-logo{
+  padding:22px 18px 16px;border-bottom:1px solid var(--sb-border);
+  display:flex;align-items:center;gap:10px
+}
+.sb-mark{
+  width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,var(--gold) 0%,#E8A820 100%);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(201,149,42,.35)
+}
+.sb-wordmark{font-size:15px;font-family:var(--serif);color:var(--sb-active);letter-spacing:.01em;font-style:italic}
+.sb-subtitle{font-size:9.5px;color:rgba(255,255,255,.2);margin-top:1px;letter-spacing:.07em;text-transform:uppercase}
+.sb-section{padding:14px 10px 4px;position:relative}
+.sb-section-label{
+  font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.18);padding:0 8px 8px
+}
+.nav-btn{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border-radius:var(--r-sm);
+  cursor:pointer;transition:all .12s;
+  font-size:13px;color:var(--sb-text);
+  border:none;background:none;width:100%;text-align:left;font-family:var(--sans);letter-spacing:-.01em;margin-bottom:1px
+}
+.nav-btn:hover{background:var(--sb-hover);color:#d4d0c8}
+.nav-btn.active{background:rgba(255,255,255,.07);color:var(--sb-active);font-weight:500;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.nav-btn i{font-size:15px;opacity:.55;flex-shrink:0}
+.nav-btn.active i{opacity:.9;color:var(--gold)}
+.sb-bottom{margin-top:auto;padding:12px 10px 18px;border-top:1px solid var(--sb-border)}
+.sb-user{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--r-sm)}
+.sb-user-name{font-size:12.5px;font-weight:500;color:var(--sb-active);letter-spacing:-.02em}
+.sb-user-role{font-size:10px;color:var(--sb-text);text-transform:capitalize}
+
+/* ── AVATAR ── */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;letter-spacing:.01em}
+
+/* ── STATUS SYSTEM ── */
+.s-planning{background:#EEF2FF;color:#3B5BDB;border:1px solid #BAC8FF}
+.s-active  {background:#EBFBEE;color:#2A9D5C;border:1px solid #8CE99A}
+.s-on_hold {background:#F4F4F4;color:#5C5C5C;border:1px solid #D0D0D0}
+.s-completed{background:#1A1A18;color:#E8E4DA;border:1px solid rgba(255,255,255,.08)}
+
+.status-dot-planning{background:var(--s-planning)}
+.status-dot-active  {background:var(--s-active)}
+.status-dot-on_hold {background:var(--s-hold)}
+.status-dot-completed{background:var(--s-done)}
+
+/* ── STATUS ACCENT BARS ── */
+.accent-planning {background:var(--s-planning)}
+.accent-active   {background:var(--s-active)}
+.accent-on_hold  {background:var(--s-hold)}
+.accent-completed{background:var(--s-done)}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:var(--r-pill);white-space:nowrap;letter-spacing:.02em}
+.badge-gold  {background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(201,149,42,.2)}
+.badge-gray  {background:#F1F3F5;color:#495057;border:1px solid #DEE2E6}
+.badge-ink   {background:var(--ink);color:var(--paper)}
+.badge-green {background:#EBFBEE;color:#2F9E44;border:1px solid #B2F2BB}
+
+/* ── CARD ── */
+.card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);padding:22px 24px;box-shadow:var(--shadow-xs)}
+.card-flat{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-md);padding:15px 17px;box-shadow:var(--shadow-xs)}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(13,12,10,.55);backdrop-filter:blur(4px);
+  z-index:100;display:flex;align-items:center;justify-content:center;padding:20px
+}
+.modal-box{
+  background:var(--white);border-radius:var(--r-xl);border:1px solid var(--rule);
+  width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg)
+}
+.modal-hd{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 24px 0;gap:12px}
+.modal-title{font-size:17px;font-weight:600;letter-spacing:-.03em;line-height:1.2}
+.modal-body{padding:16px 24px}
+.modal-ft{padding:12px 24px 22px;display:flex;gap:8px;justify-content:flex-end;align-items:center}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{
+  font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);
+  padding:11px 16px;text-align:left;border-bottom:1.5px solid var(--rule);background:var(--paper);white-space:nowrap
+}
+.tbl td{padding:13px 16px;border-bottom:1px solid var(--rule);font-size:13px;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{cursor:pointer;transition:background .1s}
+.tbl tbody tr:hover td{background:#FAFAF6}
+
+/* ── PROGRESS ── */
+.prog-track{background:var(--rule);border-radius:var(--r-pill);overflow:hidden}
+.prog-fill{height:100%;border-radius:var(--r-pill);transition:width .3s}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1.5px solid var(--rule);gap:0}
+.tab{
+  padding:12px 18px;font-size:13px;cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1.5px;
+  color:var(--ink-4);transition:all .14s;font-weight:400;letter-spacing:-.01em;
+  background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans)
+}
+.tab:hover{color:var(--ink-3)}
+.tab.active{color:var(--ink);border-bottom-color:var(--gold);font-weight:500}
+
+/* ── EST TABLE ── */
+.est-tbl{width:100%;border-collapse:collapse}
+.est-tbl th{font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4);padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--rule);background:var(--paper);white-space:nowrap}
+.est-tbl td{padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:middle}
+.est-tbl tr:last-child td{border-bottom:none}
+.est-tbl input,.est-tbl select{font-size:12px;padding:5px 7px;border-radius:var(--r-xs);border-color:transparent;background:transparent}
+.est-tbl tr:hover input,.est-tbl tr:hover select{background:var(--white);border-color:var(--rule-2)}
+
+/* ── PROJECT CARD ── */
+.proj-card{
+  background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);
+  padding:20px 20px 17px 24px;cursor:pointer;
+  transition:box-shadow .18s,border-color .18s,transform .18s;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;gap:13px;
+  box-shadow:var(--shadow-xs)
+}
+.proj-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r-lg) 0 0 var(--r-lg)}
+.proj-card.s-planning::before{background:var(--s-planning)}
+.proj-card.s-active::before  {background:var(--s-active)}
+.proj-card.s-on_hold::before {background:var(--s-hold)}
+.proj-card.s-completed::before{background:var(--s-done)}
+.proj-card:hover{box-shadow:var(--shadow-md);border-color:var(--rule-2);transform:translateY(-1px)}
+
+/* ── GANTT ── */
+.gantt-wrap{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-xs)}
+.gantt-header-row{display:grid;border-bottom:1.5px solid var(--rule)}
+.gantt-person-col{padding:9px 14px;background:var(--paper);border-right:1px solid var(--rule);display:flex;align-items:center;gap:8px}
+.gantt-track-area{position:relative;overflow:hidden}
+.gantt-row-wrap{display:grid;border-bottom:1px solid var(--rule)}
+.gantt-row-wrap:last-child{border-bottom:none}
+.gantt-block{
+  position:absolute;border-radius:var(--r-pill);
+  display:flex;align-items:center;padding:0 10px;
+  font-size:10.5px;font-weight:500;overflow:hidden;white-space:nowrap;
+  cursor:pointer;transition:opacity .14s,transform .14s;top:9px;height:28px
+}
+.gantt-block:hover{opacity:.82;transform:scaleY(.96)}
+.gantt-today{position:absolute;top:0;bottom:0;width:1.5px;z-index:4;pointer-events:none}
+
+/* ── LOG ── */
+.log-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.log-item:last-child{border-bottom:none}
+.log-spine{display:flex;flex-direction:column;align-items:center;gap:0;padding-top:4px;flex-shrink:0}
+.log-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px var(--parchment)}
+.log-line{width:1px;flex:1;background:var(--rule-2);margin-top:4px;opacity:.6}
+
+/* ── FILE ── */
+.file-row{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--white);border:1px solid var(--rule);border-radius:var(--r-md);
+  transition:border-color .14s;cursor:pointer
+}
+.file-row:hover{border-color:var(--rule-2)}
+
+/* ── UPLOAD ZONE ── */
+.drop-zone{
+  border:2px dashed var(--rule-2);border-radius:var(--r-md);
+  padding:32px;text-align:center;cursor:pointer;transition:all .15s;background:var(--paper)
+}
+.drop-zone:hover{border-color:var(--gold);background:var(--gold-lt)}
+
+/* ── STAT CARD ── */
+.stat-box{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-md);padding:16px 18px}
+.stat-label{font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px}
+.stat-num{font-family:var(--mono);font-size:26px;font-weight:400;letter-spacing:-.05em;color:var(--ink)}
+
+/* ── MISC ── */
+.divider{border:none;border-top:1px solid var(--rule);margin:16px 0}
+.row{display:flex;align-items:center;gap:8px}
+.stack{display:flex;flex-direction:column;gap:8px}
+.spacer{flex:1}
+.mono{font-family:var(--mono)}
+.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty-state{text-align:center;padding:60px 20px;color:var(--ink-4)}
+.empty-state i{font-size:36px;margin-bottom:14px;display:block;opacity:.3}
+.empty-state p{font-size:15px;font-family:var(--serif);font-style:italic;color:var(--ink-3);margin-bottom:6px}
+.empty-state small{font-size:12px;color:var(--ink-5)}
+.banner{padding:11px 15px;border-radius:var(--r-sm);display:flex;align-items:flex-start;gap:10px;font-size:12.5px;line-height:1.55}
+.banner-amber{background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(201,149,42,.2)}
+.banner-green{background:#EBFBEE;color:#1e6630;border:1px solid #B2F2BB}
+.banner-blue {background:#EEF2FF;color:#1c3879;border:1px solid #C5D0FA}
+.link-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
+.link-row:last-child{border-bottom:none}
+.color-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 7px;border-radius:var(--r-xs);border:1px solid;font-weight:500;letter-spacing:.01em}
+.ph{font-family:var(--serif);font-style:italic}
+.page-hd{margin-bottom:32px}
+.page-title{font-size:28px;font-family:var(--serif);font-style:italic;letter-spacing:-.01em;line-height:1.1;color:var(--ink)}
+.page-sub{font-size:13px;color:var(--ink-4);margin-top:4px;font-family:var(--sans)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+/* ── MENTION TAG ── */
+.mention{display:inline-flex;align-items:center;gap:3px;background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(201,149,42,.25);border-radius:var(--r-xs);padding:1px 6px;font-size:12px;font-weight:500;cursor:default}
+.mention-picker{background:var(--white);border:1px solid var(--rule-2);border-radius:var(--r-md);box-shadow:var(--shadow-md);padding:6px;min-width:200px;z-index:200}
+.mention-option{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--r-sm);cursor:pointer;transition:background .1s}
+.mention-option:hover{background:var(--parchment)}
+/* ── SORT HEADER ── */
+.sort-th{cursor:pointer;user-select:none;white-space:nowrap}
+.sort-th:hover{color:var(--ink-2)}
+.sort-th.asc::after{content:' ↑'}
+.sort-th.desc::after{content:' ↓'}
+/* ── SEARCH INPUT ── */
+.search-wrap{position:relative;flex:1;max-width:320px}
+.search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--ink-4);pointer-events:none}
+.search-wrap input{padding-left:32px}
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .18s ease}
+
+/* ── LOGIN ── */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sb-bg);position:relative;overflow:hidden}
+.login-page::before{
+  content:'';position:absolute;width:800px;height:800px;
+  background:radial-gradient(circle,rgba(201,149,42,.08) 0%,rgba(201,149,42,.02) 40%,transparent 70%);
+  top:-200px;right:-200px;pointer-events:none
+}
+.login-card{width:400px;background:linear-gradient(160deg,#1C1A16 0%,#141310 100%);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-xl);padding:40px 36px;position:relative;z-index:1;box-shadow:0 32px 80px rgba(0,0,0,.6)}
+.login-mark{width:36px;height:36px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center}
+.login-name{font-size:24px;color:#EDE8DE;letter-spacing:.01em;font-family:var(--serif);font-style:italic}
+.login-sub{font-size:11px;color:rgba(255,255,255,.25);margin-top:2px;letter-spacing:.04em;text-transform:uppercase}
+.login-label{font-size:11.5px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.35);display:block;margin-bottom:7px}
+.login-inp{width:100%;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:var(--r-sm);padding:10px 13px;font-size:14px;color:#F0EDE4;font-family:var(--sans);outline:none;transition:border-color .15s}
+.login-inp:focus{border-color:var(--gold)}
+.login-inp::placeholder{color:rgba(255,255,255,.18)}
+.login-err{font-size:12px;color:#ff6b6b;margin:6px 0}
+.login-btn{width:100%;background:var(--gold);color:#fff;border:none;border-radius:var(--r-sm);padding:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);margin-top:14px;transition:background .15s;letter-spacing:-.01em}
+.login-btn:hover{background:#b8841f}
+.login-divider{height:1px;background:rgba(255,255,255,.06);margin:22px 0;position:relative}
+.login-divider::after{content:'or sign in as';position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#1A1916;padding:0 10px;font-size:10.5px;color:rgba(255,255,255,.2);letter-spacing:.06em;text-transform:uppercase}
+.login-acc{display:flex;align-items:center;gap:9px;width:100%;background:transparent;border:1px solid rgba(255,255,255,.06);border-radius:var(--r-sm);padding:7px 10px;cursor:pointer;margin-bottom:5px;transition:background .12s;font-family:var(--sans)}
+.login-acc:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+.login-acc-name{font-size:12.5px;font-weight:500;color:#c8c4bc;letter-spacing:-.01em}
+.login-acc-role{font-size:10px;color:rgba(255,255,255,.25);text-transform:capitalize}
+
+/* ── PROJECT FULL PAGE ── */
+.proj-page{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.proj-page-hd{background:var(--white);border-bottom:1.5px solid var(--rule);padding:24px 32px 0;flex-shrink:0}
+.proj-back{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-5);cursor:pointer;background:none;border:none;font-family:var(--sans);margin-bottom:16px;transition:color .14s;letter-spacing:.01em;text-transform:uppercase}
+.proj-back:hover{color:var(--ink-3)}
+.proj-title-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.proj-accent-bar{width:4px;border-radius:2px;height:36px;flex-shrink:0;margin-top:3px}
+.proj-title{font-size:26px;font-family:var(--serif);font-style:italic;letter-spacing:-.01em;line-height:1.15}
+.proj-meta{font-size:12px;color:var(--ink-4);margin-top:3px}
+
+/* ── STAFFING CARD ── */
+.staff-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--shadow-xs);transition:box-shadow .15s}
+.staff-card:hover{box-shadow:var(--shadow-sm)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo,useRef,useCallback}=React;
+
+/* ═══════ SEED DATA ═══════════════════════════════════════ */
+const SEED_DUTIES=[
+  {id:'d1',name:'Creative Direction',color:'#3B5BDB'},
+  {id:'d2',name:'AI Generation',     color:'#2F9E44'},
+  {id:'d3',name:'Post-production',   color:'#7048E8'},
+  {id:'d4',name:'Strategy',          color:'#C92A2A'},
+  {id:'d5',name:'Art Direction',     color:'#C9952A'},
+  {id:'d6',name:'Retouching',        color:'#0C8599'},
+  {id:'d7',name:'Motion',            color:'#862E9C'},
+  {id:'d8',name:'Project Management',color:'#2B6CB0'},
+];
+const SEED_USERS=[
+  {id:'u1',name:'Sofia Marchetti', email:'sofia@studio.io', role:'admin', avatar:'SM',color:'#3B5BDB'},
+  {id:'u2',name:'Luca Ferretti',   email:'luca@studio.io',  role:'user',  avatar:'LF',color:'#2F9E44'},
+  {id:'u3',name:'Aria Kwan',       email:'aria@studio.io',  role:'user',  avatar:'AK',color:'#C92A2A'},
+  {id:'u4',name:'Max Bauer',       email:'max@studio.io',   role:'user',  avatar:'MB',color:'#7048E8'},
+  {id:'u5',name:'Priya Nair',      email:'priya@studio.io', role:'admin', avatar:'PN',color:'#C9952A'},
+  {id:'u6',name:'Alvar Sánchez',   email:'alvar@studio.io', role:'user',  avatar:'AS',color:'#0C8599'},
+];
+const SEED_ESTIMATIONS=[
+  {
+    id:'e1',clientName:'Ferragamo',projectName:'E-com AI Content POC',
+    status:'confirmed',bufferPct:20,
+    assets:[
+      {id:'a1',name:'Video e-com SKU indossati',volume:2,genHPerAsset:8,postHPerAsset:12,extraH:8,notes:'Tracking + editing'},
+      {id:'a2',name:'Color change borsa',volume:5,genHPerAsset:.5,postHPerAsset:1,extraH:0,notes:''},
+      {id:'a3',name:'Still e-commerce viste multiple',volume:20,genHPerAsset:.3,postHPerAsset:.8,extraH:4,notes:'Reference research'},
+      {id:'a4',name:'Scatti ambientati',volume:8,genHPerAsset:1.5,postHPerAsset:2,extraH:3,notes:'Complex compositing'},
+    ],
+    resources:[
+      {id:'r1',dutyId:'d2',userId:'u6',dailyRate:420,chargeabilityPct:93,hoursAllocated:60},
+      {id:'r2',dutyId:'d3',userId:'u2',dailyRate:380,chargeabilityPct:89,hoursAllocated:35},
+      {id:'r3',dutyId:'d1',userId:'u1',dailyRate:650,chargeabilityPct:93,hoursAllocated:12},
+    ],
+    linkedProjectId:'p1',
+    createdAt:'2025-03-01T09:00:00Z',updatedAt:'2025-03-05T14:00:00Z',
+  },
+  {
+    id:'e2',clientName:'Internal',projectName:'Brand Identity Refresh',
+    status:'draft',bufferPct:20,
+    assets:[
+      {id:'a5',name:'Logo system',volume:1,genHPerAsset:24,postHPerAsset:16,extraH:8,notes:'Multiple rounds'},
+      {id:'a6',name:'Brand guidelines',volume:1,genHPerAsset:0,postHPerAsset:40,extraH:0,notes:''},
+    ],
+    resources:[
+      {id:'r4',dutyId:'d1',userId:'u1',dailyRate:650,chargeabilityPct:93,hoursAllocated:20},
+      {id:'r5',dutyId:'d4',userId:'u5',dailyRate:700,chargeabilityPct:89,hoursAllocated:10},
+    ],
+    linkedProjectId:null,
+    createdAt:'2025-04-10T10:00:00Z',updatedAt:'2025-04-10T10:00:00Z',
+  },
+];
+const SEED_PROJECTS=[
+  {
+    id:'p1',title:'Ferragamo E-com AI Content',
+    description:'AI-generated e-commerce content including video SKUs, color changes, still life and ambience shots. POC to validate AI workflow for luxury goods.',
+    status:'active',startDate:'2025-03-10',endDate:'2025-06-30',
+    estimationId:'e1',budget:14680,totalHours:107,deliverables:35,
+    createdAt:'2025-03-10T09:00:00Z',updatedAt:'2025-05-01T14:00:00Z',archivedAt:null,
+    log:[
+      {id:'l1',userId:'u1',text:'Project kicked off. Estimation confirmed and team briefed.',createdAt:'2025-03-10T09:30:00Z'},
+      {id:'l2',userId:'u6',text:'First batch of AI generation tests complete. Sharing samples with client.',createdAt:'2025-03-24T16:00:00Z'},
+      {id:'l3',userId:'u1',text:'Client approved direction. Moving to full production phase.',createdAt:'2025-04-02T11:00:00Z'},
+    ],
+    links:[
+      {id:'lk1',label:'Brand Guidelines',url:'https://example.com/brand'},
+      {id:'lk2',label:'Approved Samples Drive',url:'https://example.com/samples'},
+    ],
+    files:[],
+    assignments:[
+      {id:'as1',userId:'u6',dutyId:'d2',startDate:'2025-03-10',endDate:'2025-04-20',allocationPct:100},
+      {id:'as2',userId:'u2',dutyId:'d3',startDate:'2025-04-07',endDate:'2025-06-15',allocationPct:80},
+      {id:'as3',userId:'u1',dutyId:'d1',startDate:'2025-03-10',endDate:'2025-06-30',allocationPct:20},
+      {id:'as4',userId:'u3',dutyId:'d5',startDate:'2025-03-10',endDate:'2025-04-05',allocationPct:50},
+    ],
+  },
+  {
+    id:'p2',title:'Website Redesign',
+    description:'Full redesign of the studio website including portfolio, about, and contact pages. Focus on performance and mobile experience.',
+    status:'active',startDate:'2025-02-01',endDate:'2025-06-15',
+    estimationId:null,budget:null,totalHours:null,deliverables:null,
+    createdAt:'2025-02-01T09:00:00Z',updatedAt:'2025-04-28T10:00:00Z',archivedAt:null,
+    log:[{id:'l4',userId:'u5',text:'Discovery phase started. Wireframes in progress.',createdAt:'2025-02-01T09:00:00Z'}],
+    links:[{id:'lk3',label:'Staging Site',url:'https://example.com/staging'}],
+    files:[],
+    assignments:[
+      {id:'as5',userId:'u4',dutyId:'d3',startDate:'2025-02-01',endDate:'2025-06-15',allocationPct:100},
+      {id:'as6',userId:'u2',dutyId:'d3',startDate:'2025-04-01',endDate:'2025-06-15',allocationPct:30},
+    ],
+  },
+  {
+    id:'p3',title:'Social Campaign Q2',
+    description:'Multi-platform social media campaign for Q2 product launch across Instagram, LinkedIn, and TikTok.',
+    status:'planning',startDate:'',endDate:'',
+    estimationId:null,budget:null,totalHours:null,deliverables:null,
+    createdAt:'2025-04-20T09:00:00Z',updatedAt:'2025-04-20T09:00:00Z',archivedAt:null,
+    log:[{id:'l5',userId:'u5',text:'Brief received. Starting planning phase.',createdAt:'2025-04-20T09:00:00Z'}],
+    links:[],files:[],
+    assignments:[
+      {id:'as7',userId:'u3',dutyId:'d4',startDate:'2025-05-15',endDate:'2025-06-15',allocationPct:50},
+    ],
+  },
+  {
+    id:'p4',title:'Annual Report 2024',
+    description:'40-page annual report including infographics, photography direction, and print production files.',
+    status:'completed',startDate:'2025-01-10',endDate:'2025-04-30',
+    estimationId:null,budget:null,totalHours:null,deliverables:null,
+    createdAt:'2025-01-10T09:00:00Z',updatedAt:'2025-04-30T17:00:00Z',archivedAt:'2025-04-30T17:00:00Z',
+    log:[{id:'l6',userId:'u1',text:'Project completed. Files sent to print.',createdAt:'2025-04-30T17:00:00Z'}],
+    links:[],files:[],
+    assignments:[
+      {id:'as9', userId:'u3',dutyId:'d5',startDate:'2025-01-10',endDate:'2025-04-30',allocationPct:70},
+      {id:'as10',userId:'u2',dutyId:'d3',startDate:'2025-02-01',endDate:'2025-04-30',allocationPct:40},
+    ],
+  },
+];
+
+/* ═══════ UTILS ══════════════════════════════════════════ */
+const LS={
+  get:(k,fb)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch{return fb}},
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.warn(e)}},
+};
+const uid=()=>`${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+const fmt={
+  date:d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—',
+  dateShort:d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—',
+  currency:n=>n!=null?new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n):'—',
+  hours:n=>n!=null?`${Math.round(n)}h`:'—',
+  pct:n=>n!=null?`${Math.round(n)}%`:'—',
+  daysLeft:e=>e?Math.ceil((new Date(e)-new Date())/86400000):null,
+  elapsed:(s,e)=>{
+    if(!s||!e)return 0;
+    const st=new Date(s),en=new Date(e),n=new Date();
+    return Math.min(100,Math.max(0,Math.round(((n-st)/(en-st))*100)));
+  },
+  timeAgo:d=>{
+    const diff=Date.now()-new Date(d);
+    if(diff<60000)return'just now';
+    if(diff<3600000)return`${Math.floor(diff/60000)}m ago`;
+    if(diff<86400000)return`${Math.floor(diff/3600000)}h ago`;
+    return`${Math.floor(diff/86400000)}d ago`;
+  },
+  datetime:d=>{
+    if(!d)return'—';
+    const dt=new Date(d);
+    const dd=String(dt.getDate()).padStart(2,'0');
+    const mm=String(dt.getMonth()+1).padStart(2,'0');
+    const h=String(dt.getHours()).padStart(2,'0');
+    const min=String(dt.getMinutes()).padStart(2,'0');
+    return`${dd}/${mm}/${dt.getFullYear()} — ${h}:${min}`;
+  },
+};
+const STATUS_CFG={
+  planning: {label:'Planning', cls:'s-planning', icon:'ti-circle-dotted'},
+  active:   {label:'Active',   cls:'s-active',   icon:'ti-player-play'},
+  on_hold:  {label:'On Hold',  cls:'s-on_hold',  icon:'ti-player-pause'},
+  completed:{label:'Completed',cls:'s-completed',icon:'ti-circle-check'},
+};
+const COLORS=['#3B5BDB','#2F9E44','#C92A2A','#7048E8','#C9952A','#0C8599','#862E9C','#1A1A18'];
+const DUTY_COLORS=['#3B5BDB','#2F9E44','#C92A2A','#7048E8','#C9952A','#0C8599','#862E9C','#2B6CB0'];
+
+const calcEst=(assets,resources,bufferPct)=>{
+  const totalH=assets.reduce((s,a)=>s+(a.volume*a.genHPerAsset)+(a.volume*a.postHPerAsset)+(+a.extraH||0),0);
+  const totalDeliverables=assets.reduce((s,a)=>s+(+a.volume||0),0);
+  const resourceCost=resources.reduce((s,r)=>{
+    const eff=(r.hoursAllocated/8)*(r.chargeabilityPct/100)*r.dailyRate;
+    return s+eff;
+  },0);
+  const buffer=resourceCost*((+bufferPct||0)/100);
+  const totalCost=resourceCost+buffer;
+  const pricePerAsset=totalDeliverables>0?totalCost/totalDeliverables:0;
+  return{totalH:Math.round(totalH*10)/10,totalDeliverables,resourceCost:Math.round(resourceCost),totalCost:Math.round(totalCost),pricePerAsset:Math.round(pricePerAsset)};
+};
+
+/* ═══════ STORE ══════════════════════════════════════════ */
+function useStore(){
+  const[users,setUsers]=useState(()=>LS.get('so2_users',SEED_USERS));
+  const[duties,setDuties]=useState(()=>LS.get('so2_duties',SEED_DUTIES));
+  const[projects,setProjects]=useState(()=>LS.get('so2_projects',SEED_PROJECTS));
+  const[estimations,setEstimations]=useState(()=>LS.get('so2_estimations',SEED_ESTIMATIONS));
+  useEffect(()=>LS.set('so2_users',users),[users]);
+  useEffect(()=>LS.set('so2_duties',duties),[duties]);
+  useEffect(()=>LS.set('so2_projects',projects),[projects]);
+  useEffect(()=>LS.set('so2_estimations',estimations),[estimations]);
+  const upsertProject=p=>setProjects(prev=>prev.find(x=>x.id===p.id)?prev.map(x=>x.id===p.id?p:x):[...prev,p]);
+  const deleteProject=id=>setProjects(prev=>prev.filter(x=>x.id!==id));
+  const upsertEstimation=e=>setEstimations(prev=>prev.find(x=>x.id===e.id)?prev.map(x=>x.id===e.id?e:x):[...prev,e]);
+  const deleteEstimation=id=>setEstimations(prev=>prev.filter(x=>x.id!==id));
+  const upsertUser=u=>setUsers(prev=>prev.find(x=>x.id===u.id)?prev.map(x=>x.id===u.id?u:x):[...prev,u]);
+  const deleteUser=id=>setUsers(prev=>prev.filter(x=>x.id!==id));
+  const upsertDuty=d=>setDuties(prev=>prev.find(x=>x.id===d.id)?prev.map(x=>x.id===d.id?d:x):[...prev,d]);
+  const deleteDuty=id=>setDuties(prev=>prev.filter(x=>x.id!==id));
+  return{users,duties,projects,estimations,upsertProject,deleteProject,upsertEstimation,deleteEstimation,upsertUser,deleteUser,upsertDuty,deleteDuty};
+}
+
+/* ═══════ ATOMS ══════════════════════════════════════════ */
+function Av({user,size=30}){
+  if(!user)return null;
+  const bg=user.color+'20',bd=user.color+'50',c=user.color;
+  return<div className="av"style={{width:size,height:size,fontSize:size*.34,background:bg,color:c,border:`1.5px solid ${bd}`}}>{user.avatar}</div>;
+}
+function DutyTag({dutyId,duties}){
+  const d=duties?.find(x=>x.id===dutyId);
+  if(!d)return null;
+  return<span className="tag"style={{background:d.color+'15',color:d.color,borderColor:d.color+'30',fontSize:11}}>{d.name}</span>;
+}
+function StatusBadge({status}){
+  const cfg=STATUS_CFG[status]||STATUS_CFG.planning;
+  return<span className={`badge ${cfg.cls}`}><i className={`ti ${cfg.icon}`}style={{fontSize:10}}/>{cfg.label}</span>;
+}
+function Bar({value,color,h=5}){
+  return<div className="prog-track"style={{height:h}}><div className="prog-fill"style={{width:`${Math.min(100,Math.max(0,value))}%`,background:color||'var(--gold)',height:h}}/></div>;
+}
+function ColorPick({value,onChange,colors=COLORS}){
+  return<div className="row"style={{flexWrap:'wrap',gap:7}}>
+    {colors.map(c=><div key={c}onClick={()=>onChange(c)}style={{width:22,height:22,borderRadius:5,background:c,cursor:'pointer',border:`2.5px solid ${value===c?'var(--ink)':'transparent'}`,transition:'border .12s'}}/>)}
+  </div>;
+}
+
+/* ── MODAL — FIX: mousedown check to prevent drag-close ── */
+function Modal({title,onClose,children,footer,width=490,subtitle}){
+  const overlayRef=useRef();
+  useEffect(()=>{
+    const h=e=>e.key==='Escape'&&onClose();
+    window.addEventListener('keydown',h);
+    return()=>window.removeEventListener('keydown',h);
+  },[onClose]);
+  // Only close if the mousedown AND click both land on the overlay itself
+  const handleOverlayMouseDown=e=>{
+    if(e.target===overlayRef.current) e.currentTarget._closeIntent=true;
+  };
+  const handleOverlayClick=e=>{
+    if(e.target===overlayRef.current&&e.currentTarget._closeIntent) onClose();
+    e.currentTarget._closeIntent=false;
+  };
+  return<div className="modal-overlay"ref={overlayRef}onMouseDown={handleOverlayMouseDown}onClick={handleOverlayClick}>
+    <div className="modal-box fade"style={{maxWidth:width}}onClick={e=>e.stopPropagation()}>
+      <div className="modal-hd">
+        <div>
+          <div className="modal-title">{title}</div>
+          {subtitle&&<div style={{fontSize:12,color:'var(--ink-4)',marginTop:3}}>{subtitle}</div>}
+        </div>
+        <button className="btn btn-ghost btn-sm"onClick={onClose}><i className="ti ti-x"/></button>
+      </div>
+      <div className="modal-body">{children}</div>
+      {footer&&<div className="modal-ft">{footer}</div>}
+    </div>
+  </div>;
+}
+function Confirm({title,message,onConfirm,onCancel,danger}){
+  return<Modal title={title}onClose={onCancel}width={380}
+    footer={<><button className="btn"onClick={onCancel}>Cancel</button>
+      <button className={`btn ${danger?'btn-danger':'btn-primary'}`}onClick={onConfirm}>Confirm</button></>}>
+    <p style={{fontSize:13,color:'var(--ink-2)',lineHeight:1.65}}>{message}</p>
+  </Modal>;
+}
+
+/* ═══════ LOGIN ══════════════════════════════════════════ */
+function Login({users,onLogin}){
+  const[email,setEmail]=useState('');
+  const[err,setErr]=useState('');
+  const go=()=>{
+    const u=users.find(u=>u.email.toLowerCase()===email.toLowerCase().trim());
+    if(u)onLogin(u);else setErr('No account found with that email.');
+  };
+  return<div className="login-page">
+    <div className="login-card">
+      <div className="row"style={{gap:11,marginBottom:28}}>
+        <div className="login-mark"><i className="ti ti-layout-kanban"style={{fontSize:15,color:'#fff'}}/></div>
+        <div><div className="login-name">Studio OS</div><div className="login-sub">Project management</div></div>
+      </div>
+      <label className="login-label">Email address</label>
+      <input className="login-inp"value={email}placeholder="you@studio.io"
+        onChange={e=>{setEmail(e.target.value);setErr('');}}
+        onKeyDown={e=>e.key==='Enter'&&go()}/>
+      {err&&<div className="login-err">{err}</div>}
+      <button className="login-btn"onClick={go}>Sign in →</button>
+      <div className="login-divider"/>
+      {users.map(u=><button key={u.id}className="login-acc"onClick={()=>onLogin(u)}>
+        <Av user={u}size={26}/>
+        <div style={{textAlign:'left'}}>
+          <div className="login-acc-name">{u.name}</div>
+          <div className="login-acc-role">{u.role}</div>
+        </div>
+      </button>)}
+    </div>
+  </div>;
+}
+
+/* ═══════ SIDEBAR ════════════════════════════════════════ */
+function Sidebar({me,view,setView,onLogout,isAdmin}){
+  const nav=[
+    {id:'estimations',icon:'ti-calculator',    label:'Estimation'},
+    {id:'projects',   icon:'ti-layout-kanban', label:'Projects'},
+    {id:'timeline',   icon:'ti-calendar-month',label:'Timeline'},
+    {id:'staffing',   icon:'ti-chart-bar',     label:'Staffing'},
+    {id:'archive',    icon:'ti-archive',       label:'Archive'},
+  ];
+  return<div className="sidebar">
+    <div className="sb-logo">
+      <div className="sb-mark"><i className="ti ti-layout-kanban"style={{fontSize:13,color:'#fff'}}/></div>
+      <div><div className="sb-wordmark">Studio OS</div></div>
+    </div>
+    <div className="sb-section"style={{flex:1}}>
+      {nav.map(item=><button key={item.id}className={`nav-btn ${view===item.id?'active':''}`}onClick={()=>setView(item.id)}>
+        <i className={`ti ${item.icon}`}/>{item.label}
+      </button>)}
+      {isAdmin&&<>
+        <div className="sb-section-label"style={{marginTop:18}}>Admin</div>
+        <button className={`nav-btn ${view==='team'?'active':''}`}onClick={()=>setView('team')}>
+          <i className="ti ti-users"/>Team & Duties
+        </button>
+      </>}
+    </div>
+    <div className="sb-bottom">
+      <div className="sb-user"><Av user={me}size={28}/>
+        <div><div className="sb-user-name">{me.name}</div><div className="sb-user-role">{me.role}</div></div>
+      </div>
+      <button className="nav-btn"onClick={onLogout}style={{marginTop:4,fontSize:12}}><i className="ti ti-logout"/>Sign out</button>
+    </div>
+  </div>;
+}
+
+/* ═══════ TEAM PAGE ══════════════════════════════════════ */
+function TeamPage({store}){
+  const{users,duties,upsertUser,deleteUser,upsertDuty,deleteDuty}=store;
+  const[tab,setTab]=useState('members');
+  const[editUser,setEditUser]=useState(null);
+  const[editDuty,setEditDuty]=useState(null);
+  const[del,setDel]=useState(null);
+  const eu=()=>({id:uid(),name:'',email:'',role:'user',avatar:'',color:COLORS[0]});
+  const ed=()=>({id:uid(),name:'',color:DUTY_COLORS[duties.length%DUTY_COLORS.length]});
+  const saveUser=u=>{
+    if(!u.name||!u.email)return;
+    const av=u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    upsertUser({...u,avatar:u.avatar||av});setEditUser(null);
+  };
+  const saveDuty=d=>{if(!d.name)return;upsertDuty(d);setEditDuty(null);};
+  return<div className="fade">
+    <div className="page-hd"><div className="page-title">Team & Duties</div><div className="page-sub">Manage members and the global duties list</div></div>
+    <div className="tabs"style={{marginBottom:24}}>
+      <button className={`tab ${tab==='members'?'active':''}`}onClick={()=>setTab('members')}>Members</button>
+      <button className={`tab ${tab==='duties'?'active':''}`}onClick={()=>setTab('duties')}>Duties</button>
+    </div>
+    {tab==='members'&&<div>
+      <div className="row"style={{marginBottom:14}}><span className="spacer"/>
+        <button className="btn btn-primary btn-sm"onClick={()=>setEditUser(eu())}><i className="ti ti-user-plus"/>Add member</button>
+      </div>
+      <div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden'}}>
+        <table className="tbl"><thead><tr><th>Member</th><th>Email</th><th>Role</th><th style={{width:80}}/></tr></thead>
+          <tbody>{users.map(u=><tr key={u.id}style={{cursor:'default'}}>
+            <td><div className="row"><Av user={u}size={32}/><span style={{fontWeight:500}}>{u.name}</span></div></td>
+            <td style={{color:'var(--ink-3)'}}>{u.email}</td>
+            <td><span className={`badge ${u.role==='admin'?'badge-gold':'badge-gray'}`}>{u.role}</span></td>
+            <td><div className="row"style={{gap:3}}>
+              <button className="btn btn-ghost btn-xs"onClick={()=>setEditUser({...u})}><i className="ti ti-edit"/></button>
+              <button className="btn btn-ghost btn-xs btn-danger"onClick={()=>setDel({type:'user',id:u.id,name:u.name})}><i className="ti ti-trash"/></button>
+            </div></td>
+          </tr>)}</tbody>
+        </table>
+      </div>
+    </div>}
+    {tab==='duties'&&<div>
+      <div className="row"style={{marginBottom:14}}>
+        <p style={{fontSize:13,color:'var(--ink-3)'}}>This list feeds every duty dropdown in the app.</p>
+        <span className="spacer"/>
+        <button className="btn btn-primary btn-sm"onClick={()=>setEditDuty(ed())}><i className="ti ti-plus"/>Add duty</button>
+      </div>
+      <div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden'}}>
+        <table className="tbl"><thead><tr><th>Name</th><th>Colour</th><th style={{width:80}}/></tr></thead>
+          <tbody>{duties.map(d=><tr key={d.id}style={{cursor:'default'}}>
+            <td><DutyTag dutyId={d.id}duties={duties}/></td>
+            <td><div style={{width:16,height:16,borderRadius:4,background:d.color}}/></td>
+            <td><div className="row"style={{gap:3}}>
+              <button className="btn btn-ghost btn-xs"onClick={()=>setEditDuty({...d})}><i className="ti ti-edit"/></button>
+              <button className="btn btn-ghost btn-xs btn-danger"onClick={()=>setDel({type:'duty',id:d.id,name:d.name})}><i className="ti ti-trash"/></button>
+            </div></td>
+          </tr>)}</tbody>
+        </table>
+      </div>
+    </div>}
+    {editUser&&<Modal title={editUser.name?'Edit member':'Add member'}onClose={()=>setEditUser(null)}
+      footer={<><button className="btn"onClick={()=>setEditUser(null)}>Cancel</button><button className="btn btn-primary"onClick={()=>saveUser(editUser)}>Save</button></>}>
+      <div className="form-group"><div className="form-label">Full name *</div><input value={editUser.name}onChange={e=>setEditUser(u=>({...u,name:e.target.value}))}placeholder="Jane Doe"/></div>
+      <div className="form-group"><div className="form-label">Email *</div><input value={editUser.email}onChange={e=>setEditUser(u=>({...u,email:e.target.value}))}placeholder="jane@studio.io"/></div>
+      <div className="form-group"><div className="form-label">Role</div>
+        <select value={editUser.role}onChange={e=>setEditUser(u=>({...u,role:e.target.value}))}>
+          <option value="user">User</option><option value="admin">Admin</option>
+        </select>
+      </div>
+      <div className="form-group"><div className="form-label">Avatar colour</div><ColorPick value={editUser.color}onChange={c=>setEditUser(u=>({...u,color:c}))}/></div>
+    </Modal>}
+    {editDuty&&<Modal title={editDuty.name?'Edit duty':'Add duty'}onClose={()=>setEditDuty(null)}width={360}
+      footer={<><button className="btn"onClick={()=>setEditDuty(null)}>Cancel</button><button className="btn btn-primary"onClick={()=>saveDuty(editDuty)}>Save</button></>}>
+      <div className="form-group"><div className="form-label">Duty name *</div><input value={editDuty.name}onChange={e=>setEditDuty(d=>({...d,name:e.target.value}))}placeholder="e.g. AI Generation"/></div>
+      <div className="form-group"><div className="form-label">Colour</div><ColorPick value={editDuty.color}onChange={c=>setEditDuty(d=>({...d,color:c}))}colors={DUTY_COLORS}/></div>
+    </Modal>}
+    {del&&<Confirm danger title={`Remove ${del.type}`}message={`Remove "${del.name}"? This cannot be undone.`}
+      onConfirm={()=>{del.type==='user'?deleteUser(del.id):deleteDuty(del.id);setDel(null);}}
+      onCancel={()=>setDel(null)}/>}
+  </div>;
+}
+
+/* ═══════ ESTIMATION LIST ════════════════════════════════ */
+function EstimationList({store,setView,setDetailId}){
+  const{estimations,projects}=store;
+  const[filter,setFilter]=useState('all');
+  const visible=estimations.filter(e=>filter==='all'||e.status===filter).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  return<div className="fade">
+    <div className="row page-hd">
+      <div><div className="page-title">Estimations</div><div className="page-sub">{estimations.length} total</div></div>
+      <span className="spacer"/>
+      <select value={filter}onChange={e=>setFilter(e.target.value)}style={{width:'auto',fontSize:12}}>
+        <option value="all">All statuses</option><option value="draft">Draft</option><option value="confirmed">Confirmed</option>
+      </select>
+      <button className="btn btn-primary btn-sm"onClick={()=>{setDetailId('new');setView('estimation-detail');}}>
+        <i className="ti ti-plus"/>New estimation
+      </button>
+    </div>
+    {!visible.length&&<div className="empty-state"><i className="ti ti-calculator"/><p>No estimations yet</p><small>Create your first estimation to get started</small></div>}
+    <div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden'}}>
+      <table className="tbl">
+        <thead><tr><th>Client</th><th>Project</th><th>Status</th><th>Total cost</th><th>Hours</th><th>Linked to</th><th>Created</th><th style={{width:40}}/></tr></thead>
+        <tbody>{visible.map(e=>{
+          const calc=calcEst(e.assets,e.resources,e.bufferPct);
+          const linked=e.linkedProjectId?projects.find(p=>p.id===e.linkedProjectId):null;
+          return<tr key={e.id}onClick={()=>{setDetailId(e.id);setView('estimation-detail');}}>
+            <td style={{fontWeight:600}}>{e.clientName}</td>
+            <td style={{color:'var(--ink-3)'}}>{e.projectName}</td>
+            <td><span className={`badge ${e.status==='confirmed'?'badge-green':'badge-gray'}`}>{e.status}</span></td>
+            <td className="mono"style={{fontSize:12,fontWeight:500}}>{fmt.currency(calc.totalCost)}</td>
+            <td className="mono"style={{fontSize:12}}>{fmt.hours(calc.totalH)}</td>
+            <td>{linked?<span className="badge badge-gold"><i className="ti ti-link"style={{fontSize:10}}/>{linked.title}</span>:<span style={{fontSize:12,color:'var(--ink-4)'}}>—</span>}</td>
+            <td style={{color:'var(--ink-4)',fontSize:12}}>{fmt.date(e.createdAt)}</td>
+            <td onClick={e2=>e2.stopPropagation()}><button className="btn btn-ghost btn-xs"onClick={()=>{setDetailId(e.id);setView('estimation-detail');}}><i className="ti ti-arrow-right"/></button></td>
+          </tr>;
+        })}</tbody>
+      </table>
+    </div>
+  </div>;
+}
+
+/* ═══════ ESTIMATION DETAIL ══════════════════════════════ */
+function EstimationDetail({id,store,me,setView,onConverted}){
+  const{estimations,users,duties,projects,upsertEstimation,upsertProject}=store;
+  const isNew=id==='new';
+  const blank=()=>({id:uid(),clientName:'',projectName:'',status:'draft',bufferPct:20,assets:[],resources:[],linkedProjectId:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  const[est,setEst]=useState(()=>isNew?blank():(estimations.find(e=>e.id===id)||blank()));
+  const[dirty,setDirty]=useState(false);
+  const[converting,setConverting]=useState(false);
+  const up=patch=>{ setEst(e=>({...e,...patch,updatedAt:new Date().toISOString()})); setDirty(true); };
+  const upAsset=(aid,patch)=>up({assets:est.assets.map(a=>a.id===aid?{...a,...patch}:a)});
+  const upResource=(rid,patch)=>up({resources:est.resources.map(r=>r.id===rid?{...r,...patch}:r)});
+  const addAsset=()=>up({assets:[...est.assets,{id:uid(),name:'',volume:1,genHPerAsset:0,postHPerAsset:0,extraH:0,notes:''}]});
+  const removeAsset=aid=>up({assets:est.assets.filter(a=>a.id!==aid)});
+  const addResource=()=>up({resources:[...est.resources,{id:uid(),dutyId:duties[0]?.id||'',userId:'',dailyRate:400,chargeabilityPct:90,hoursAllocated:8}]});
+  const removeResource=rid=>up({resources:est.resources.filter(r=>r.id!==rid)});
+  const save=()=>{ upsertEstimation(est); setDirty(false); };
+  const convertToProject=()=>{
+    const calc=calcEst(est.assets,est.resources,est.bufferPct);
+    const newP={
+      id:uid(),title:est.projectName||`${est.clientName} — Project`,
+      description:`Client: ${est.clientName}. Linked from estimation.`,
+      status:'planning',startDate:'',endDate:'',
+      estimationId:est.id,budget:calc.totalCost,totalHours:calc.totalH,deliverables:calc.totalDeliverables,
+      createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),archivedAt:null,
+      log:[{id:uid(),userId:me.id,text:'Project created from estimation.',createdAt:new Date().toISOString()}],
+      links:[],files:[],
+      assignments:est.resources.filter(r=>r.userId).map(r=>({id:uid(),userId:r.userId,dutyId:r.dutyId,startDate:'',endDate:'',allocationPct:80})),
+    };
+    upsertProject(newP);
+    upsertEstimation({...est,linkedProjectId:newP.id});
+    setEst(e=>({...e,linkedProjectId:newP.id}));
+    setConverting(false);
+    onConverted(newP.id);
+  };
+  const calc=calcEst(est.assets,est.resources,est.bufferPct);
+  const linkedProject=est.linkedProjectId?projects.find(p=>p.id===est.linkedProjectId):null;
+  const isAdmin=me.role==='admin';
+  return<div className="fade">
+    <div className="row"style={{marginBottom:24}}>
+      <button className="btn btn-ghost btn-sm"onClick={()=>setView('estimations')}><i className="ti ti-arrow-left"/>Estimations</button>
+      <span className="spacer"/>
+      {dirty&&<button className="btn btn-primary"onClick={save}><i className="ti ti-device-floppy"/>Save</button>}
+      {!dirty&&!isNew&&<span style={{fontSize:12,color:'var(--ink-4)'}}>All saved</span>}
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:24,alignItems:'start'}}>
+      <div>
+        <div className="card"style={{marginBottom:16}}>
+          <div className="form-row-2"style={{marginBottom:12}}>
+            <div className="form-group"style={{margin:0}}><div className="form-label">Client name *</div><input value={est.clientName}onChange={e=>up({clientName:e.target.value})}placeholder="e.g. Ferragamo"disabled={!isAdmin}/></div>
+            <div className="form-group"style={{margin:0}}><div className="form-label">Project name *</div><input value={est.projectName}onChange={e=>up({projectName:e.target.value})}placeholder="E-com Content POC"disabled={!isAdmin}/></div>
+          </div>
+          <div className="row"style={{gap:12}}>
+            <div className="form-group"style={{margin:0,flex:1}}><div className="form-label">Status</div>
+              <select value={est.status}onChange={e=>up({status:e.target.value})}disabled={!isAdmin}style={{width:'auto'}}>
+                <option value="draft">Draft</option><option value="confirmed">Confirmed</option>
+              </select>
+            </div>
+            <div className="form-group"style={{margin:0,flex:1}}><div className="form-label">Margin buffer %</div>
+              <input type="number"min={0}max={100}value={est.bufferPct}onChange={e=>up({bufferPct:+e.target.value})}disabled={!isAdmin}/>
+            </div>
+          </div>
+        </div>
+        {/* Assets */}
+        <div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden',marginBottom:16}}>
+          <div className="row"style={{padding:'12px 16px',borderBottom:'1px solid var(--rule)'}}>
+            <span style={{fontWeight:600,fontSize:13}}>Asset types</span><span className="spacer"/>
+            {isAdmin&&<button className="btn btn-sm"onClick={addAsset}><i className="ti ti-plus"/>Add row</button>}
+          </div>
+          <div style={{overflowX:'auto'}}>
+            <table className="est-tbl">
+              <thead><tr><th style={{minWidth:140}}>Asset name</th><th style={{width:55}}>Vol.</th><th style={{width:70}}>Gen h/ea</th><th style={{width:70}}>Post h/ea</th><th style={{width:65}}>Extra h</th><th style={{width:70}}>Total h</th><th style={{minWidth:120}}>Notes</th>{isAdmin&&<th style={{width:36}}/>}</tr></thead>
+              <tbody>
+                {est.assets.map(a=>{
+                  const tot=(a.volume*a.genHPerAsset)+(a.volume*a.postHPerAsset)+(+a.extraH||0);
+                  return<tr key={a.id}>
+                    <td><input value={a.name}onChange={e=>upAsset(a.id,{name:e.target.value})}placeholder="Asset type…"disabled={!isAdmin}/></td>
+                    <td><input type="number"min={0}value={a.volume}onChange={e=>upAsset(a.id,{volume:+e.target.value})}disabled={!isAdmin}/></td>
+                    <td><input type="number"min={0}step={.5}value={a.genHPerAsset}onChange={e=>upAsset(a.id,{genHPerAsset:+e.target.value})}disabled={!isAdmin}/></td>
+                    <td><input type="number"min={0}step={.5}value={a.postHPerAsset}onChange={e=>upAsset(a.id,{postHPerAsset:+e.target.value})}disabled={!isAdmin}/></td>
+                    <td><input type="number"min={0}step={.5}value={a.extraH}onChange={e=>upAsset(a.id,{extraH:+e.target.value})}disabled={!isAdmin}/></td>
+                    <td className="mono"style={{fontSize:12,fontWeight:600,color:'var(--ink)'}}>{Math.round(tot*10)/10}h</td>
+                    <td><input value={a.notes}onChange={e=>upAsset(a.id,{notes:e.target.value})}placeholder="Complexity…"disabled={!isAdmin}/></td>
+                    {isAdmin&&<td><button className="btn btn-ghost btn-xs btn-danger"onClick={()=>removeAsset(a.id)}><i className="ti ti-x"/></button></td>}
+                  </tr>;
+                })}
+                {!est.assets.length&&<tr><td colSpan={8}style={{textAlign:'center',color:'var(--ink-4)',padding:'20px'}}>No assets yet — add a row to start</td></tr>}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {/* Resources */}
+        <div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden'}}>
+          <div className="row"style={{padding:'12px 16px',borderBottom:'1px solid var(--rule)'}}>
+            <span style={{fontWeight:600,fontSize:13}}>Resources</span><span className="spacer"/>
+            {isAdmin&&<button className="btn btn-sm"onClick={addResource}><i className="ti ti-plus"/>Add resource</button>}
+          </div>
+          <table className="est-tbl">
+            <thead><tr><th>Duty</th><th>Person</th><th style={{width:90}}>Day rate €</th><th style={{width:80}}>Charge. %</th><th style={{width:65}}>Hours</th><th style={{width:90}}>Cost</th>{isAdmin&&<th style={{width:36}}/>}</tr></thead>
+            <tbody>
+              {est.resources.map(r=>{
+                const cost=Math.round((r.hoursAllocated/8)*(r.chargeabilityPct/100)*r.dailyRate);
+                return<tr key={r.id}>
+                  <td><select value={r.dutyId}onChange={e=>upResource(r.id,{dutyId:e.target.value})}disabled={!isAdmin}>{duties.map(d=><option key={d.id}value={d.id}>{d.name}</option>)}</select></td>
+                  <td><select value={r.userId||''}onChange={e=>upResource(r.id,{userId:e.target.value})}disabled={!isAdmin}>
+                    <option value="">— Unassigned —</option>{users.map(u=><option key={u.id}value={u.id}>{u.name}</option>)}
+                  </select></td>
+                  <td><input type="number"min={0}value={r.dailyRate}onChange={e=>upResource(r.id,{dailyRate:+e.target.value})}disabled={!isAdmin}/></td>
+                  <td><input type="number"min={0}max={100}value={r.chargeabilityPct}onChange={e=>upResource(r.id,{chargeabilityPct:+e.target.value})}disabled={!isAdmin}/></td>
+                  <td><input type="number"min={0}value={r.hoursAllocated}onChange={e=>upResource(r.id,{hoursAllocated:+e.target.value})}disabled={!isAdmin}/></td>
+                  <td className="mono"style={{fontSize:12,fontWeight:600}}>{fmt.currency(cost)}</td>
+                  {isAdmin&&<td><button className="btn btn-ghost btn-xs btn-danger"onClick={()=>removeResource(r.id)}><i className="ti ti-x"/></button></td>}
+                </tr>;
+              })}
+              {!est.resources.length&&<tr><td colSpan={7}style={{textAlign:'center',color:'var(--ink-4)',padding:'20px'}}>No resources yet</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {/* Output panel */}
+      <div>
+        <div className="card"style={{position:'sticky',top:80}}>
+          <div style={{fontWeight:600,fontSize:14,letterSpacing:'-.02em',marginBottom:18}}>Output</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:18}}>
+            <div className="stat-box"><div className="stat-label">Hours</div><div className="stat-num">{calc.totalH}<span style={{fontSize:14,fontWeight:400,opacity:.6}}>h</span></div></div>
+            <div className="stat-box"><div className="stat-label">Deliverables</div><div className="stat-num">{calc.totalDeliverables}</div></div>
+          </div>
+          <hr className="divider"/>
+          <div className="stack"style={{gap:8,marginBottom:18}}>
+            <div className="row"><span style={{fontSize:13,color:'var(--ink-3)'}}>Resource cost</span><span className="spacer"/><span className="mono"style={{fontSize:13}}>{fmt.currency(calc.resourceCost)}</span></div>
+            <div className="row"><span style={{fontSize:13,color:'var(--ink-3)'}}>Buffer ({est.bufferPct}%)</span><span className="spacer"/><span className="mono"style={{fontSize:13}}>{fmt.currency(calc.totalCost-calc.resourceCost)}</span></div>
+            <hr className="divider"style={{margin:'4px 0'}}/>
+            <div className="row"><span style={{fontSize:15,fontWeight:600}}>Total</span><span className="spacer"/><span className="mono"style={{fontSize:22,fontWeight:600,letterSpacing:'-.04em'}}>{fmt.currency(calc.totalCost)}</span></div>
+            <div className="row"><span style={{fontSize:12,color:'var(--ink-4)'}}>Per asset</span><span className="spacer"/><span className="mono"style={{fontSize:12}}>{fmt.currency(calc.pricePerAsset)}</span></div>
+          </div>
+          <hr className="divider"/>
+          {linkedProject?(
+            <div>
+              <div className="banner banner-green"style={{marginBottom:10}}><i className="ti ti-link"style={{fontSize:13,flexShrink:0}}/><div>Linked to <strong>{linkedProject.title}</strong></div></div>
+              <button className="btn btn-sm"style={{width:'100%',justifyContent:'center'}}onClick={()=>onConverted(linkedProject.id)}><i className="ti ti-arrow-right"/>Open project</button>
+            </div>
+          ):isAdmin&&est.status==='confirmed'?(
+            <button className="btn btn-primary"style={{width:'100%',justifyContent:'center'}}onClick={()=>setConverting(true)}><i className="ti ti-git-branch"/>Convert to project</button>
+          ):isAdmin&&est.status==='draft'?(
+            <div className="banner banner-amber"><i className="ti ti-info-circle"style={{fontSize:13,flexShrink:0}}/><span>Mark as Confirmed to convert to a project</span></div>
+          ):null}
+        </div>
+      </div>
+    </div>
+    {converting&&<Confirm title="Convert to project"
+      message={`This creates a new project "${est.projectName||est.clientName}" pre-filled with team, budget and hours from this estimation. Continue?`}
+      onConfirm={convertToProject}onCancel={()=>setConverting(false)}/>}
+  </div>;
+}
+
+/* ═══════ PROJECT LIST VIEW (sortable) ══════════════════ */
+function ProjectListView({projects,users,open}){
+  const[sortKey,setSortKey]=useState('endDate');
+  const[sortDir,setSortDir]=useState('asc');
+  const toggleSort=key=>{
+    if(sortKey===key)setSortDir(d=>d==='asc'?'desc':'asc');
+    else{setSortKey(key);setSortDir('asc');}
+  };
+  const sorted=[...projects].sort((a,b)=>{
+    let va,vb;
+    if(sortKey==='title'){va=a.title?.toLowerCase()||'';vb=b.title?.toLowerCase()||'';}
+    else if(sortKey==='endDate'){
+      if(!a.endDate&&!b.endDate)return 0;if(!a.endDate)return 1;if(!b.endDate)return -1;
+      va=new Date(a.endDate);vb=new Date(b.endDate);
+    }
+    else if(sortKey==='createdAt'){va=new Date(a.createdAt||0);vb=new Date(b.createdAt||0);}
+    else return 0;
+    if(va<vb)return sortDir==='asc'?-1:1;
+    if(va>vb)return sortDir==='asc'?1:-1;
+    return 0;
+  });
+  const Th=({k,label})=>{
+    const active=sortKey===k;
+    return<th onClick={()=>toggleSort(k)}style={{cursor:'pointer',userSelect:'none',color:active?'var(--ink-3)':'',whiteSpace:'nowrap'}}>
+      <span style={{display:'inline-flex',alignItems:'center',gap:3}}>
+        {label}
+        <span style={{opacity:active?.6:.2,fontSize:10}}>{active?(sortDir==='asc'?'↑':'↓'):'↕'}</span>
+      </span>
+    </th>;
+  };
+  return<div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden',boxShadow:'var(--shadow-xs)'}}>
+    <table className="tbl">
+      <thead><tr>
+        <Th k="title"     label="Project"/>
+        <th>Status</th><th>Team</th><th>Progress</th>
+        <Th k="endDate"   label="Due date"/>
+        <Th k="createdAt" label="Created"/>
+        <th>Budget</th>
+      </tr></thead>
+      <tbody>{sorted.map(p=>{
+        const days=fmt.daysLeft(p.endDate);
+        const pct=fmt.elapsed(p.startDate,p.endDate);
+        const sc=p.status==='planning'?'var(--s-planning)':p.status==='active'?'var(--s-active)':p.status==='on_hold'?'var(--s-hold)':'var(--s-done)';
+        const team=[...new Map((p.assignments||[]).map(a=>[a.userId,users.find(u=>u.id===a.userId)])).values()].filter(Boolean);
+        return<tr key={p.id}onClick={()=>open(p.id)}>
+          <td><div className="row"style={{gap:10}}>
+            <div style={{width:3,height:28,borderRadius:2,background:sc,flexShrink:0}}/>
+            <div>
+              <div style={{fontWeight:600,letterSpacing:'-.02em'}}>{p.title}</div>
+              {p.description&&<div style={{fontSize:11,color:'var(--ink-4)',marginTop:1,maxWidth:260,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.description}</div>}
+            </div>
+          </div></td>
+          <td><StatusBadge status={p.status}/></td>
+          <td><div className="row"style={{gap:0}}>
+            {team.slice(0,4).map((u,i)=><div key={u.id}style={{marginLeft:i?-6:0,border:'2px solid var(--white)',borderRadius:'50%',zIndex:4-i}}><Av user={u}size={26}/></div>)}
+            {team.length>4&&<span style={{fontSize:11,color:'var(--ink-4)',marginLeft:7}}>+{team.length-4}</span>}
+          </div></td>
+          <td style={{minWidth:120}}>
+            {p.startDate&&p.endDate
+              ?<div><Bar value={pct}color={sc}height={4}/><span style={{fontSize:11,color:'var(--ink-4)',marginTop:2,display:'block'}}>{pct}%</span></div>
+              :<span style={{fontSize:12,color:'var(--ink-5)',fontStyle:'italic'}}>No dates</span>}
+          </td>
+          <td style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:days!=null&&days<7?600:400,
+            color:days==null?'var(--ink-5)':days<0?'var(--danger)':days<7?'var(--gold)':'var(--ink-3)'}}>
+            {days==null?'—':days<0?`${Math.abs(days)}d overdue`:days===0?'Today':`${days}d`}
+          </td>
+          <td style={{fontSize:12,color:'var(--ink-4)',fontFamily:'var(--mono)'}}>{fmt.date(p.createdAt)}</td>
+          <td className="mono"style={{fontSize:12,fontWeight:p.budget?500:400,color:p.budget?'var(--ink)':'var(--ink-5)'}}>{fmt.currency(p.budget)}</td>
+        </tr>;
+      })}</tbody>
+    </table>
+  </div>;
+}
+
+/* ═══════ PROJECTS OVERVIEW ══════════════════════════════ */
+function ProjectsOverview({store,me,setView,setProjectId}){
+  const{projects,users,upsertProject}=store;
+  const[viewMode,setViewMode]=useState('grid');
+  const[filterStatus,setFilterStatus]=useState('all');
+  const[filterPerson,setFilterPerson]=useState('all');
+  const[showNew,setShowNew]=useState(false);
+  const visible=projects.filter(p=>{
+    if(p.status==='completed')return false;
+    if(filterStatus!=='all'&&p.status!==filterStatus)return false;
+    if(filterPerson!=='all'&&!p.assignments?.some(a=>a.userId===filterPerson))return false;
+    return true;
+  }).sort((a,b)=>{
+    // put items without dates last
+    if(!a.endDate&&!b.endDate)return 0;
+    if(!a.endDate)return 1;
+    if(!b.endDate)return -1;
+    return new Date(a.endDate)-new Date(b.endDate);
+  });
+  const open=id=>{setProjectId(id);setView('project-detail');};
+  const isAdmin=me.role==='admin';
+  return<div className="fade">
+    <div className="row page-hd">
+      <div><div className="page-title">Projects</div><div className="page-sub">{visible.length} active</div></div>
+      <span className="spacer"/>
+      <select value={filterStatus}onChange={e=>setFilterStatus(e.target.value)}style={{width:'auto',fontSize:12}}>
+        <option value="all">All statuses</option><option value="planning">Planning</option><option value="active">Active</option><option value="on_hold">On Hold</option>
+      </select>
+      <select value={filterPerson}onChange={e=>setFilterPerson(e.target.value)}style={{width:'auto',fontSize:12}}>
+        <option value="all">All people</option>{users.map(u=><option key={u.id}value={u.id}>{u.name}</option>)}
+      </select>
+      <div className="row"style={{gap:2,background:'var(--rule)',borderRadius:'var(--r-xs)',padding:2}}>
+        <button className={`btn btn-xs ${viewMode==='grid'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setViewMode('grid')}><i className="ti ti-layout-grid"/></button>
+        <button className={`btn btn-xs ${viewMode==='list'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setViewMode('list')}><i className="ti ti-list"/></button>
+      </div>
+      {isAdmin&&<button className="btn btn-primary btn-sm"onClick={()=>setShowNew(true)}><i className="ti ti-plus"/>New project</button>}
+    </div>
+    {!visible.length&&<div className="empty-state"><i className="ti ti-layout-kanban"/><p>No projects match your filters</p></div>}
+    {viewMode==='grid'&&<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))',gap:14}}>
+      {visible.map(p=><ProjCard key={p.id}project={p}store={store}onClick={()=>open(p.id)}/>)}
+    </div>}
+    {viewMode==='list'&&<ProjectListView projects={visible}users={users}open={open}/>}
+    {showNew&&isAdmin&&<NewProjectModal store={store}me={me}onClose={()=>setShowNew(false)}onCreated={id=>{setShowNew(false);open(id);}}/>}
+  </div>;
+}
+
+function ProjCard({project:p,store,onClick}){
+  const{users}=store;
+  const days=fmt.daysLeft(p.endDate);
+  const pct=fmt.elapsed(p.startDate,p.endDate);
+  const statusColor=p.status==='planning'?'var(--s-planning)':p.status==='active'?'var(--s-active)':p.status==='on_hold'?'var(--s-hold)':'var(--s-done)';
+  const team=[...new Map((p.assignments||[]).map(a=>[a.userId,users.find(u=>u.id===a.userId)])).values()].filter(Boolean);
+  return<div className={`proj-card s-${p.status}`}onClick={onClick}>
+    <div className="row"style={{alignItems:'flex-start',gap:10}}>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{fontWeight:600,fontSize:15,letterSpacing:'-.02em',marginBottom:5,lineHeight:1.2}} className="trunc">{p.title}</div>
+        <div style={{fontSize:12,color:'var(--ink-4)',lineHeight:1.55,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>{p.description}</div>
+      </div>
+      <StatusBadge status={p.status}/>
+    </div>
+    {p.startDate&&p.endDate?<Bar value={pct}color={statusColor}height={4}/>:<div style={{height:4,background:'var(--rule)',borderRadius:'var(--r-pill)'}}/>}
+    <div className="row">
+      <div className="row"style={{gap:0}}>
+        {team.slice(0,5).map((u,i)=><div key={u.id}style={{marginLeft:i?-6:0,border:'2px solid var(--white)',borderRadius:'50%',zIndex:5-i}}><Av user={u}size={24}/></div>)}
+        {team.length>5&&<span style={{fontSize:11,color:'var(--ink-4)',marginLeft:6}}>+{team.length-5}</span>}
+      </div>
+      <span className="spacer"/>
+      <span style={{fontSize:11,color:days==null?'var(--ink-4)':days<0?'var(--danger)':days<7?'var(--gold)':'var(--ink-4)'}}>
+        <i className="ti ti-calendar"style={{fontSize:11,marginRight:3}}/>
+        {days==null?'No deadline set':days<0?`${Math.abs(days)}d overdue`:days===0?'Due today':`${days}d left`}
+      </span>
+    </div>
+    {p.budget&&<div style={{fontSize:11,color:'var(--ink-4)'}}className="mono">{fmt.currency(p.budget)} · {fmt.hours(p.totalHours)}</div>}
+  </div>;
+}
+
+/* ── NEW PROJECT MODAL with validation ── */
+function NewProjectModal({store,me,onClose,onCreated}){
+  const{users,estimations,upsertProject}=store;
+  const[f,setF]=useState({title:'',description:'',status:'planning',startDate:'',endDate:'',estimationId:''});
+  const[errs,setErrs]=useState({});
+  const up=p=>setF(x=>({...x,...p}));
+
+  const validate=()=>{
+    const e={};
+    if(!f.title.trim()) e.title='Project title is required';
+    // Dates required only for non-planning
+    if(f.status!=='planning'){
+      if(!f.startDate) e.startDate='Start date required for active/hold projects';
+      if(!f.endDate)   e.endDate='End date required for active/hold projects';
+    }
+    if(f.startDate&&f.endDate&&new Date(f.startDate)>=new Date(f.endDate)) e.endDate='End date must be after start date';
+    setErrs(e);
+    return Object.keys(e).length===0;
+  };
+
+  const create=()=>{
+    if(!validate())return;
+    const id=uid();
+    upsertProject({
+      ...f,id,estimationId:f.estimationId||null,
+      budget:null,totalHours:null,deliverables:null,
+      createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),archivedAt:null,
+      log:[{id:uid(),userId:me.id,text:'Project created.',createdAt:new Date().toISOString()}],
+      links:[],files:[],assignments:[],
+    });
+    onCreated(id);
+  };
+
+  const unlinkedEsts=estimations.filter(e=>e.status==='confirmed'&&!e.linkedProjectId);
+  const planningMode=f.status==='planning';
+
+  return<Modal title="New project"onClose={onClose}width={520}
+    footer={<><button className="btn"onClick={onClose}>Cancel</button><button className="btn btn-primary"onClick={create}>Create project</button></>}>
+    <div className="form-group">
+      <div className="form-label">Project title *</div>
+      <input className={errs.title?'err':''}value={f.title}onChange={e=>{up({title:e.target.value});setErrs(x=>({...x,title:''}));}}placeholder="e.g. Summer Campaign 2025"/>
+      {errs.title&&<div className="err-msg"><i className="ti ti-alert-circle"style={{fontSize:12}}/>{errs.title}</div>}
+    </div>
+    <div className="form-group">
+      <div className="form-label">Brief / description</div>
+      <textarea value={f.description}onChange={e=>up({description:e.target.value})}rows={3}placeholder="What is this project about?"/>
+    </div>
+    <div className="form-group">
+      <div className="form-label">Status</div>
+      <select value={f.status}onChange={e=>{up({status:e.target.value});setErrs({});}}>
+        <option value="planning">Planning</option><option value="active">Active</option><option value="on_hold">On Hold</option>
+      </select>
+    </div>
+    <div className="form-row-2">
+      <div className="form-group">
+        <div className="form-label">Start date {!planningMode?'*':''}</div>
+        <input type="date"className={errs.startDate?'err':''}value={f.startDate}onChange={e=>{up({startDate:e.target.value});setErrs(x=>({...x,startDate:''}));}}/>
+        {errs.startDate&&<div className="err-msg"><i className="ti ti-alert-circle"style={{fontSize:12}}/>{errs.startDate}</div>}
+        {planningMode&&<div className="form-hint">Optional in Planning mode</div>}
+      </div>
+      <div className="form-group">
+        <div className="form-label">End date {!planningMode?'*':''}</div>
+        <input type="date"className={errs.endDate?'err':''}value={f.endDate}onChange={e=>{up({endDate:e.target.value});setErrs(x=>({...x,endDate:''}));}}/>
+        {errs.endDate&&<div className="err-msg"><i className="ti ti-alert-circle"style={{fontSize:12}}/>{errs.endDate}</div>}
+        {planningMode&&<div className="form-hint">Optional in Planning mode</div>}
+      </div>
+    </div>
+    {unlinkedEsts.length>0&&<div className="form-group">
+      <div className="form-label">Link to estimation (optional)</div>
+      <select value={f.estimationId}onChange={e=>up({estimationId:e.target.value})}>
+        <option value="">— None —</option>
+        {unlinkedEsts.map(e=><option key={e.id}value={e.id}>{e.clientName} — {e.projectName}</option>)}
+      </select>
+    </div>}
+  </Modal>;
+}
+
+/* ═══════ PROJECT DETAIL ═════════════════════════════════ */
+function ProjectDetail({id,store,me,setView,setEstimationId,setNavView}){
+  const{projects,users,duties,estimations,upsertProject,deleteProject}=store;
+  const[tab,setTab]=useState('overview');
+  const p=projects.find(x=>x.id===id);
+  if(!p)return<div className="empty-state"><i className="ti ti-alert-circle"/><p>Project not found</p></div>;
+  const up=patch=>upsertProject({...p,...patch,updatedAt:new Date().toISOString()});
+  const isAdmin=me.role==='admin';
+  const est=p.estimationId?estimations.find(e=>e.id===p.estimationId):null;
+  const days=fmt.daysLeft(p.endDate);
+  const pct=fmt.elapsed(p.startDate,p.endDate);
+  const statusColor=p.status==='planning'?'var(--s-planning)':p.status==='active'?'var(--s-active)':p.status==='on_hold'?'var(--s-hold)':'var(--s-done)';
+  const openEst=()=>{setEstimationId(p.estimationId);setNavView('estimation-detail');};
+  return<div className="proj-page">
+    <div className="proj-page-hd">
+      <button className="proj-back"onClick={()=>setView('projects')}><i className="ti ti-arrow-left"style={{fontSize:12}}/>Back to projects</button>
+      <div className="proj-title-row">
+        <div className="proj-accent-bar"style={{background:statusColor}}/>
+        <div style={{flex:1}}>
+          <div className="proj-title">{p.title}</div>
+          <div className="proj-meta">Created {fmt.date(p.createdAt)} · Last updated {fmt.timeAgo(p.updatedAt)}</div>
+        </div>
+        <div className="row"style={{gap:8}}>
+          <StatusBadge status={p.status}/>
+          {isAdmin&&<ProjEditMenu p={p}store={store}me={me}up={up}deleteProject={deleteProject}setView={setView}/>}
+        </div>
+      </div>
+      <div className="tabs">
+        {['overview','timeline','team','log','files','links'].map(t=><button key={t}className={`tab ${tab===t?'active':''}`}onClick={()=>setTab(t)}style={{textTransform:'capitalize'}}>{t}</button>)}
+      </div>
+    </div>
+    <div style={{flex:1,overflowY:'auto',padding:28}}>
+      {tab==='overview' &&<ProjOverviewTab p={p}est={est}pct={pct}days={days}isAdmin={isAdmin}up={up}openEst={openEst}store={store}me={me}statusColor={statusColor}/>}
+      {tab==='timeline' &&<ProjTimelineTab p={p}store={store}isAdmin={isAdmin}up={up}me={me}/>}
+      {tab==='team'     &&<ProjTeamTab    p={p}store={store}isAdmin={isAdmin}up={up}/>}
+      {tab==='log'      &&<ProjLogTab     p={p}store={store}me={me}up={up}/>}
+      {tab==='files'    &&<ProjFilesTab   p={p}me={me}up={up}/>}
+      {tab==='links'    &&<ProjLinksTab   p={p}isAdmin={isAdmin}up={up}/>}
+    </div>
+  </div>;
+}
+
+function ProjEditMenu({p,store,me,up,deleteProject,setView}){
+  const[editing,setEditing]=useState(false);
+  const[archiving,setArchiving]=useState(false);
+  const[errs,setErrs]=useState({});
+
+  const validate=()=>{
+    const e={};
+    if(!p.title?.trim())e.title='Title is required';
+    if(p.status!=='planning'&&!p.startDate)e.startDate='Start date required';
+    if(p.status!=='planning'&&!p.endDate)e.endDate='End date required';
+    setErrs(e);
+    return Object.keys(e).length===0;
+  };
+
+  return<>
+    <button className="btn btn-sm"onClick={()=>setEditing(true)}><i className="ti ti-edit"/>Edit</button>
+    {p.status!=='completed'&&<button className="btn btn-sm"onClick={()=>setArchiving(true)}><i className="ti ti-circle-check"/>Complete</button>}
+    {editing&&<Modal title="Edit project"onClose={()=>{setEditing(false);setErrs({});}}width={500}
+      footer={<>
+        <button className="btn btn-danger btn-sm"onClick={()=>{if(confirm('Delete this project? Cannot be undone.')){deleteProject(p.id);setView('projects');}}}>
+          <i className="ti ti-trash"/>Delete
+        </button>
+        <span className="spacer"/>
+        <button className="btn"onClick={()=>{setEditing(false);setErrs({});}}>Cancel</button>
+        <button className="btn btn-primary"onClick={()=>{if(validate())setEditing(false);}}>Done</button>
+      </>}>
+      <div className="form-group">
+        <div className="form-label">Title</div>
+        <input className={errs.title?'err':''}value={p.title}onChange={e=>up({title:e.target.value})}/>
+        {errs.title&&<div className="err-msg"><i className="ti ti-alert-circle"style={{fontSize:12}}/>{errs.title}</div>}
+      </div>
+      <div className="form-group"><div className="form-label">Description</div><textarea value={p.description}onChange={e=>up({description:e.target.value})}rows={3}/></div>
+      <div className="form-group"><div className="form-label">Status</div>
+        <select value={p.status}onChange={e=>up({status:e.target.value,archivedAt:e.target.value==='completed'?new Date().toISOString():null})}>
+          {Object.entries(STATUS_CFG).map(([k,v])=><option key={k}value={k}>{v.label}</option>)}
+        </select>
+      </div>
+      <div className="form-row-2">
+        <div className="form-group">
+          <div className="form-label">Start date{p.status!=='planning'?'  *':''}</div>
+          <input type="date"className={errs.startDate?'err':''}value={p.startDate||''}onChange={e=>up({startDate:e.target.value})}/>
+          {errs.startDate&&<div className="err-msg"><i className="ti ti-alert-circle"style={{fontSize:12}}/>{errs.startDate}</div>}
+          {p.status==='planning'&&<div className="form-hint">Optional in Planning mode</div>}
+        </div>
+        <div className="form-group">
+          <div className="form-label">End date{p.status!=='planning'?'  *':''}</div>
+          <input type="date"className={errs.endDate?'err':''}value={p.endDate||''}onChange={e=>up({endDate:e.target.value})}/>
+          {errs.endDate&&<div className="err-msg"><i className="ti ti-alert-circle"style={{fontSize:12}}/>{errs.endDate}</div>}
+          {p.status==='planning'&&<div className="form-hint">Optional in Planning mode</div>}
+        </div>
+      </div>
+    </Modal>}
+    {archiving&&<Confirm title="Mark as completed?"message="This moves the project to the Archive. You can restore it later from the Archive tab."
+      onConfirm={()=>{up({status:'completed',archivedAt:new Date().toISOString()});setArchiving(false);}}
+      onCancel={()=>setArchiving(false)}/>}
+  </>;
+}
+
+/* ── TAB: OVERVIEW ── */
+function ProjOverviewTab({p,est,pct,days,isAdmin,up,openEst,store,me,statusColor}){
+  const[syncing,setSyncing]=useState(false);
+  const doResync=()=>{
+    const calc=calcEst(est.assets,est.resources,est.bufferPct);
+    up({budget:calc.totalCost,totalHours:calc.totalH,deliverables:calc.totalDeliverables});
+    setSyncing(false);
+  };
+  const estNewer=est&&new Date(est.updatedAt)>new Date(p.updatedAt);
+  return<div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:28,alignItems:'start'}}>
+    <div>
+      <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Brief</div>
+      <p style={{fontSize:14,lineHeight:1.8,color:'var(--ink-2)',marginBottom:28,fontWeight:300}}>{p.description||<em style={{color:'var(--ink-4)'}}>No description added.</em>}</p>
+      <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Timeline progress</div>
+      {p.startDate&&p.endDate?<>
+        <Bar value={pct}color={statusColor}height={7}/>
+        <div className="row"style={{marginTop:8}}>
+          <span style={{fontSize:12,color:'var(--ink-4)'}}>{fmt.date(p.startDate)}</span><span className="spacer"/>
+          <span style={{fontSize:13,fontWeight:600,fontFamily:'var(--mono)',letterSpacing:'-.02em',color:days==null?'var(--ink-4)':days<0?'var(--danger)':days<14?'var(--gold)':'var(--ink)'}}>
+            {days==null?'—':days<0?`${Math.abs(days)}d overdue`:days===0?'Due today':`${days}d left`}
+          </span><span className="spacer"/>
+          <span style={{fontSize:12,color:'var(--ink-4)'}}>{fmt.date(p.endDate)}</span>
+        </div>
+      </>:<div className="banner banner-blue"style={{marginTop:4}}><i className="ti ti-calendar"style={{fontSize:13,flexShrink:0}}/><span>No dates set — edit the project to add a timeline</span></div>}
+      {p.budget&&<div style={{marginTop:28}}>
+        <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Budget snapshot</div>
+        <div className="g3"style={{gap:10}}>
+          <div className="stat-box"><div className="stat-label">Budget</div><div className="stat-num"style={{fontSize:18}}>{fmt.currency(p.budget)}</div></div>
+          <div className="stat-box"><div className="stat-label">Hours</div><div className="stat-num"style={{fontSize:18}}>{fmt.hours(p.totalHours)}</div></div>
+          <div className="stat-box"><div className="stat-label">Deliverables</div><div className="stat-num"style={{fontSize:18}}>{p.deliverables||'—'}</div></div>
+        </div>
+      </div>}
+    </div>
+    <div>
+      <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Estimation link</div>
+      {est?<div className="card-flat">
+        <div className="row"style={{marginBottom:estNewer?10:12}}>
+          <div style={{flex:1}}><div style={{fontWeight:600,fontSize:13,letterSpacing:'-.01em'}}>{est.clientName} — {est.projectName}</div>
+            <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2}}>{fmt.date(est.createdAt)}</div>
+          </div>
+          <span className={`badge ${est.status==='confirmed'?'badge-green':'badge-gray'}`}>{est.status}</span>
+        </div>
+        {estNewer&&<div className="banner banner-amber"style={{marginBottom:10}}>
+          <i className="ti ti-refresh"style={{fontSize:12,flexShrink:0}}/>
+          <div style={{flex:1}}>Estimation updated since linking.</div>
+          {isAdmin&&<button className="btn btn-xs"onClick={()=>setSyncing(true)}style={{flexShrink:0}}>Re-sync</button>}
+        </div>}
+        <button className="btn btn-sm btn-ghost"style={{width:'100%',justifyContent:'center'}}onClick={openEst}><i className="ti ti-calculator"/>Open estimation</button>
+      </div>:<div className="card-flat"style={{textAlign:'center',color:'var(--ink-4)'}}>
+        <i className="ti ti-calculator"style={{fontSize:22,marginBottom:8,display:'block',opacity:.35}}/>
+        <p style={{fontSize:13,marginBottom:2}}>No estimation linked</p>
+        <p style={{fontSize:12}}>Create an estimation and convert it</p>
+      </div>}
+    </div>
+    {syncing&&<Confirm title="Re-sync from estimation"
+      message={`Update budget (${fmt.currency(calcEst(est.assets,est.resources,est.bufferPct).totalCost)}), total hours and deliverables count from the estimation. Log entries, files, timeline and links are not affected.`}
+      onConfirm={doResync}onCancel={()=>setSyncing(false)}/>}
+  </div>;
+}
+
+/* ── TAB: TIMELINE ── */
+function ProjTimelineTab({p,store,isAdmin,up,me}){
+  const{users,duties}=store;
+  const[editBlock,setEditBlock]=useState(null);
+  const[addingBlock,setAddingBlock]=useState(false);
+  const assignments=p.assignments||[];
+  const personIds=[...new Set(assignments.map(a=>a.userId))];
+
+  const pStart=new Date(p.startDate||Date.now());
+  const pEnd=new Date(p.endDate||(Date.now()+90*86400000));
+  const totalMs=pEnd-pStart;
+  const posOf=d=>Math.max(0,Math.min(100,((new Date(d)-pStart)/totalMs)*100));
+  const widthOf=(s,e)=>Math.max(.8,posOf(e)-posOf(s));
+  const nowPos=posOf(new Date());
+
+  const months=[];let cur=new Date(pStart);cur.setDate(1);
+  while(cur<=pEnd){months.push(new Date(cur));cur.setMonth(cur.getMonth()+1);}
+
+  const emptyBlock=()=>({id:uid(),userId:users[0]?.id||'',dutyId:duties[0]?.id||'',startDate:p.startDate||new Date().toISOString().split('T')[0],endDate:p.endDate||new Date(Date.now()+30*86400000).toISOString().split('T')[0],allocationPct:100});
+  const saveBlock=b=>{const ex=assignments.find(a=>a.id===b.id);up({assignments:ex?assignments.map(a=>a.id===b.id?b:a):[...assignments,b]});setEditBlock(null);setAddingBlock(false);};
+  const deleteBlock=id=>up({assignments:assignments.filter(a=>a.id!==id)});
+
+  if(!p.startDate||!p.endDate)return<div className="empty-state"><i className="ti ti-calendar"/>
+    <p>No project dates set</p><small>Set start and end dates in the project settings to use the timeline</small>
+  </div>;
+
+  return<div>
+    <div className="row"style={{marginBottom:14}}>
+      <div style={{fontSize:13,color:'var(--ink-3)'}}>{fmt.date(p.startDate)} → {fmt.date(p.endDate)}</div>
+      <span className="spacer"/>
+      {isAdmin&&<button className="btn btn-sm"onClick={()=>setAddingBlock(true)}><i className="ti ti-plus"/>Add phase</button>}
+    </div>
+    <div className="gantt-wrap">
+      <div className="gantt-header-row"style={{gridTemplateColumns:'180px 1fr',borderBottom:'1.5px solid var(--rule)'}}>
+        <div className="gantt-person-col"style={{background:'var(--paper)'}}>
+          <span style={{fontSize:10.5,color:'var(--ink-4)',fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase'}}>Person</span>
+        </div>
+        <div style={{background:'var(--paper)',padding:'8px 0',position:'relative',overflow:'hidden'}}>
+          <div style={{display:'flex',height:'100%'}}>
+            {months.map((m,i)=><div key={i}style={{flex:`0 0 ${100/months.length}%`,borderLeft:'1px solid var(--rule)',padding:'0 7px'}}>
+              <span style={{fontSize:10,color:'var(--ink-4)'}}>{m.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</span>
+            </div>)}
+          </div>
+        </div>
+      </div>
+      {personIds.length===0&&<div style={{textAlign:'center',padding:'32px',color:'var(--ink-4)',fontSize:13}}>
+        No phases added. {isAdmin&&'Click "Add phase" to define who is doing what and when.'}
+      </div>}
+      {personIds.map(uid2=>{
+        const user=users.find(u=>u.id===uid2);
+        if(!user)return null;
+        const blocks=assignments.filter(a=>a.userId===uid2);
+        const rowH=Math.max(48,blocks.length*42+16);
+        return<div key={uid2}className="gantt-row-wrap"style={{gridTemplateColumns:'180px 1fr'}}>
+          <div className="gantt-person-col"style={{alignSelf:'stretch'}}>
+            <Av user={user}size={28}/>
+            <div style={{minWidth:0}}>
+              <div style={{fontSize:12,fontWeight:600,letterSpacing:'-.01em'}}className="trunc">{user.name}</div>
+            </div>
+          </div>
+          <div className="gantt-track-area"style={{height:rowH,position:'relative'}}>
+            {nowPos>0&&nowPos<100&&<div className="gantt-today"style={{left:`${nowPos}%`,background:'var(--danger)',opacity:.5}}/>}
+            {blocks.map((b,bi)=>{
+              const duty=duties.find(d=>d.id===b.dutyId);
+              const left=posOf(b.startDate),width=widthOf(b.startDate,b.endDate);
+              return<div key={b.id}className="gantt-block"
+                style={{left:`${left}%`,width:`${width}%`,top:8+bi*40,background:duty?.color+'18',color:duty?.color,border:`1.5px solid ${duty?.color}30`}}
+                onClick={()=>isAdmin&&setEditBlock({...b})}>
+                {width>8&&`${duty?.name||'—'} · ${b.allocationPct}%`}
+              </div>;
+            })}
+          </div>
+        </div>;
+      })}
+      <div style={{padding:'8px 14px',background:'var(--paper)',display:'flex',gap:14,flexWrap:'wrap',alignItems:'center',borderTop:'1px solid var(--rule)'}}>
+        <div className="row"style={{gap:5}}><div style={{width:14,height:1.5,background:'var(--danger)',opacity:.5}}/><span style={{fontSize:11,color:'var(--ink-4)'}}>Today</span></div>
+        {[...new Set(assignments.map(a=>a.dutyId))].map(did=>{const d=duties.find(x=>x.id===did);return d?<DutyTag key={did}dutyId={did}duties={duties}/>:null;})}
+      </div>
+    </div>
+    {(editBlock||addingBlock)&&<BlockModal block={editBlock||emptyBlock()}users={users}duties={duties}onSave={saveBlock}onDelete={editBlock?()=>{deleteBlock(editBlock.id);setEditBlock(null);}:null}onClose={()=>{setEditBlock(null);setAddingBlock(false);}}/>}
+  </div>;
+}
+
+function BlockModal({block,users,duties,onSave,onDelete,onClose}){
+  const[b,setB]=useState(block);
+  const up=p=>setB(x=>({...x,...p}));
+  return<Modal title={onDelete?'Edit phase':'Add phase'}onClose={onClose}width={400}
+    footer={<>
+      {onDelete&&<button className="btn btn-danger btn-sm"onClick={onDelete}><i className="ti ti-trash"/></button>}
+      <span className="spacer"/>
+      <button className="btn"onClick={onClose}>Cancel</button>
+      <button className="btn btn-primary"onClick={()=>onSave(b)}>Save phase</button>
+    </>}>
+    <div className="form-group"><div className="form-label">Person</div>
+      <select value={b.userId}onChange={e=>up({userId:e.target.value})}>{users.map(u=><option key={u.id}value={u.id}>{u.name}</option>)}</select>
+    </div>
+    <div className="form-group"><div className="form-label">Duty</div>
+      <select value={b.dutyId}onChange={e=>up({dutyId:e.target.value})}>{duties.map(d=><option key={d.id}value={d.id}>{d.name}</option>)}</select>
+    </div>
+    <div className="form-row-2">
+      <div className="form-group"><div className="form-label">Start</div><input type="date"value={b.startDate}onChange={e=>up({startDate:e.target.value})}/></div>
+      <div className="form-group"><div className="form-label">End</div><input type="date"value={b.endDate}onChange={e=>up({endDate:e.target.value})}/></div>
+    </div>
+    <div className="form-group">
+      <div className="form-label">Allocation — {b.allocationPct}%</div>
+      <input type="range"min={10}max={100}step={10}value={b.allocationPct}onChange={e=>up({allocationPct:+e.target.value})}style={{width:'100%'}}/>
+      <div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:'var(--ink-4)',marginTop:3}}>
+        <span>10%</span><span>50%</span><span>100%</span>
+      </div>
+    </div>
+  </Modal>;
+}
+
+/* ── TAB: TEAM ── */
+function ProjTeamTab({p,store,isAdmin,up}){
+  const{users,duties}=store;
+  const[adding,setAdding]=useState(false);
+  const assignments=p.assignments||[];
+  const uniquePeople=[...new Map(assignments.map(a=>[a.userId,a])).values()];
+  return<div>
+    <div className="row"style={{marginBottom:16}}><span className="spacer"/>
+      {isAdmin&&<button className="btn btn-sm"onClick={()=>setAdding(true)}><i className="ti ti-user-plus"/>Add person</button>}
+    </div>
+    {!uniquePeople.length&&<div className="empty-state"><i className="ti ti-users"/><p>No team members assigned</p></div>}
+    <div className="stack"style={{gap:10}}>
+      {uniquePeople.map(a=>{
+        const user=users.find(u=>u.id===a.userId);if(!user)return null;
+        const userBlocks=assignments.filter(x=>x.userId===a.userId);
+        const avgAlloc=Math.round(userBlocks.reduce((s,b)=>s+b.allocationPct,0)/userBlocks.length);
+        return<div key={a.userId}className="card-flat">
+          <div className="row">
+            <Av user={user}size={36}/>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:600,fontSize:13,letterSpacing:'-.01em'}}>{user.name}</div>
+              <div className="row"style={{gap:4,marginTop:4,flexWrap:'wrap'}}>{userBlocks.map(b=><DutyTag key={b.id}dutyId={b.dutyId}duties={duties}/>)}</div>
+            </div>
+            <div style={{textAlign:'right'}}>
+              <div style={{fontSize:22,fontWeight:600,fontFamily:'var(--mono)',letterSpacing:'-.04em'}}>{avgAlloc}%</div>
+              <div style={{fontSize:11,color:'var(--ink-4)'}}>avg alloc.</div>
+            </div>
+            {isAdmin&&<button className="btn btn-ghost btn-xs btn-danger"onClick={()=>up({assignments:assignments.filter(x=>x.userId!==a.userId)})}><i className="ti ti-x"/></button>}
+          </div>
+        </div>;
+      })}
+    </div>
+    {adding&&isAdmin&&<Modal title="Add team member"onClose={()=>setAdding(false)}width={380}
+      footer={<button className="btn"onClick={()=>setAdding(false)}>Done</button>}>
+      <p style={{fontSize:13,color:'var(--ink-3)',marginBottom:14}}>Select people to add. Configure their phases in the Timeline tab.</p>
+      {users.filter(u=>!assignments.some(a=>a.userId===u.id)).map(u=><button key={u.id}className="btn btn-ghost"style={{width:'100%',justifyContent:'flex-start',marginBottom:6}}
+        onClick={()=>up({assignments:[...assignments,{id:uid(),userId:u.id,dutyId:duties[0]?.id||'',startDate:p.startDate||'',endDate:p.endDate||'',allocationPct:50}]})}>
+        <Av user={u}size={26}/><span style={{fontWeight:500}}>{u.name}</span>
+      </button>)}
+    </Modal>}
+  </div>;
+}
+
+/* ── TAB: LOG ── */
+function ProjLogTab({p,store,me,up}){
+  const{users}=store;
+  const[text,setText]=useState('');
+  const inputRef=useRef();
+  const log=[...(p.log||[])].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+
+  const addEntry=()=>{
+    if(!text.trim())return;
+    const entry={id:uid(),userId:me.id,text:text.trim(),createdAt:new Date().toISOString()};
+    up({log:[...(p.log||[]),entry]});
+    setText('');
+  };
+
+  return<div style={{maxWidth:660}}>
+    <div style={{marginBottom:28}}>
+      <div style={{background:'var(--white)',border:'1.5px solid var(--rule-2)',borderRadius:'var(--r-md)',overflow:'hidden',boxShadow:'var(--shadow-xs)'}}>
+        <textarea ref={inputRef}value={text}onChange={e=>setText(e.target.value)}
+          onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addEntry();}}}
+          placeholder="Write a log entry… press Enter to post."
+          style={{width:'100%',border:'none',padding:'13px 14px',fontSize:13,lineHeight:1.6,
+            resize:'none',minHeight:80,background:'transparent',outline:'none',
+            fontFamily:'var(--sans)',color:'var(--ink)'}}
+          rows={3}/>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',
+          padding:'8px 12px',borderTop:'1px solid var(--rule)',background:'var(--paper)'}}>
+          <span style={{fontSize:11,color:'var(--ink-5)'}}>Enter to post · Shift+Enter for new line</span>
+          <button className="btn btn-primary btn-sm"onClick={addEntry}>
+            <i className="ti ti-send"style={{fontSize:12}}/>Post
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {!log.length&&(
+      <div className="empty-state"style={{padding:'32px 0'}}>
+        <i className="ti ti-notes"/>
+        <p>No entries yet</p>
+        <small>Log decisions, updates, anything worth remembering</small>
+      </div>
+    )}
+
+    <div>{log.map((entry,i)=>{
+      const author=users.find(u=>u.id===entry.userId);
+      return(
+        <div key={entry.id}className="log-item">
+          <div className="log-spine">
+            <div className="log-dot"style={{background:author?.color||'var(--ink-4)'}}/>
+            {i<log.length-1&&<div className="log-line"/>}
+          </div>
+          <div style={{flex:1,minWidth:0,paddingBottom:6}}>
+            <div className="row"style={{marginBottom:6,gap:9}}>
+              {author&&<Av user={author}size={24}/>}
+              <span style={{fontSize:13,fontWeight:600,letterSpacing:'-.02em'}}>{author?.name||'Unknown'}</span>
+              <span className="spacer"/>
+              <span style={{fontSize:11,fontFamily:'var(--mono)',color:'var(--ink-4)',flexShrink:0}}>
+                {fmt.datetime(entry.createdAt)}
+              </span>
+            </div>
+            <p style={{fontSize:13,color:'var(--ink-2)',lineHeight:1.7,fontWeight:300,wordBreak:'break-word'}}>
+              {entry.text}
+            </p>
+          </div>
+        </div>
+      );
+    })}</div>
+  </div>;
+}
+
+
+/* ── TAB: FILES ── */
+function ProjFilesTab({p,me,up}){
+  const files=p.files||[];
+  const inputRef=useRef();
+  const handleUpload=e=>{
+    const file=e.target.files[0];if(!file)return;
+    if(file.size>4*1024*1024){alert('File too large — max 4MB');return;}
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const f={id:uid(),name:file.name,size:file.size,type:file.type,data:ev.target.result,uploadedBy:me.id,uploadedAt:new Date().toISOString()};
+      up({files:[...files,f]});
+    };
+    reader.readAsDataURL(file);
+  };
+  const download=f=>{const a=document.createElement('a');a.href=f.data;a.download=f.name;a.click();};
+  const fmtSize=b=>b<1024?`${b}B`:b<1024*1024?`${Math.round(b/1024)}KB`:`${(b/1024/1024).toFixed(1)}MB`;
+  const icon=f=>{
+    if(f.name.match(/\.pdf$/i))return'ti-file-type-pdf';
+    if(f.name.match(/\.(xlsx?|csv)$/i))return'ti-file-spreadsheet';
+    if(f.name.match(/\.(docx?)$/i))return'ti-file-word';
+    if(f.name.match(/\.(jpe?g|png|gif|webp)$/i))return'ti-photo';
+    return'ti-file';
+  };
+  return<div>
+    <div className="drop-zone"style={{marginBottom:18}}onClick={()=>inputRef.current.click()}>
+      <i className="ti ti-cloud-upload"style={{fontSize:28,color:'var(--ink-4)',display:'block',marginBottom:10}}/>
+      <p style={{fontSize:14,fontWeight:500,marginBottom:2}}>Click to upload</p>
+      <p style={{fontSize:12,color:'var(--ink-4)'}}>xlsx, pdf, doc, images — max 4MB each</p>
+      <input type="file"ref={inputRef}onChange={handleUpload}accept=".xlsx,.xls,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"/>
+    </div>
+    {!files.length&&<div className="empty-state"style={{padding:'20px 0'}}><i className="ti ti-files"/><p>No files uploaded yet</p></div>}
+    <div className="stack">{files.map(f=><div key={f.id}className="file-row"onClick={()=>download(f)}>
+      <i className={`ti ${icon(f)}`}style={{fontSize:22,color:'var(--ink-4)',flexShrink:0}}/>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{fontSize:13,fontWeight:500,letterSpacing:'-.01em'}}className="trunc">{f.name}</div>
+        <div style={{fontSize:11,color:'var(--ink-4)'}}>{fmtSize(f.size)} · {fmt.date(f.uploadedAt)}</div>
+      </div>
+      <button className="btn btn-ghost btn-xs"><i className="ti ti-download"/></button>
+      <button className="btn btn-ghost btn-xs btn-danger"onClick={e=>{e.stopPropagation();up({files:files.filter(x=>x.id!==f.id)})}}><i className="ti ti-trash"/></button>
+    </div>)}</div>
+  </div>;
+}
+
+/* ── TAB: LINKS ── */
+function ProjLinksTab({p,isAdmin,up}){
+  const links=p.links||[];
+  const[nl,setNL]=useState({label:'',url:''});
+  const add=()=>{if(!nl.label||!nl.url)return;up({links:[...links,{id:uid(),...nl}]});setNL({label:'',url:''});};
+  return<div style={{maxWidth:560}}>
+    <div className="form-row-2"style={{marginBottom:8}}>
+      <input value={nl.label}onChange={e=>setNL(l=>({...l,label:e.target.value}))}placeholder="Label (e.g. Brand Deck)"/>
+      <input value={nl.url}onChange={e=>setNL(l=>({...l,url:e.target.value}))}placeholder="https://…"onKeyDown={e=>e.key==='Enter'&&add()}/>
+    </div>
+    <button className="btn btn-primary btn-sm"style={{marginBottom:22}}onClick={add}><i className="ti ti-plus"/>Add link</button>
+    {!links.length&&<div className="empty-state"style={{padding:'16px 0'}}><i className="ti ti-link"/><p>No links added yet</p></div>}
+    <div>{links.map(lk=><div key={lk.id}className="link-row">
+      <i className="ti ti-link"style={{fontSize:14,color:'var(--ink-4)',flexShrink:0}}/>
+      <a href={lk.url}target="_blank"rel="noopener noreferrer"style={{flex:1,fontSize:13,fontWeight:500,textDecoration:'none',color:'var(--s-planning)',letterSpacing:'-.01em'}}onClick={e=>e.stopPropagation()}>{lk.label}</a>
+      <span style={{fontSize:11,color:'var(--ink-4)',maxWidth:180}}className="trunc">{lk.url}</span>
+      <button className="btn btn-ghost btn-xs btn-danger"onClick={()=>up({links:links.filter(x=>x.id!==lk.id)})}><i className="ti ti-x"/></button>
+    </div>)}</div>
+  </div>;
+}
+
+/* ═══════ GLOBAL TIMELINE ════════════════════════════════ */
+function GlobalTimeline({store,setProjectId,setView}){
+  const{projects}=store;
+  const active=projects.filter(p=>p.status!=='completed'&&p.startDate&&p.endDate);
+  const noDate=projects.filter(p=>p.status!=='completed'&&(!p.startDate||!p.endDate));
+  if(!active.length&&!noDate.length)return<div className="empty-state"><i className="ti ti-calendar"/><p>No active projects</p></div>;
+  const allDates=active.flatMap(p=>[new Date(p.startDate),new Date(p.endDate)]);
+  const minD=new Date(Math.min(...allDates));minD.setDate(1);
+  const maxD=new Date(Math.max(...allDates));maxD.setMonth(maxD.getMonth()+1,1);
+  const totalMs=maxD-minD;
+  const pos=d=>Math.max(0,Math.min(100,((new Date(d)-minD)/totalMs)*100));
+  const nowPos=pos(new Date());
+  const months=[];let cur=new Date(minD);
+  while(cur<maxD){months.push(new Date(cur));cur.setMonth(cur.getMonth()+1);}
+  const statusColor=s=>s==='planning'?'var(--s-planning)':s==='active'?'var(--s-active)':s==='on_hold'?'var(--s-hold)':'var(--s-done)';
+  return<div className="fade">
+    <div className="page-hd"><div className="page-title">Timeline</div><div className="page-sub">All active projects at a glance</div></div>
+    <div className="gantt-wrap">
+      <div style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1.5px solid var(--rule)'}}>
+        <div style={{padding:'9px 14px',background:'var(--paper)',borderRight:'1px solid var(--rule)'}}>
+          <span style={{fontSize:10.5,fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--ink-4)'}}>Project</span>
+        </div>
+        <div style={{background:'var(--paper)',padding:'9px 0'}}>
+          <div style={{display:'flex'}}>{months.map((m,i)=><div key={i}style={{flex:`0 0 ${100/months.length}%`,borderLeft:'1px solid var(--rule)',padding:'0 7px'}}>
+            <span style={{fontSize:10,color:'var(--ink-4)'}}>{m.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</span>
+          </div>)}</div>
+        </div>
+      </div>
+      {active.map(p=>{
+        const left=pos(p.startDate),right=pos(p.endDate),w=right-left;
+        const pct=fmt.elapsed(p.startDate,p.endDate);
+        const sc=statusColor(p.status);
+        return<div key={p.id}style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1px solid var(--rule)'}}>
+          <div style={{padding:'10px 14px',borderRight:'1px solid var(--rule)',display:'flex',alignItems:'center',gap:8,background:'#fcfbf8'}}>
+            <div style={{width:3,height:18,borderRadius:2,background:sc,flexShrink:0}}/>
+            <span style={{fontSize:13,fontWeight:500,cursor:'pointer',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',letterSpacing:'-.01em'}}
+              onClick={()=>{setProjectId(p.id);setView('project-detail');}}>{p.title}</span>
+          </div>
+          <div style={{position:'relative',minHeight:44}}>
+            {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:1.5,background:'var(--danger)',zIndex:3,opacity:.45}}/>}
+            <div onClick={()=>{setProjectId(p.id);setView('project-detail');}}
+              style={{position:'absolute',left:`${left}%`,width:`${Math.max(w,.8)}%`,top:'50%',transform:'translateY(-50%)',height:26,borderRadius:999,background:sc+'18',border:`1.5px solid ${sc}35`,cursor:'pointer',overflow:'hidden'}}>
+              <div style={{width:`${pct}%`,height:'100%',background:sc,opacity:.3}}/>
+              {w>10&&<span style={{position:'absolute',left:9,top:'50%',transform:'translateY(-50%)',fontSize:10.5,color:sc,fontWeight:600,whiteSpace:'nowrap',letterSpacing:'-.01em'}}>{p.title}</span>}
+            </div>
+          </div>
+        </div>;
+      })}
+      {noDate.length>0&&<div style={{padding:'12px 14px',borderTop:'1px solid var(--rule)',background:'var(--paper)',color:'var(--ink-4)',fontSize:12}}>
+        <strong style={{color:'var(--ink-3)'}}>{noDate.length} project{noDate.length>1?'s':''} without dates:</strong> {noDate.map(p=>p.title).join(' · ')}
+      </div>}
+      <div style={{padding:'8px 14px',background:'var(--paper)',display:'flex',gap:14,alignItems:'center',borderTop:'1px solid var(--rule)'}}>
+        <div className="row"style={{gap:5}}><div style={{width:14,height:1.5,background:'var(--danger)',opacity:.45}}/><span style={{fontSize:11,color:'var(--ink-4)'}}>Today</span></div>
+        <span style={{fontSize:11,color:'var(--ink-4)'}}>Click any bar to open project</span>
+      </div>
+    </div>
+  </div>;
+}
+
+/* ═══════ STAFFING ═══════════════════════════════════════ */
+function StaffingView({store,me}){
+  const{users,projects,duties}=store;
+  const now=new Date();
+  const[sel,setSel]=useState(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`);
+  const isAdmin=me.role==='admin';
+  const targetUsers=isAdmin?users:[users.find(u=>u.id===me.id)||me];
+  const months=useMemo(()=>{const r=[];for(let i=-3;i<=9;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);r.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return r;},[]);
+  const staffFor=userId=>{
+    const[y,m]=sel.split('-').map(Number);
+    const mS=new Date(y,m-1,1),mE=new Date(y,m,0);
+    let total=0;const breakdown=[];
+    projects.forEach(p=>{
+      if(new Date(p.endDate||0)<mS||new Date(p.startDate||'9999')-mE>0)return;
+      (p.assignments||[]).filter(a=>a.userId===userId).forEach(a=>{
+        if(!a.startDate||!a.endDate)return;
+        if(new Date(a.endDate)<mS||new Date(a.startDate)>mE)return;
+        const duty=duties.find(d=>d.id===a.dutyId);
+        total+=a.allocationPct;
+        breakdown.push({project:p,duty,alloc:a.allocationPct});
+      });
+    });
+    return{total,breakdown};
+  };
+  return<div className="fade">
+    <div className="row page-hd">
+      <div><div className="page-title">Staffing</div><div className="page-sub">Team allocation overview</div></div>
+      <span className="spacer"/>
+      <select value={sel}onChange={e=>setSel(e.target.value)}style={{width:'auto'}}>
+        {months.map(m=>{const[y,mo]=m.split('-').map(Number);return<option key={m}value={m}>{new Date(y,mo-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</option>;})}
+      </select>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))',gap:14,marginBottom:24}}>
+      {targetUsers.map(u=>{
+        const{total,breakdown}=staffFor(u.id);
+        const over=total>100;
+        const barColor=over?'var(--danger)':total>80?'var(--gold)':'var(--s-active)';
+        const numColor=over?'var(--danger)':total>80?'var(--gold-text)':'var(--s-active)';
+        return<div key={u.id}className="staff-card">
+          <div className="row"style={{marginBottom:14}}>
+            <Av user={u}size={36}/>
+            <div style={{flex:1}}><div style={{fontWeight:600,fontSize:13,letterSpacing:'-.01em'}}>{u.name}</div>
+              <div style={{fontSize:11,color:'var(--ink-4)',textTransform:'capitalize',marginTop:1}}>{u.role}</div>
+            </div>
+            <div style={{textAlign:'right'}}>
+              <div style={{fontSize:28,fontWeight:600,fontFamily:'var(--mono)',letterSpacing:'-.05em',color:numColor,lineHeight:1}}>{total}%</div>
+              <div style={{fontSize:10,color:'var(--ink-4)',marginTop:2}}>allocated</div>
+            </div>
+          </div>
+          <div style={{background:'var(--rule)',borderRadius:'var(--r-pill)',height:6,overflow:'hidden'}}>
+            <div style={{width:`${Math.min(total,100)}%`,height:'100%',borderRadius:'var(--r-pill)',background:barColor,transition:'width .3s'}}/>
+          </div>
+          {over&&<div style={{fontSize:11,color:'var(--danger)',marginTop:5,display:'flex',alignItems:'center',gap:4}}><i className="ti ti-alert-triangle"style={{fontSize:12}}/>Over-allocated by {total-100}%</div>}
+          {breakdown.length>0&&<div style={{marginTop:13,paddingTop:11,borderTop:'1px solid var(--rule)'}}>
+            {breakdown.map(({project:p,duty,alloc},i)=><div key={i}style={{display:'flex',alignItems:'center',gap:8,marginBottom:7}}>
+              <div style={{width:3,height:16,borderRadius:2,background:p.status==='planning'?'var(--s-planning)':p.status==='active'?'var(--s-active)':'var(--s-hold)',flexShrink:0}}/>
+              <span style={{fontSize:12,color:'var(--ink-2)',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',letterSpacing:'-.01em'}}>{p.title}</span>
+              {duty&&<span style={{fontSize:10,padding:'1px 5px',borderRadius:3,background:duty.color+'15',color:duty.color,fontWeight:500}}>{duty.name}</span>}
+              <span style={{fontSize:12,fontWeight:600,fontFamily:'var(--mono)'}}>{alloc}%</span>
+            </div>)}
+          </div>}
+          {!breakdown.length&&<p style={{fontSize:12,color:'var(--ink-4)',textAlign:'center',marginTop:12}}>Free this month</p>}
+        </div>;
+      })}
+    </div>
+    {isAdmin&&<div className="card">
+      <div style={{fontWeight:600,fontSize:15,letterSpacing:'-.03em',marginBottom:16}}>Team snapshot</div>
+      <div className="g4"style={{gap:10}}>
+        {[
+          {label:'Avg allocation',value:`${Math.round(users.reduce((a,u)=>a+staffFor(u.id).total,0)/users.length)}%`},
+          {label:'Over-allocated', value:users.filter(u=>staffFor(u.id).total>100).length},
+          {label:'Under 50%',      value:users.filter(u=>staffFor(u.id).total<50).length},
+          {label:'Active projects',value:projects.filter(p=>p.status==='active').length},
+        ].map(s=><div key={s.label}className="stat-box">
+          <div className="stat-label">{s.label}</div>
+          <div className="stat-num">{s.value}</div>
+        </div>)}
+      </div>
+    </div>}
+  </div>;
+}
+
+/* ═══════ ARCHIVE ════════════════════════════════════════ */
+function ArchiveView({store,setProjectId,setView}){
+  const{projects,upsertProject}=store;
+  const[search,setSearch]=useState('');
+  const all=projects.filter(p=>p.status==='completed').sort((a,b)=>new Date(b.archivedAt||b.updatedAt)-new Date(a.archivedAt||a.updatedAt));
+  const archived=search.trim()
+    ?all.filter(p=>p.title.toLowerCase().includes(search.toLowerCase())||p.description?.toLowerCase().includes(search.toLowerCase()))
+    :all;
+  return<div className="fade">
+    <div className="row page-hd"style={{alignItems:'flex-start'}}>
+      <div>
+        <div className="page-title">Archive</div>
+        <div className="page-sub">{all.length} completed project{all.length!==1?'s':''}</div>
+      </div>
+      <span className="spacer"/>
+      <div className="search-wrap">
+        <i className="ti ti-search"/>
+        <input value={search}onChange={e=>setSearch(e.target.value)}placeholder="Search archived projects…"/>
+      </div>
+    </div>
+    {!all.length&&<div className="empty-state"><i className="ti ti-archive"/><p>Nothing archived yet</p><small>Completed projects land here automatically</small></div>}
+    {all.length>0&&!archived.length&&<div className="empty-state"style={{padding:'32px 0'}}><i className="ti ti-search"/><p>No results for "{search}"</p></div>}
+    {archived.length>0&&<div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden',boxShadow:'var(--shadow-xs)'}}>
+      <table className="tbl">
+        <thead><tr><th>Project</th><th>Completed</th><th>Duration</th><th>Budget</th><th style={{width:100}}/></tr></thead>
+        <tbody>{archived.map(p=>{
+          const days=p.startDate&&p.endDate?Math.round((new Date(p.endDate)-new Date(p.startDate))/86400000):null;
+          return<tr key={p.id}onClick={()=>{setProjectId(p.id);setView('project-detail');}}>
+            <td><div className="row">
+              <div style={{width:3,height:22,borderRadius:2,background:'var(--s-done)',flexShrink:0}}/>
+              <div>
+                <div style={{fontWeight:600,letterSpacing:'-.01em'}}>{p.title}</div>
+                {p.description&&<div style={{fontSize:11,color:'var(--ink-4)',marginTop:1,maxWidth:320,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.description.slice(0,60)}{p.description.length>60?'…':''}</div>}
+              </div>
+            </div></td>
+            <td style={{color:'var(--ink-3)',fontSize:12,fontFamily:'var(--mono)',letterSpacing:'-.01em'}}>{fmt.date(p.archivedAt||p.updatedAt)}</td>
+            <td style={{fontSize:12,color:'var(--ink-4)',fontFamily:'var(--mono)'}}>{days?`${days} days`:'—'}</td>
+            <td className="mono"style={{fontSize:13,fontWeight:500,color:p.budget?'var(--ink)':'var(--ink-4)'}}>{fmt.currency(p.budget)}</td>
+            <td onClick={e=>e.stopPropagation()}>
+              <button className="btn btn-xs"onClick={()=>upsertProject({...p,status:'on_hold',archivedAt:null})}style={{gap:4}}>
+                <i className="ti ti-refresh"style={{fontSize:11}}/>Restore
+              </button>
+            </td>
+          </tr>;
+        })}</tbody>
+      </table>
+    </div>}
+  </div>;
+}
+
+/* ═══════ APP ROOT ═══════════════════════════════════════ */
+function App(){
+  const store=useStore();
+  const[me,setMe]=useState(()=>LS.get('so2_me',null));
+  const[view,setView]=useState('projects');
+  const[projectId,setProjectId]=useState(null);
+  const[estimationId,setEstimationId]=useState(null);
+  useEffect(()=>{if(me)LS.set('so2_me',me);else localStorage.removeItem('so2_me');},[me]);
+  if(!me)return<Login users={store.users}onLogin={setMe}/>;
+  const isAdmin=me.role==='admin';
+  const navTo=(v,pid,eid)=>{ setView(v); if(pid!==undefined)setProjectId(pid); if(eid!==undefined)setEstimationId(eid); };
+  const isFullPage=view==='project-detail'||view==='estimation-detail';
+  const titles={projects:'Projects',estimations:'Estimations',timeline:'Timeline',staffing:'Staffing',archive:'Archive',team:'Team & Duties'};
+  return<div className="shell">
+    <Sidebar me={me}view={view}setView={navTo}onLogout={()=>setMe(null)}isAdmin={isAdmin}/>
+    <div className="main">
+      {!isFullPage&&<div className="topbar">
+        <span style={{fontSize:17,fontFamily:'var(--serif)',fontStyle:'italic',letterSpacing:'.01em',color:'var(--ink)'}}>{titles[view]||''}</span>
+      </div>}
+      {view==='project-detail'?(
+        <ProjectDetail id={projectId}store={store}me={me}setView={v=>setView(v)}setEstimationId={setEstimationId}setNavView={v=>setView(v)}/>
+      ):(
+        <div className="page">
+          {view==='projects'    &&<ProjectsOverview store={store}me={me}setView={setView}setProjectId={setProjectId}/>}
+          {view==='estimations' &&<EstimationList   store={store}setView={setView}setDetailId={setEstimationId}/>}
+          {view==='estimation-detail'&&<EstimationDetail id={estimationId}store={store}me={me}setView={setView}onConverted={pid=>{setProjectId(pid);setView('project-detail');}}/>}
+          {view==='timeline'    &&<GlobalTimeline   store={store}setProjectId={setProjectId}setView={setView}/>}
+          {view==='staffing'    &&<StaffingView     store={store}me={me}/>}
+          {view==='archive'     &&<ArchiveView      store={store}setProjectId={setProjectId}setView={setView}/>}
+          {view==='team'        &&isAdmin&&<TeamPage store={store}/>}
+        </div>
+      )}
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
