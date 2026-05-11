@@ -417,31 +417,31 @@ const SEED_USERS=[
 const SEED_ESTIMATIONS=[
   {
     id:'e1',clientName:'Ferragamo',projectName:'E-com AI Content POC',
-    status:'confirmed',bufferPct:20,
+    status:'confirmed',bufferPct:20,projectType:'lcr',
     assets:[
-      {id:'a1',name:'Video e-com SKU indossati',volume:2,genHPerAsset:8,postHPerAsset:12,extraH:8,notes:'Tracking + editing'},
-      {id:'a2',name:'Color change borsa',volume:5,genHPerAsset:.5,postHPerAsset:1,extraH:0,notes:''},
-      {id:'a3',name:'Still e-commerce viste multiple',volume:20,genHPerAsset:.3,postHPerAsset:.8,extraH:4,notes:'Reference research'},
-      {id:'a4',name:'Scatti ambientati',volume:8,genHPerAsset:1.5,postHPerAsset:2,extraH:3,notes:'Complex compositing'},
+      {id:'a1',name:'Video e-com SKU indossati',category:'Animazione',volume:2,genHPerAsset:8,postHPerAsset:12,extraH:8,costPerUnit:0,notes:'Tracking + editing'},
+      {id:'a2',name:'Color change borsa',category:'Generazione',volume:5,genHPerAsset:.5,postHPerAsset:1,extraH:0,costPerUnit:0.15,notes:''},
+      {id:'a3',name:'Still e-commerce viste multiple',category:'Generazione',volume:20,genHPerAsset:.3,postHPerAsset:.8,extraH:4,costPerUnit:0.15,notes:'Reference research'},
+      {id:'a4',name:'Scatti ambientati',category:'Post-produzione',volume:8,genHPerAsset:1.5,postHPerAsset:2,extraH:3,costPerUnit:0,notes:'Complex compositing'},
     ],
     resources:[
-      {id:'r1',dutyId:'d2',userId:'u6',dailyRate:420,chargeabilityPct:93,hoursAllocated:60},
-      {id:'r2',dutyId:'d3',userId:'u2',dailyRate:380,chargeabilityPct:89,hoursAllocated:35},
-      {id:'r3',dutyId:'d1',userId:'u1',dailyRate:650,chargeabilityPct:93,hoursAllocated:12},
+      {id:'r1',dutyId:'d2',userId:'u6',rateLcr:420,rateUcr:0,dailyRate:420,chargeabilityPct:93,hoursAllocated:60},
+      {id:'r2',dutyId:'d3',userId:'u2',rateLcr:380,rateUcr:0,dailyRate:380,chargeabilityPct:89,hoursAllocated:35},
+      {id:'r3',dutyId:'d1',userId:'u1',rateLcr:650,rateUcr:0,dailyRate:650,chargeabilityPct:93,hoursAllocated:12},
     ],
     linkedProjectId:'p1',
     createdAt:'2025-03-01T09:00:00Z',updatedAt:'2025-03-05T14:00:00Z',
   },
   {
     id:'e2',clientName:'Internal',projectName:'Brand Identity Refresh',
-    status:'draft',bufferPct:20,
+    status:'draft',bufferPct:20,projectType:'ucr',
     assets:[
-      {id:'a5',name:'Logo system',volume:1,genHPerAsset:24,postHPerAsset:16,extraH:8,notes:'Multiple rounds'},
-      {id:'a6',name:'Brand guidelines',volume:1,genHPerAsset:0,postHPerAsset:40,extraH:0,notes:''},
+      {id:'a5',name:'Logo system',category:'Strategy',volume:1,genHPerAsset:24,postHPerAsset:16,extraH:8,costPerUnit:0,notes:'Multiple rounds'},
+      {id:'a6',name:'Brand guidelines',category:'Editing',volume:1,genHPerAsset:0,postHPerAsset:40,extraH:0,costPerUnit:0,notes:''},
     ],
     resources:[
-      {id:'r4',dutyId:'d1',userId:'u1',dailyRate:650,chargeabilityPct:93,hoursAllocated:20},
-      {id:'r5',dutyId:'d4',userId:'u5',dailyRate:700,chargeabilityPct:89,hoursAllocated:10},
+      {id:'r4',dutyId:'d1',userId:'u1',rateLcr:650,rateUcr:320,dailyRate:650,chargeabilityPct:93,hoursAllocated:20},
+      {id:'r5',dutyId:'d4',userId:'u5',rateLcr:700,rateUcr:350,dailyRate:700,chargeabilityPct:89,hoursAllocated:10},
     ],
     linkedProjectId:null,
     createdAt:'2025-04-10T10:00:00Z',updatedAt:'2025-04-10T10:00:00Z',
@@ -470,6 +470,12 @@ const SEED_PROJECTS=[
       {id:'as3',userId:'u1',dutyId:'d1',startDate:'2025-03-10',endDate:'2025-06-30',allocationPct:20},
       {id:'as4',userId:'u3',dutyId:'d5',startDate:'2025-03-10',endDate:'2025-04-05',allocationPct:50},
     ],
+    lavorazioni:[
+      {id:'lav1',name:'Video e-com SKU indossati',category:'Animazione',quantity:2,hoursTotal:48,costPerUnit:0,assignedUserIds:['u6','u2'],startDate:'2025-03-10',endDate:'2025-03-28',notes:'Tracking + editing'},
+      {id:'lav2',name:'Color change borsa',category:'Generazione',quantity:5,hoursTotal:7.5,costPerUnit:0.15,assignedUserIds:['u6'],startDate:'2025-03-28',endDate:'2025-04-05',notes:''},
+      {id:'lav3',name:'Still e-commerce viste multiple',category:'Generazione',quantity:20,hoursTotal:26,costPerUnit:0.15,assignedUserIds:['u6'],startDate:'2025-04-05',endDate:'2025-04-25',notes:'Reference research'},
+      {id:'lav4',name:'Scatti ambientati',category:'Post-produzione',quantity:8,hoursTotal:31,costPerUnit:0,assignedUserIds:['u2','u3'],startDate:'2025-04-25',endDate:'2025-05-20',notes:'Complex compositing'},
+    ],
   },
   {
     id:'p2',title:'Website Redesign',
@@ -484,6 +490,7 @@ const SEED_PROJECTS=[
       {id:'as5',userId:'u4',dutyId:'d3',startDate:'2025-02-01',endDate:'2025-06-15',allocationPct:100},
       {id:'as6',userId:'u2',dutyId:'d3',startDate:'2025-04-01',endDate:'2025-06-15',allocationPct:30},
     ],
+    lavorazioni:[],
   },
   {
     id:'p3',title:'Social Campaign Q2',
@@ -496,6 +503,7 @@ const SEED_PROJECTS=[
     assignments:[
       {id:'as7',userId:'u3',dutyId:'d4',startDate:'2025-05-15',endDate:'2025-06-15',allocationPct:50},
     ],
+    lavorazioni:[],
   },
   {
     id:'p4',title:'Annual Report 2024',
@@ -509,6 +517,7 @@ const SEED_PROJECTS=[
       {id:'as9', userId:'u3',dutyId:'d5',startDate:'2025-01-10',endDate:'2025-04-30',allocationPct:70},
       {id:'as10',userId:'u2',dutyId:'d3',startDate:'2025-02-01',endDate:'2025-04-30',allocationPct:40},
     ],
+    lavorazioni:[],
   },
 ];
 
@@ -555,18 +564,24 @@ const STATUS_CFG={
 };
 const COLORS=['#3B5BDB','#2F9E44','#C92A2A','#7048E8','#C9952A','#0C8599','#862E9C','#1A1A18'];
 const DUTY_COLORS=['#3B5BDB','#2F9E44','#C92A2A','#7048E8','#C9952A','#0C8599','#862E9C','#2B6CB0'];
+const ASSET_CATEGORIES=['Generazione','Post-produzione','Animazione','Editing','Strategy','Altro'];
+const CATEGORY_COLORS={'Generazione':'#3B82F6','Post-produzione':'#EC4899','Animazione':'#EAB308','Editing':'#F97316','Strategy':'#8B5CF6','Altro':'#6B7280'};
+const RETRY_MULTIPLIER=3;
 
-const calcEst=(assets,resources,bufferPct)=>{
+const calcEst=(assets,resources,bufferPct,projectType='lcr')=>{
   const totalH=assets.reduce((s,a)=>s+(a.volume*a.genHPerAsset)+(a.volume*a.postHPerAsset)+(+a.extraH||0),0);
   const totalDeliverables=assets.reduce((s,a)=>s+(+a.volume||0),0);
+  const productionCost=assets.reduce((s,a)=>s+((+a.costPerUnit||0)*(+a.volume||0)*RETRY_MULTIPLIER),0);
   const resourceCost=resources.reduce((s,r)=>{
-    const eff=(r.hoursAllocated/8)*(r.chargeabilityPct/100)*r.dailyRate;
+    const rate=projectType==='ucr'?(r.rateUcr!=null?r.rateUcr:r.dailyRate):(r.rateLcr!=null?r.rateLcr:r.dailyRate);
+    const eff=(r.hoursAllocated/8)*(r.chargeabilityPct/100)*rate;
     return s+eff;
   },0);
-  const buffer=resourceCost*((+bufferPct||0)/100);
-  const totalCost=resourceCost+buffer;
+  const subtotal=resourceCost+productionCost;
+  const buffer=subtotal*((+bufferPct||0)/100);
+  const totalCost=subtotal+buffer;
   const pricePerAsset=totalDeliverables>0?totalCost/totalDeliverables:0;
-  return{totalH:Math.round(totalH*10)/10,totalDeliverables,resourceCost:Math.round(resourceCost),totalCost:Math.round(totalCost),pricePerAsset:Math.round(pricePerAsset)};
+  return{totalH:Math.round(totalH*10)/10,totalDeliverables,resourceCost:Math.round(resourceCost),productionCost:Math.round(productionCost),totalCost:Math.round(totalCost),pricePerAsset:Math.round(pricePerAsset)};
 };
 
 /* ═══════ STORE ══════════════════════════════════════════ */
@@ -841,28 +856,43 @@ function EstimationList({store,setView,setDetailId}){
 function EstimationDetail({id,store,me,setView,onConverted}){
   const{estimations,users,duties,projects,upsertEstimation,upsertProject}=store;
   const isNew=id==='new';
-  const blank=()=>({id:uid(),clientName:'',projectName:'',status:'draft',bufferPct:20,assets:[],resources:[],linkedProjectId:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
-  const[est,setEst]=useState(()=>isNew?blank():(estimations.find(e=>e.id===id)||blank()));
+  const blank=()=>({id:uid(),clientName:'',projectName:'',status:'draft',bufferPct:20,projectType:'lcr',assets:[],resources:[],linkedProjectId:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  const[est,setEst]=useState(()=>{
+    const base=isNew?blank():(estimations.find(e=>e.id===id)||blank());
+    // backfill missing fields for legacy data
+    return{...base,projectType:base.projectType||'lcr',
+      assets:(base.assets||[]).map(a=>({...a,category:a.category||'Altro',costPerUnit:a.costPerUnit||0})),
+      resources:(base.resources||[]).map(r=>({...r,rateLcr:r.rateLcr!=null?r.rateLcr:r.dailyRate,rateUcr:r.rateUcr!=null?r.rateUcr:0}))};
+  });
   const[dirty,setDirty]=useState(false);
   const[converting,setConverting]=useState(false);
   const up=patch=>{ setEst(e=>({...e,...patch,updatedAt:new Date().toISOString()})); setDirty(true); };
   const upAsset=(aid,patch)=>up({assets:est.assets.map(a=>a.id===aid?{...a,...patch}:a)});
   const upResource=(rid,patch)=>up({resources:est.resources.map(r=>r.id===rid?{...r,...patch}:r)});
-  const addAsset=()=>up({assets:[...est.assets,{id:uid(),name:'',volume:1,genHPerAsset:0,postHPerAsset:0,extraH:0,notes:''}]});
+  const addAsset=()=>up({assets:[...est.assets,{id:uid(),name:'',category:'Generazione',volume:1,genHPerAsset:0,postHPerAsset:0,extraH:0,costPerUnit:0,notes:''}]});
   const removeAsset=aid=>up({assets:est.assets.filter(a=>a.id!==aid)});
-  const addResource=()=>up({resources:[...est.resources,{id:uid(),dutyId:duties[0]?.id||'',userId:'',dailyRate:400,chargeabilityPct:90,hoursAllocated:8}]});
+  const addResource=()=>up({resources:[...est.resources,{id:uid(),dutyId:duties[0]?.id||'',userId:'',rateLcr:400,rateUcr:0,dailyRate:400,chargeabilityPct:90,hoursAllocated:8}]});
   const removeResource=rid=>up({resources:est.resources.filter(r=>r.id!==rid)});
   const save=()=>{ upsertEstimation(est); setDirty(false); };
   const convertToProject=()=>{
-    const calc=calcEst(est.assets,est.resources,est.bufferPct);
+    const calc=calcEst(est.assets,est.resources,est.bufferPct,est.projectType);
+    const lavorazioni=est.assets.map(a=>({
+      id:uid(),name:a.name||'Unnamed',category:a.category||'Altro',
+      quantity:+a.volume||0,
+      hoursTotal:Math.round(((a.volume*a.genHPerAsset)+(a.volume*a.postHPerAsset)+(+a.extraH||0))*10)/10,
+      costPerUnit:+a.costPerUnit||0,
+      assignedUserIds:est.resources.filter(r=>r.userId).map(r=>r.userId),
+      startDate:'',endDate:'',notes:a.notes||'',
+    }));
     const newP={
       id:uid(),title:est.projectName||`${est.clientName} — Project`,
       description:`Client: ${est.clientName}. Linked from estimation.`,
       status:'planning',startDate:'',endDate:'',
       estimationId:est.id,budget:calc.totalCost,totalHours:calc.totalH,deliverables:calc.totalDeliverables,
+      projectType:est.projectType,
       createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),archivedAt:null,
       log:[{id:uid(),userId:me.id,text:'Project created from estimation.',createdAt:new Date().toISOString()}],
-      links:[],files:[],
+      links:[],files:[],lavorazioni,
       assignments:est.resources.filter(r=>r.userId).map(r=>({id:uid(),userId:r.userId,dutyId:r.dutyId,startDate:'',endDate:'',allocationPct:80})),
     };
     upsertProject(newP);
@@ -871,9 +901,11 @@ function EstimationDetail({id,store,me,setView,onConverted}){
     setConverting(false);
     onConverted(newP.id);
   };
-  const calc=calcEst(est.assets,est.resources,est.bufferPct);
+  const calc=calcEst(est.assets,est.resources,est.bufferPct,est.projectType);
   const linkedProject=est.linkedProjectId?projects.find(p=>p.id===est.linkedProjectId):null;
   const isAdmin=me.role==='admin';
+  const subtotal=calc.resourceCost+calc.productionCost;
+  const bufferAmt=calc.totalCost-subtotal;
   return<div className="fade">
     <div className="row"style={{marginBottom:24}}>
       <button className="btn btn-ghost btn-sm"onClick={()=>setView('estimations')}><i className="ti ti-arrow-left"/>Estimations</button>
@@ -888,14 +920,24 @@ function EstimationDetail({id,store,me,setView,onConverted}){
             <div className="form-group"style={{margin:0}}><div className="form-label">Client name *</div><input value={est.clientName}onChange={e=>up({clientName:e.target.value})}placeholder="e.g. Ferragamo"disabled={!isAdmin}/></div>
             <div className="form-group"style={{margin:0}}><div className="form-label">Project name *</div><input value={est.projectName}onChange={e=>up({projectName:e.target.value})}placeholder="E-com Content POC"disabled={!isAdmin}/></div>
           </div>
-          <div className="row"style={{gap:12}}>
-            <div className="form-group"style={{margin:0,flex:1}}><div className="form-label">Status</div>
+          <div className="row"style={{gap:12,flexWrap:'wrap'}}>
+            <div className="form-group"style={{margin:0,flex:'0 0 auto'}}><div className="form-label">Status</div>
               <select value={est.status}onChange={e=>up({status:e.target.value})}disabled={!isAdmin}style={{width:'auto'}}>
                 <option value="draft">Draft</option><option value="confirmed">Confirmed</option>
               </select>
             </div>
-            <div className="form-group"style={{margin:0,flex:1}}><div className="form-label">Margin buffer %</div>
-              <input type="number"min={0}max={100}value={est.bufferPct}onChange={e=>up({bufferPct:+e.target.value})}disabled={!isAdmin}/>
+            <div className="form-group"style={{margin:0,flex:'0 0 auto'}}><div className="form-label">Margin buffer %</div>
+              <input type="number"min={0}max={100}value={est.bufferPct}onChange={e=>up({bufferPct:+e.target.value})}disabled={!isAdmin}style={{width:90}}/>
+            </div>
+            <div className="form-group"style={{margin:0,flex:'0 0 auto'}}>
+              <div className="form-label">Project type</div>
+              <div className="row"style={{gap:6,marginTop:2}}>
+                {['lcr','ucr'].map(t=><button key={t}disabled={!isAdmin}onClick={()=>up({projectType:t})}
+                  className={`btn btn-sm ${est.projectType===t?'btn-primary':''}`}
+                  style={{minWidth:60,justifyContent:'center'}}>
+                  {t==='lcr'?'LCR — Chargeable':'UCR — BD/Internal'}
+                </button>)}
+              </div>
             </div>
           </div>
         </div>
@@ -907,22 +949,39 @@ function EstimationDetail({id,store,me,setView,onConverted}){
           </div>
           <div style={{overflowX:'auto'}}>
             <table className="est-tbl">
-              <thead><tr><th style={{minWidth:140}}>Asset name</th><th style={{width:55}}>Vol.</th><th style={{width:70}}>Gen h/ea</th><th style={{width:70}}>Post h/ea</th><th style={{width:65}}>Extra h</th><th style={{width:70}}>Total h</th><th style={{minWidth:120}}>Notes</th>{isAdmin&&<th style={{width:36}}/>}</tr></thead>
+              <thead><tr>
+                <th style={{minWidth:140}}>Asset name</th>
+                <th style={{minWidth:110}}>Category</th>
+                <th style={{width:50}}>Vol.</th>
+                <th style={{width:65}}>Gen h/ea</th>
+                <th style={{width:65}}>Post h/ea</th>
+                <th style={{width:60}}>Extra h</th>
+                <th style={{width:65}}>€/unit API</th>
+                <th style={{width:65}}>Total h</th>
+                <th style={{minWidth:110}}>Notes</th>
+                {isAdmin&&<th style={{width:36}}/>}
+              </tr></thead>
               <tbody>
                 {est.assets.map(a=>{
                   const tot=(a.volume*a.genHPerAsset)+(a.volume*a.postHPerAsset)+(+a.extraH||0);
+                  const catColor=CATEGORY_COLORS[a.category]||'#6B7280';
                   return<tr key={a.id}>
                     <td><input value={a.name}onChange={e=>upAsset(a.id,{name:e.target.value})}placeholder="Asset type…"disabled={!isAdmin}/></td>
+                    <td><select value={a.category||'Altro'}onChange={e=>upAsset(a.id,{category:e.target.value})}disabled={!isAdmin}
+                      style={{background:catColor+'15',color:catColor,borderColor:catColor+'40',fontWeight:500}}>
+                      {ASSET_CATEGORIES.map(c=><option key={c}value={c}>{c}</option>)}
+                    </select></td>
                     <td><input type="number"min={0}value={a.volume}onChange={e=>upAsset(a.id,{volume:+e.target.value})}disabled={!isAdmin}/></td>
                     <td><input type="number"min={0}step={.5}value={a.genHPerAsset}onChange={e=>upAsset(a.id,{genHPerAsset:+e.target.value})}disabled={!isAdmin}/></td>
                     <td><input type="number"min={0}step={.5}value={a.postHPerAsset}onChange={e=>upAsset(a.id,{postHPerAsset:+e.target.value})}disabled={!isAdmin}/></td>
                     <td><input type="number"min={0}step={.5}value={a.extraH}onChange={e=>upAsset(a.id,{extraH:+e.target.value})}disabled={!isAdmin}/></td>
+                    <td><input type="number"min={0}step={.01}value={a.costPerUnit||0}onChange={e=>upAsset(a.id,{costPerUnit:+e.target.value})}disabled={!isAdmin}placeholder="0"/></td>
                     <td className="mono"style={{fontSize:12,fontWeight:600,color:'var(--ink)'}}>{Math.round(tot*10)/10}h</td>
-                    <td><input value={a.notes}onChange={e=>upAsset(a.id,{notes:e.target.value})}placeholder="Complexity…"disabled={!isAdmin}/></td>
+                    <td><input value={a.notes}onChange={e=>upAsset(a.id,{notes:e.target.value})}placeholder="Note…"disabled={!isAdmin}/></td>
                     {isAdmin&&<td><button className="btn btn-ghost btn-xs btn-danger"onClick={()=>removeAsset(a.id)}><i className="ti ti-x"/></button></td>}
                   </tr>;
                 })}
-                {!est.assets.length&&<tr><td colSpan={8}style={{textAlign:'center',color:'var(--ink-4)',padding:'20px'}}>No assets yet — add a row to start</td></tr>}
+                {!est.assets.length&&<tr><td colSpan={10}style={{textAlign:'center',color:'var(--ink-4)',padding:'20px'}}>No assets yet — add a row to start</td></tr>}
               </tbody>
             </table>
           </div>
@@ -930,27 +989,43 @@ function EstimationDetail({id,store,me,setView,onConverted}){
         {/* Resources */}
         <div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden'}}>
           <div className="row"style={{padding:'12px 16px',borderBottom:'1px solid var(--rule)'}}>
-            <span style={{fontWeight:600,fontSize:13}}>Resources</span><span className="spacer"/>
+            <span style={{fontWeight:600,fontSize:13}}>Resources</span>
+            <span style={{fontSize:11,color:'var(--ink-4)',marginLeft:8}}>Using <strong>{est.projectType==='lcr'?'LCR':'UCR'}</strong> rates</span>
+            <span className="spacer"/>
             {isAdmin&&<button className="btn btn-sm"onClick={addResource}><i className="ti ti-plus"/>Add resource</button>}
           </div>
           <table className="est-tbl">
-            <thead><tr><th>Duty</th><th>Person</th><th style={{width:90}}>Day rate €</th><th style={{width:80}}>Charge. %</th><th style={{width:65}}>Hours</th><th style={{width:90}}>Cost</th>{isAdmin&&<th style={{width:36}}/>}</tr></thead>
+            <thead><tr>
+              <th>Duty</th><th>Person</th>
+              <th style={{width:80}}>LCR €/day</th>
+              <th style={{width:80}}>UCR €/day</th>
+              <th style={{width:75}}>Charge. %</th>
+              <th style={{width:60}}>Hours</th>
+              <th style={{width:85}}>Cost</th>
+              {isAdmin&&<th style={{width:36}}/>}
+            </tr></thead>
             <tbody>
               {est.resources.map(r=>{
-                const cost=Math.round((r.hoursAllocated/8)*(r.chargeabilityPct/100)*r.dailyRate);
+                const rate=est.projectType==='ucr'?(r.rateUcr||0):(r.rateLcr||r.dailyRate||0);
+                const cost=Math.round((r.hoursAllocated/8)*(r.chargeabilityPct/100)*rate);
                 return<tr key={r.id}>
                   <td><select value={r.dutyId}onChange={e=>upResource(r.id,{dutyId:e.target.value})}disabled={!isAdmin}>{duties.map(d=><option key={d.id}value={d.id}>{d.name}</option>)}</select></td>
                   <td><select value={r.userId||''}onChange={e=>upResource(r.id,{userId:e.target.value})}disabled={!isAdmin}>
                     <option value="">— Unassigned —</option>{users.map(u=><option key={u.id}value={u.id}>{u.name}</option>)}
                   </select></td>
-                  <td><input type="number"min={0}value={r.dailyRate}onChange={e=>upResource(r.id,{dailyRate:+e.target.value})}disabled={!isAdmin}/></td>
+                  <td style={{background:est.projectType==='lcr'?'rgba(201,149,42,.06)':''}}>
+                    <input type="number"min={0}value={r.rateLcr||0}onChange={e=>upResource(r.id,{rateLcr:+e.target.value,dailyRate:+e.target.value})}disabled={!isAdmin}/>
+                  </td>
+                  <td style={{background:est.projectType==='ucr'?'rgba(201,149,42,.06)':''}}>
+                    <input type="number"min={0}value={r.rateUcr||0}onChange={e=>upResource(r.id,{rateUcr:+e.target.value})}disabled={!isAdmin}/>
+                  </td>
                   <td><input type="number"min={0}max={100}value={r.chargeabilityPct}onChange={e=>upResource(r.id,{chargeabilityPct:+e.target.value})}disabled={!isAdmin}/></td>
                   <td><input type="number"min={0}value={r.hoursAllocated}onChange={e=>upResource(r.id,{hoursAllocated:+e.target.value})}disabled={!isAdmin}/></td>
                   <td className="mono"style={{fontSize:12,fontWeight:600}}>{fmt.currency(cost)}</td>
                   {isAdmin&&<td><button className="btn btn-ghost btn-xs btn-danger"onClick={()=>removeResource(r.id)}><i className="ti ti-x"/></button></td>}
                 </tr>;
               })}
-              {!est.resources.length&&<tr><td colSpan={7}style={{textAlign:'center',color:'var(--ink-4)',padding:'20px'}}>No resources yet</td></tr>}
+              {!est.resources.length&&<tr><td colSpan={8}style={{textAlign:'center',color:'var(--ink-4)',padding:'20px'}}>No resources yet</td></tr>}
             </tbody>
           </table>
         </div>
@@ -958,15 +1033,23 @@ function EstimationDetail({id,store,me,setView,onConverted}){
       {/* Output panel */}
       <div>
         <div className="card"style={{position:'sticky',top:80}}>
-          <div style={{fontWeight:600,fontSize:14,letterSpacing:'-.02em',marginBottom:18}}>Output</div>
+          <div className="row"style={{marginBottom:16}}>
+            <div style={{fontWeight:600,fontSize:14,letterSpacing:'-.02em'}}>Output</div>
+            <span className="spacer"/>
+            <span className={`badge ${est.projectType==='lcr'?'badge-gold':'badge-gray'}`}>{est.projectType==='lcr'?'LCR':'UCR'}</span>
+          </div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:18}}>
             <div className="stat-box"><div className="stat-label">Hours</div><div className="stat-num">{calc.totalH}<span style={{fontSize:14,fontWeight:400,opacity:.6}}>h</span></div></div>
             <div className="stat-box"><div className="stat-label">Deliverables</div><div className="stat-num">{calc.totalDeliverables}</div></div>
           </div>
           <hr className="divider"/>
           <div className="stack"style={{gap:8,marginBottom:18}}>
-            <div className="row"><span style={{fontSize:13,color:'var(--ink-3)'}}>Resource cost</span><span className="spacer"/><span className="mono"style={{fontSize:13}}>{fmt.currency(calc.resourceCost)}</span></div>
-            <div className="row"><span style={{fontSize:13,color:'var(--ink-3)'}}>Buffer ({est.bufferPct}%)</span><span className="spacer"/><span className="mono"style={{fontSize:13}}>{fmt.currency(calc.totalCost-calc.resourceCost)}</span></div>
+            <div className="row"><span style={{fontSize:12,color:'var(--ink-3)'}}>Team cost</span><span className="spacer"/><span className="mono"style={{fontSize:12}}>{fmt.currency(calc.resourceCost)}</span></div>
+            {calc.productionCost>0&&<div className="row">
+              <span style={{fontSize:12,color:'var(--ink-3)'}}>Production (API ×{RETRY_MULTIPLIER})</span><span className="spacer"/>
+              <span className="mono"style={{fontSize:12}}>{fmt.currency(calc.productionCost)}</span>
+            </div>}
+            <div className="row"><span style={{fontSize:12,color:'var(--ink-3)'}}>Buffer ({est.bufferPct}%)</span><span className="spacer"/><span className="mono"style={{fontSize:12}}>{fmt.currency(bufferAmt)}</span></div>
             <hr className="divider"style={{margin:'4px 0'}}/>
             <div className="row"><span style={{fontSize:15,fontWeight:600}}>Total</span><span className="spacer"/><span className="mono"style={{fontSize:22,fontWeight:600,letterSpacing:'-.04em'}}>{fmt.currency(calc.totalCost)}</span></div>
             <div className="row"><span style={{fontSize:12,color:'var(--ink-4)'}}>Per asset</span><span className="spacer"/><span className="mono"style={{fontSize:12}}>{fmt.currency(calc.pricePerAsset)}</span></div>
@@ -1318,79 +1401,201 @@ function ProjEditMenu({p,store,me,up,deleteProject,setView}){
   </>;
 }
 
+/* ── PDF EXPORT ── */
+function exportProjectPDF(p,est,users,duties){
+  const calc=est?calcEst(est.assets,est.resources,est.bufferPct,est.projectType||'lcr'):null;
+  const lav=p.lavorazioni||[];
+  const team=[...new Map((p.assignments||[]).map(a=>[a.userId,users.find(u=>u.id===a.userId)])).values()].filter(Boolean);
+  const cats=[...new Set(lav.map(l=>l.category))];
+  const catBlocks=cats.map(cat=>{
+    const items=lav.filter(l=>l.category===cat);
+    const color=CATEGORY_COLORS[cat]||'#6B7280';
+    const rows=items.map(l=>`<tr><td>${l.name}</td><td style="text-align:center">${l.quantity}</td><td style="text-align:right">${l.hoursTotal}h</td>${l.costPerUnit>0?`<td style="text-align:right">€${(l.costPerUnit*l.quantity*RETRY_MULTIPLIER).toFixed(2)}</td>`:'<td>—</td>'}</tr>`).join('');
+    return`<div class="cat-block"><div class="cat-hd"style="background:${color}20;color:${color};border-left:3px solid ${color}">${cat}</div><table class="dt"><thead><tr><th>Task</th><th style="text-align:center">Qty</th><th style="text-align:right">Hours</th><th style="text-align:right">Prod cost</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }).join('');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${p.title} — Studio OS Report</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#1a1a18;background:#fff;padding:40px}
+h1{font-size:26px;font-style:italic;letter-spacing:-.02em;margin-bottom:4px}
+.meta{font-size:11px;color:#888;margin-bottom:32px}
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.kpi{background:#f8f6f0;border:1px solid #e2ddd3;border-radius:8px;padding:14px 16px}
+.kpi-label{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:6px}
+.kpi-val{font-size:22px;font-weight:600;font-family:monospace;letter-spacing:-.04em}
+.section-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e2ddd3}
+.cat-block{margin-bottom:18px}
+.cat-hd{font-size:11px;font-weight:600;padding:5px 10px;border-radius:4px;margin-bottom:6px;letter-spacing:.03em}
+.dt{width:100%;border-collapse:collapse;font-size:12px}
+.dt th{font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#aaa;padding:6px 8px;border-bottom:1.5px solid #e2ddd3;text-align:left}
+.dt td{padding:7px 8px;border-bottom:1px solid #f0ede4}
+.team-chip{display:inline-flex;align-items:center;gap:6px;background:#f0ede4;border-radius:100px;padding:4px 10px;font-size:11px;font-weight:500;margin:3px}
+.cost-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px}
+.cost-row.total{font-weight:700;font-size:15px;border-top:1.5px solid #333;padding-top:10px;margin-top:4px}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;letter-spacing:.04em}
+.badge-lcr{background:#faf0dc;color:#6b4a08;border:1px solid rgba(201,149,42,.3)}
+.badge-ucr{background:#f1f3f5;color:#495057;border:1px solid #dee2e6}
+@media print{body{padding:20px}button{display:none}}
+</style></head><body>
+<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px">
+  <div><h1>${p.title}</h1><div class="meta">Client: ${est?est.clientName:'—'} · Status: ${p.status} · Generated ${new Date().toLocaleDateString('en-GB')}</div></div>
+  ${est?`<span class="badge badge-${est.projectType||'lcr'}">${(est.projectType||'lcr').toUpperCase()}</span>`:''}
+</div>
+<div class="bento">
+  <div class="kpi"><div class="kpi-label">Total budget</div><div class="kpi-val"style="font-size:18px">${fmt.currency(p.budget)}</div></div>
+  <div class="kpi"><div class="kpi-label">Hours</div><div class="kpi-val">${p.totalHours||'—'}h</div></div>
+  <div class="kpi"><div class="kpi-label">Deliverables</div><div class="kpi-val">${p.deliverables||'—'}</div></div>
+  <div class="kpi"><div class="kpi-label">Tasks</div><div class="kpi-val">${lav.length}</div></div>
+</div>
+${calc?`<div style="margin-bottom:32px"><div class="section-title">Cost breakdown</div>
+  <div class="cost-row"><span>Team cost (${(est.projectType||'lcr').toUpperCase()})</span><span style="font-family:monospace">${fmt.currency(calc.resourceCost)}</span></div>
+  ${calc.productionCost>0?`<div class="cost-row"><span>Production API (×${RETRY_MULTIPLIER} retry)</span><span style="font-family:monospace">${fmt.currency(calc.productionCost)}</span></div>`:''}
+  <div class="cost-row"><span>Buffer (${est.bufferPct}%)</span><span style="font-family:monospace">${fmt.currency(calc.totalCost-calc.resourceCost-calc.productionCost)}</span></div>
+  <div class="cost-row total"><span>Total</span><span style="font-family:monospace">${fmt.currency(calc.totalCost)}</span></div>
+</div>`:''}
+${lav.length?`<div style="margin-bottom:32px"><div class="section-title">Task breakdown</div>${catBlocks}</div>`:''}
+<div><div class="section-title">Team (${team.length} people)</div><div>${team.map(u=>`<span class="team-chip"><span style="width:20px;height:20px;border-radius:50%;background:${u.color}20;color:${u.color};display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700">${u.avatar}</span>${u.name}</span>`).join('')}</div></div>
+<div style="margin-top:40px;font-size:10px;color:#ccc;border-top:1px solid #eee;padding-top:12px">Generated by Studio OS · ${new Date().toISOString()}</div>
+</body></html>`;
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>w.print(),400);
+}
+
 /* ── TAB: OVERVIEW ── */
 function ProjOverviewTab({p,est,pct,days,isAdmin,up,openEst,store,me,statusColor}){
+  const{users,duties}=store;
   const[syncing,setSyncing]=useState(false);
   const doResync=()=>{
-    const calc=calcEst(est.assets,est.resources,est.bufferPct);
+    const calc=calcEst(est.assets,est.resources,est.bufferPct,est.projectType||'lcr');
     up({budget:calc.totalCost,totalHours:calc.totalH,deliverables:calc.totalDeliverables});
     setSyncing(false);
   };
   const estNewer=est&&new Date(est.updatedAt)>new Date(p.updatedAt);
-  return<div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:28,alignItems:'start'}}>
-    <div>
-      <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Brief</div>
-      <p style={{fontSize:14,lineHeight:1.8,color:'var(--ink-2)',marginBottom:28,fontWeight:300}}>{p.description||<em style={{color:'var(--ink-4)'}}>No description added.</em>}</p>
-      <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Timeline progress</div>
-      {p.startDate&&p.endDate?<>
-        <Bar value={pct}color={statusColor}height={7}/>
-        <div className="row"style={{marginTop:8}}>
-          <span style={{fontSize:12,color:'var(--ink-4)'}}>{fmt.date(p.startDate)}</span><span className="spacer"/>
-          <span style={{fontSize:13,fontWeight:600,fontFamily:'var(--mono)',letterSpacing:'-.02em',color:days==null?'var(--ink-4)':days<0?'var(--danger)':days<14?'var(--gold)':'var(--ink)'}}>
-            {days==null?'—':days<0?`${Math.abs(days)}d overdue`:days===0?'Due today':`${days}d left`}
-          </span><span className="spacer"/>
-          <span style={{fontSize:12,color:'var(--ink-4)'}}>{fmt.date(p.endDate)}</span>
-        </div>
-      </>:<div className="banner banner-blue"style={{marginTop:4}}><i className="ti ti-calendar"style={{fontSize:13,flexShrink:0}}/><span>No dates set — edit the project to add a timeline</span></div>}
-      {p.budget&&<div style={{marginTop:28}}>
-        <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Budget snapshot</div>
-        <div className="g3"style={{gap:10}}>
-          <div className="stat-box"><div className="stat-label">Budget</div><div className="stat-num"style={{fontSize:18}}>{fmt.currency(p.budget)}</div></div>
-          <div className="stat-box"><div className="stat-label">Hours</div><div className="stat-num"style={{fontSize:18}}>{fmt.hours(p.totalHours)}</div></div>
-          <div className="stat-box"><div className="stat-label">Deliverables</div><div className="stat-num"style={{fontSize:18}}>{p.deliverables||'—'}</div></div>
-        </div>
-      </div>}
-    </div>
-    <div>
-      <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Estimation link</div>
-      {est?<div className="card-flat">
-        <div className="row"style={{marginBottom:estNewer?10:12}}>
-          <div style={{flex:1}}><div style={{fontWeight:600,fontSize:13,letterSpacing:'-.01em'}}>{est.clientName} — {est.projectName}</div>
-            <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2}}>{fmt.date(est.createdAt)}</div>
-          </div>
-          <span className={`badge ${est.status==='confirmed'?'badge-green':'badge-gray'}`}>{est.status}</span>
-        </div>
-        {estNewer&&<div className="banner banner-amber"style={{marginBottom:10}}>
-          <i className="ti ti-refresh"style={{fontSize:12,flexShrink:0}}/>
-          <div style={{flex:1}}>Estimation updated since linking.</div>
-          {isAdmin&&<button className="btn btn-xs"onClick={()=>setSyncing(true)}style={{flexShrink:0}}>Re-sync</button>}
+  const lav=p.lavorazioni||[];
+  const hasLav=lav.length>0;
+  const calc=est?calcEst(est.assets,est.resources,est.bufferPct,est.projectType||'lcr'):null;
+  const catSummary=useMemo(()=>{
+    const m={};
+    lav.forEach(l=>{m[l.category]=(m[l.category]||0)+l.hoursTotal;});
+    return Object.entries(m).sort((a,b)=>b[1]-a[1]);
+  },[lav]);
+  return<div>
+    {/* ── BENTO BOX ── */}
+    {(p.budget||hasLav)&&<div style={{marginBottom:28}}>
+      <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:12}}>Project metrics</div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(130px,1fr))',gap:10,marginBottom:hasLav?12:0}}>
+        {p.budget!=null&&<div className="stat-box"><div className="stat-label">Budget</div><div className="stat-num"style={{fontSize:17}}>{fmt.currency(p.budget)}</div></div>}
+        {p.totalHours!=null&&<div className="stat-box"><div className="stat-label">Total hours</div><div className="stat-num"style={{fontSize:17}}>{p.totalHours}h</div></div>}
+        {p.deliverables!=null&&<div className="stat-box"><div className="stat-label">Deliverables</div><div className="stat-num"style={{fontSize:17}}>{p.deliverables}</div></div>}
+        {hasLav&&<div className="stat-box"><div className="stat-label">Tasks</div><div className="stat-num"style={{fontSize:17}}>{lav.length}</div></div>}
+        {calc&&calc.productionCost>0&&<div className="stat-box"><div className="stat-label">API prod cost</div><div className="stat-num"style={{fontSize:17}}>{fmt.currency(calc.productionCost)}</div></div>}
+        {(p.projectType||est?.projectType)&&<div className="stat-box"><div className="stat-label">Project type</div>
+          <div style={{marginTop:6}}><span className={`badge ${(p.projectType||est?.projectType)==='lcr'?'badge-gold':'badge-gray'}`}>{(p.projectType||est?.projectType||'lcr').toUpperCase()}</span></div>
         </div>}
-        <button className="btn btn-sm btn-ghost"style={{width:'100%',justifyContent:'center'}}onClick={openEst}><i className="ti ti-calculator"/>Open estimation</button>
-      </div>:<div className="card-flat"style={{textAlign:'center',color:'var(--ink-4)'}}>
-        <i className="ti ti-calculator"style={{fontSize:22,marginBottom:8,display:'block',opacity:.35}}/>
-        <p style={{fontSize:13,marginBottom:2}}>No estimation linked</p>
-        <p style={{fontSize:12}}>Create an estimation and convert it</p>
+      </div>
+      {hasLav&&<div style={{background:'var(--paper)',border:'1px solid var(--rule)',borderRadius:'var(--r-md)',padding:'12px 14px'}}>
+        <div style={{fontSize:10,fontWeight:600,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:8}}>Hours by category</div>
+        <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+          {catSummary.map(([cat,h])=>{
+            const color=CATEGORY_COLORS[cat]||'#6B7280';
+            return<div key={cat}style={{display:'flex',alignItems:'center',gap:5,background:color+'12',border:`1px solid ${color}30`,borderRadius:'var(--r-xs)',padding:'3px 8px'}}>
+              <div style={{width:7,height:7,borderRadius:2,background:color,flexShrink:0}}/>
+              <span style={{fontSize:11,color:color,fontWeight:600}}>{cat}</span>
+              <span style={{fontSize:11,color:'var(--ink-3)',fontFamily:'var(--mono)'}}>{Math.round(h)}h</span>
+            </div>;
+          })}
+        </div>
       </div>}
+      {isAdmin&&<div style={{marginTop:10,display:'flex',justifyContent:'flex-end'}}>
+        <button className="btn btn-sm"onClick={()=>exportProjectPDF(p,est,users,duties)}>
+          <i className="ti ti-file-type-pdf"/>Export PDF report
+        </button>
+      </div>}
+    </div>}
+    <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:28,alignItems:'start'}}>
+      <div>
+        <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Brief</div>
+        <p style={{fontSize:14,lineHeight:1.8,color:'var(--ink-2)',marginBottom:28,fontWeight:300}}>{p.description||<em style={{color:'var(--ink-4)'}}>No description added.</em>}</p>
+        <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Timeline progress</div>
+        {p.startDate&&p.endDate?<>
+          <Bar value={pct}color={statusColor}h={7}/>
+          <div className="row"style={{marginTop:8}}>
+            <span style={{fontSize:12,color:'var(--ink-4)'}}>{fmt.date(p.startDate)}</span><span className="spacer"/>
+            <span style={{fontSize:13,fontWeight:600,fontFamily:'var(--mono)',letterSpacing:'-.02em',color:days==null?'var(--ink-4)':days<0?'var(--danger)':days<14?'var(--gold)':'var(--ink)'}}>
+              {days==null?'—':days<0?`${Math.abs(days)}d overdue`:days===0?'Due today':`${days}d left`}
+            </span><span className="spacer"/>
+            <span style={{fontSize:12,color:'var(--ink-4)'}}>{fmt.date(p.endDate)}</span>
+          </div>
+        </>:<div className="banner banner-blue"style={{marginTop:4}}><i className="ti ti-calendar"style={{fontSize:13,flexShrink:0}}/><span>No dates set — edit the project to add a timeline</span></div>}
+      </div>
+      <div>
+        <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Estimation link</div>
+        {est?<div className="card-flat">
+          <div className="row"style={{marginBottom:estNewer?10:12}}>
+            <div style={{flex:1}}><div style={{fontWeight:600,fontSize:13,letterSpacing:'-.01em'}}>{est.clientName} — {est.projectName}</div>
+              <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2}}>{fmt.date(est.createdAt)}</div>
+            </div>
+            <span className={`badge ${est.status==='confirmed'?'badge-green':'badge-gray'}`}>{est.status}</span>
+          </div>
+          {estNewer&&<div className="banner banner-amber"style={{marginBottom:10}}>
+            <i className="ti ti-refresh"style={{fontSize:12,flexShrink:0}}/>
+            <div style={{flex:1}}>Estimation updated since linking.</div>
+            {isAdmin&&<button className="btn btn-xs"onClick={()=>setSyncing(true)}style={{flexShrink:0}}>Re-sync</button>}
+          </div>}
+          <button className="btn btn-sm btn-ghost"style={{width:'100%',justifyContent:'center'}}onClick={openEst}><i className="ti ti-calculator"/>Open estimation</button>
+        </div>:<div className="card-flat"style={{textAlign:'center',color:'var(--ink-4)'}}>
+          <i className="ti ti-calculator"style={{fontSize:22,marginBottom:8,display:'block',opacity:.35}}/>
+          <p style={{fontSize:13,marginBottom:2}}>No estimation linked</p>
+          <p style={{fontSize:12}}>Create an estimation and convert it</p>
+        </div>}
+      </div>
     </div>
     {syncing&&<Confirm title="Re-sync from estimation"
-      message={`Update budget (${fmt.currency(calcEst(est.assets,est.resources,est.bufferPct).totalCost)}), total hours and deliverables count from the estimation. Log entries, files, timeline and links are not affected.`}
+      message={`Update budget (${fmt.currency(calcEst(est.assets,est.resources,est.bufferPct,est.projectType||'lcr').totalCost)}), total hours and deliverables count from the estimation. Log entries, files, timeline and links are not affected.`}
       onConfirm={doResync}onCancel={()=>setSyncing(false)}/>}
+  </div>;
+}
+
+/* ── GANTT SHARED RENDERER ── */
+function GanttGrid({pStart,pEnd,months,nowPos,children,colLabel='Person'}){
+  return<div className="gantt-wrap">
+    <div className="gantt-header-row"style={{gridTemplateColumns:'180px 1fr',borderBottom:'1.5px solid var(--rule)'}}>
+      <div className="gantt-person-col"style={{background:'var(--paper)'}}>
+        <span style={{fontSize:10.5,color:'var(--ink-4)',fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase'}}>{colLabel}</span>
+      </div>
+      <div style={{background:'var(--paper)',padding:'8px 0'}}>
+        <div style={{display:'flex',height:'100%'}}>
+          {months.map((m,i)=><div key={i}style={{flex:`0 0 ${100/months.length}%`,borderLeft:'1px solid var(--rule)',padding:'0 7px'}}>
+            <span style={{fontSize:10,color:'var(--ink-4)'}}>{m.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</span>
+          </div>)}
+        </div>
+      </div>
+    </div>
+    {children}
+    <div style={{padding:'8px 14px',background:'var(--paper)',display:'flex',gap:14,flexWrap:'wrap',alignItems:'center',borderTop:'1px solid var(--rule)'}}>
+      <div className="row"style={{gap:5}}><div style={{width:14,height:1.5,background:'var(--danger)',opacity:.5}}/><span style={{fontSize:11,color:'var(--ink-4)'}}>Today</span></div>
+    </div>
   </div>;
 }
 
 /* ── TAB: TIMELINE ── */
 function ProjTimelineTab({p,store,isAdmin,up,me}){
   const{users,duties}=store;
+  const[subTab,setSubTab]=useState('phases');
   const[editBlock,setEditBlock]=useState(null);
   const[addingBlock,setAddingBlock]=useState(false);
+  const[editLav,setEditLav]=useState(null);
   const assignments=p.assignments||[];
+  const lavorazioni=p.lavorazioni||[];
   const personIds=[...new Set(assignments.map(a=>a.userId))];
 
   const pStart=new Date(p.startDate||Date.now());
   const pEnd=new Date(p.endDate||(Date.now()+90*86400000));
   const totalMs=pEnd-pStart;
-  const posOf=d=>Math.max(0,Math.min(100,((new Date(d)-pStart)/totalMs)*100));
-  const widthOf=(s,e)=>Math.max(.8,posOf(e)-posOf(s));
+  const posOf=d=>d?Math.max(0,Math.min(100,((new Date(d)-pStart)/totalMs)*100)):0;
+  const widthOf=(s,e)=>s&&e?Math.max(.8,posOf(e)-posOf(s)):.8;
   const nowPos=posOf(new Date());
 
   const months=[];let cur=new Date(pStart);cur.setDate(1);
@@ -1399,44 +1604,31 @@ function ProjTimelineTab({p,store,isAdmin,up,me}){
   const emptyBlock=()=>({id:uid(),userId:users[0]?.id||'',dutyId:duties[0]?.id||'',startDate:p.startDate||new Date().toISOString().split('T')[0],endDate:p.endDate||new Date(Date.now()+30*86400000).toISOString().split('T')[0],allocationPct:100});
   const saveBlock=b=>{const ex=assignments.find(a=>a.id===b.id);up({assignments:ex?assignments.map(a=>a.id===b.id?b:a):[...assignments,b]});setEditBlock(null);setAddingBlock(false);};
   const deleteBlock=id=>up({assignments:assignments.filter(a=>a.id!==id)});
+  const saveLav=l=>{up({lavorazioni:lavorazioni.map(x=>x.id===l.id?l:x)});setEditLav(null);};
 
   if(!p.startDate||!p.endDate)return<div className="empty-state"><i className="ti ti-calendar"/>
     <p>No project dates set</p><small>Set start and end dates in the project settings to use the timeline</small>
   </div>;
 
-  return<div>
+  /* ── PHASES VIEW ── */
+  const PhasesView=()=><div>
     <div className="row"style={{marginBottom:14}}>
       <div style={{fontSize:13,color:'var(--ink-3)'}}>{fmt.date(p.startDate)} → {fmt.date(p.endDate)}</div>
       <span className="spacer"/>
       {isAdmin&&<button className="btn btn-sm"onClick={()=>setAddingBlock(true)}><i className="ti ti-plus"/>Add phase</button>}
     </div>
-    <div className="gantt-wrap">
-      <div className="gantt-header-row"style={{gridTemplateColumns:'180px 1fr',borderBottom:'1.5px solid var(--rule)'}}>
-        <div className="gantt-person-col"style={{background:'var(--paper)'}}>
-          <span style={{fontSize:10.5,color:'var(--ink-4)',fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase'}}>Person</span>
-        </div>
-        <div style={{background:'var(--paper)',padding:'8px 0',position:'relative',overflow:'hidden'}}>
-          <div style={{display:'flex',height:'100%'}}>
-            {months.map((m,i)=><div key={i}style={{flex:`0 0 ${100/months.length}%`,borderLeft:'1px solid var(--rule)',padding:'0 7px'}}>
-              <span style={{fontSize:10,color:'var(--ink-4)'}}>{m.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</span>
-            </div>)}
-          </div>
-        </div>
-      </div>
+    <GanttGrid pStart={pStart}pEnd={pEnd}months={months}nowPos={nowPos}>
       {personIds.length===0&&<div style={{textAlign:'center',padding:'32px',color:'var(--ink-4)',fontSize:13}}>
         No phases added. {isAdmin&&'Click "Add phase" to define who is doing what and when.'}
       </div>}
       {personIds.map(uid2=>{
-        const user=users.find(u=>u.id===uid2);
-        if(!user)return null;
+        const user=users.find(u=>u.id===uid2);if(!user)return null;
         const blocks=assignments.filter(a=>a.userId===uid2);
         const rowH=Math.max(48,blocks.length*42+16);
         return<div key={uid2}className="gantt-row-wrap"style={{gridTemplateColumns:'180px 1fr'}}>
           <div className="gantt-person-col"style={{alignSelf:'stretch'}}>
             <Av user={user}size={28}/>
-            <div style={{minWidth:0}}>
-              <div style={{fontSize:12,fontWeight:600,letterSpacing:'-.01em'}}className="trunc">{user.name}</div>
-            </div>
+            <div style={{minWidth:0}}><div style={{fontSize:12,fontWeight:600,letterSpacing:'-.01em'}}className="trunc">{user.name}</div></div>
           </div>
           <div className="gantt-track-area"style={{height:rowH,position:'relative'}}>
             {nowPos>0&&nowPos<100&&<div className="gantt-today"style={{left:`${nowPos}%`,background:'var(--danger)',opacity:.5}}/>}
@@ -1452,13 +1644,114 @@ function ProjTimelineTab({p,store,isAdmin,up,me}){
           </div>
         </div>;
       })}
-      <div style={{padding:'8px 14px',background:'var(--paper)',display:'flex',gap:14,flexWrap:'wrap',alignItems:'center',borderTop:'1px solid var(--rule)'}}>
-        <div className="row"style={{gap:5}}><div style={{width:14,height:1.5,background:'var(--danger)',opacity:.5}}/><span style={{fontSize:11,color:'var(--ink-4)'}}>Today</span></div>
-        {[...new Set(assignments.map(a=>a.dutyId))].map(did=>{const d=duties.find(x=>x.id===did);return d?<DutyTag key={did}dutyId={did}duties={duties}/>:null;})}
-      </div>
-    </div>
+    </GanttGrid>
     {(editBlock||addingBlock)&&<BlockModal block={editBlock||emptyBlock()}users={users}duties={duties}onSave={saveBlock}onDelete={editBlock?()=>{deleteBlock(editBlock.id);setEditBlock(null);}:null}onClose={()=>{setEditBlock(null);setAddingBlock(false);}}/>}
   </div>;
+
+  /* ── TASKS VIEW ── */
+  const TasksView=()=>{
+    if(!lavorazioni.length)return<div className="empty-state"><i className="ti ti-list-check"/>
+      <p>No tasks defined</p><small>Convert an estimation to populate tasks, or add one manually</small>
+    </div>;
+    const cats=[...new Set(lavorazioni.map(l=>l.category))];
+    return<div>
+      <div className="row"style={{marginBottom:14}}>
+        <div style={{fontSize:13,color:'var(--ink-3)'}}>{lavorazioni.length} tasks · {lavorazioni.reduce((s,l)=>s+l.hoursTotal,0).toFixed(1)}h total</div>
+        <span className="spacer"/>
+        {isAdmin&&<button className="btn btn-sm"onClick={()=>up({lavorazioni:[...lavorazioni,{id:uid(),name:'New task',category:'Altro',quantity:1,hoursTotal:8,costPerUnit:0,assignedUserIds:[],startDate:p.startDate||'',endDate:'',notes:''}]})}>
+          <i className="ti ti-plus"/>Add task
+        </button>}
+      </div>
+      <GanttGrid pStart={pStart}pEnd={pEnd}months={months}nowPos={nowPos}colLabel="Task">
+        {cats.map(cat=>{
+          const catItems=lavorazioni.filter(l=>l.category===cat);
+          const color=CATEGORY_COLORS[cat]||'#6B7280';
+          return catItems.map((lv,li)=>{
+            const hasDate=lv.startDate&&lv.endDate;
+            const left=hasDate?posOf(lv.startDate):0;
+            const width=hasDate?widthOf(lv.startDate,lv.endDate):0;
+            const assigned=lv.assignedUserIds?.map(uid2=>users.find(u=>u.id===uid2)).filter(Boolean)||[];
+            return<div key={lv.id}className="gantt-row-wrap"style={{gridTemplateColumns:'180px 1fr'}}>
+              <div className="gantt-person-col"style={{alignSelf:'stretch',gap:6}}>
+                <div style={{width:3,height:16,borderRadius:2,background:color,flexShrink:0}}/>
+                <div style={{minWidth:0}}>
+                  <div style={{fontSize:11,fontWeight:600,letterSpacing:'-.01em',color:'var(--ink-2)'}}className="trunc">{lv.name}</div>
+                  <div style={{fontSize:10,color:color,fontWeight:500,marginTop:1}}>{cat}</div>
+                </div>
+              </div>
+              <div className="gantt-track-area"style={{height:48,position:'relative'}}>
+                {nowPos>0&&nowPos<100&&<div className="gantt-today"style={{left:`${nowPos}%`,background:'var(--danger)',opacity:.5}}/>}
+                {hasDate
+                  ?<div className="gantt-block"
+                    style={{left:`${left}%`,width:`${width}%`,top:9,background:color+'18',color,border:`1.5px solid ${color}30`}}
+                    onClick={()=>isAdmin&&setEditLav({...lv})}>
+                    {width>12&&`${lv.name} · ${lv.hoursTotal}h`}
+                  </div>
+                  :<div style={{position:'absolute',left:8,top:'50%',transform:'translateY(-50%)',fontSize:11,color:'var(--ink-5)',fontStyle:'italic'}}>
+                    No dates set {isAdmin&&<span style={{cursor:'pointer',color:'var(--gold)',textDecoration:'underline'}}onClick={()=>setEditLav({...lv})}>— set dates</span>}
+                  </div>
+                }
+              </div>
+            </div>;
+          });
+        })}
+      </GanttGrid>
+      {/* legend */}
+      <div style={{marginTop:12,display:'flex',gap:8,flexWrap:'wrap'}}>
+        {[...new Set(lavorazioni.map(l=>l.category))].map(cat=>{
+          const color=CATEGORY_COLORS[cat]||'#6B7280';
+          return<div key={cat}style={{display:'flex',alignItems:'center',gap:5,background:color+'12',border:`1px solid ${color}30`,borderRadius:'var(--r-xs)',padding:'3px 8px'}}>
+            <div style={{width:8,height:8,borderRadius:2,background:color}}/>
+            <span style={{fontSize:11,color,fontWeight:600}}>{cat}</span>
+          </div>;
+        })}
+      </div>
+      {editLav&&<LavModal lav={editLav}users={users}onSave={saveLav}onDelete={()=>{up({lavorazioni:lavorazioni.filter(x=>x.id!==editLav.id)});setEditLav(null);}}onClose={()=>setEditLav(null)}/>}
+    </div>;
+  };
+
+  return<div>
+    <div style={{display:'flex',gap:2,background:'var(--rule)',borderRadius:'var(--r-xs)',padding:2,width:'fit-content',marginBottom:20}}>
+      <button className={`btn btn-sm ${subTab==='phases'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setSubTab('phases')}><i className="ti ti-users"/>Phases</button>
+      <button className={`btn btn-sm ${subTab==='tasks'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setSubTab('tasks')}>
+        <i className="ti ti-list-check"/>Tasks {lavorazioni.length>0&&<span style={{fontSize:10,opacity:.7}}>({lavorazioni.length})</span>}
+      </button>
+    </div>
+    {subTab==='phases'?<PhasesView/>:<TasksView/>}
+  </div>;
+}
+
+/* ── LAVORAZIONE MODAL ── */
+function LavModal({lav,users,onSave,onDelete,onClose}){
+  const[l,setL]=useState(lav);
+  const up=p=>setL(x=>({...x,...p}));
+  return<Modal title="Edit task"onClose={onClose}width={460}
+    footer={<>
+      <button className="btn btn-danger btn-sm"onClick={onDelete}><i className="ti ti-trash"/></button>
+      <span className="spacer"/>
+      <button className="btn"onClick={onClose}>Cancel</button>
+      <button className="btn btn-primary"onClick={()=>onSave(l)}>Save task</button>
+    </>}>
+    <div className="form-row-2">
+      <div className="form-group"><div className="form-label">Task name</div><input value={l.name}onChange={e=>up({name:e.target.value})}/></div>
+      <div className="form-group"><div className="form-label">Category</div>
+        <select value={l.category}onChange={e=>up({category:e.target.value})}
+          style={{background:(CATEGORY_COLORS[l.category]||'#6B7280')+'15',color:CATEGORY_COLORS[l.category]||'#6B7280',borderColor:(CATEGORY_COLORS[l.category]||'#6B7280')+'40',fontWeight:500}}>
+          {ASSET_CATEGORIES.map(c=><option key={c}value={c}>{c}</option>)}
+        </select>
+      </div>
+    </div>
+    <div className="form-row-3">
+      <div className="form-group"><div className="form-label">Quantity</div><input type="number"min={0}value={l.quantity}onChange={e=>up({quantity:+e.target.value})}/></div>
+      <div className="form-group"><div className="form-label">Hours total</div><input type="number"min={0}step={.5}value={l.hoursTotal}onChange={e=>up({hoursTotal:+e.target.value})}/></div>
+      <div className="form-group"><div className="form-label">€/unit API</div><input type="number"min={0}step={.01}value={l.costPerUnit||0}onChange={e=>up({costPerUnit:+e.target.value})}/></div>
+    </div>
+    <div className="form-row-2">
+      <div className="form-group"><div className="form-label">Start date</div><input type="date"value={l.startDate||''}onChange={e=>up({startDate:e.target.value})}/></div>
+      <div className="form-group"><div className="form-label">End date</div><input type="date"value={l.endDate||''}onChange={e=>up({endDate:e.target.value})}/></div>
+    </div>
+    <div className="form-group"><div className="form-label">Notes</div><textarea value={l.notes||''}onChange={e=>up({notes:e.target.value})}rows={2}/></div>
+  </Modal>;
 }
 
 function BlockModal({block,users,duties,onSave,onDelete,onClose}){
@@ -1671,6 +1964,7 @@ function ProjLinksTab({p,isAdmin,up}){
 /* ═══════ GLOBAL TIMELINE ════════════════════════════════ */
 function GlobalTimeline({store,setProjectId,setView}){
   const{projects}=store;
+  const[mode,setMode]=useState('projects');
   const active=projects.filter(p=>p.status!=='completed'&&p.startDate&&p.endDate);
   const noDate=projects.filter(p=>p.status!=='completed'&&(!p.startDate||!p.endDate));
   if(!active.length&&!noDate.length)return<div className="empty-state"><i className="ti ti-calendar"/><p>No active projects</p></div>;
@@ -1683,45 +1977,104 @@ function GlobalTimeline({store,setProjectId,setView}){
   const months=[];let cur=new Date(minD);
   while(cur<maxD){months.push(new Date(cur));cur.setMonth(cur.getMonth()+1);}
   const statusColor=s=>s==='planning'?'var(--s-planning)':s==='active'?'var(--s-active)':s==='on_hold'?'var(--s-hold)':'var(--s-done)';
+
+  // Tasks mode: flatten all lavorazioni with dates across projects
+  const allLav=active.flatMap(p=>(p.lavorazioni||[]).filter(l=>l.startDate&&l.endDate).map(l=>({...l,project:p})));
+
+  const MonthHeader=()=><div style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1.5px solid var(--rule)'}}>
+    <div style={{padding:'9px 14px',background:'var(--paper)',borderRight:'1px solid var(--rule)'}}>
+      <span style={{fontSize:10.5,fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--ink-4)'}}>{mode==='tasks'?'Task':'Project'}</span>
+    </div>
+    <div style={{background:'var(--paper)',padding:'9px 0'}}>
+      <div style={{display:'flex'}}>{months.map((m,i)=><div key={i}style={{flex:`0 0 ${100/months.length}%`,borderLeft:'1px solid var(--rule)',padding:'0 7px'}}>
+        <span style={{fontSize:10,color:'var(--ink-4)'}}>{m.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</span>
+      </div>)}</div>
+    </div>
+  </div>;
+
   return<div className="fade">
-    <div className="page-hd"><div className="page-title">Timeline</div><div className="page-sub">All active projects at a glance</div></div>
-    <div className="gantt-wrap">
-      <div style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1.5px solid var(--rule)'}}>
-        <div style={{padding:'9px 14px',background:'var(--paper)',borderRight:'1px solid var(--rule)'}}>
-          <span style={{fontSize:10.5,fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--ink-4)'}}>Project</span>
-        </div>
-        <div style={{background:'var(--paper)',padding:'9px 0'}}>
-          <div style={{display:'flex'}}>{months.map((m,i)=><div key={i}style={{flex:`0 0 ${100/months.length}%`,borderLeft:'1px solid var(--rule)',padding:'0 7px'}}>
-            <span style={{fontSize:10,color:'var(--ink-4)'}}>{m.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</span>
-          </div>)}</div>
-        </div>
+    <div className="row page-hd">
+      <div><div className="page-title">Timeline</div><div className="page-sub">All active projects at a glance</div></div>
+      <span className="spacer"/>
+      <div className="row"style={{gap:2,background:'var(--rule)',borderRadius:'var(--r-xs)',padding:2}}>
+        <button className={`btn btn-xs ${mode==='projects'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setMode('projects')}><i className="ti ti-layout-kanban"/>Projects</button>
+        <button className={`btn btn-xs ${mode==='tasks'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setMode('tasks')}>
+          <i className="ti ti-list-check"/>Tasks {allLav.length>0&&<span style={{fontSize:9,opacity:.7}}>({allLav.length})</span>}
+        </button>
       </div>
-      {active.map(p=>{
-        const left=pos(p.startDate),right=pos(p.endDate),w=right-left;
-        const pct=fmt.elapsed(p.startDate,p.endDate);
-        const sc=statusColor(p.status);
-        return<div key={p.id}style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1px solid var(--rule)'}}>
-          <div style={{padding:'10px 14px',borderRight:'1px solid var(--rule)',display:'flex',alignItems:'center',gap:8,background:'#fcfbf8'}}>
-            <div style={{width:3,height:18,borderRadius:2,background:sc,flexShrink:0}}/>
-            <span style={{fontSize:13,fontWeight:500,cursor:'pointer',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',letterSpacing:'-.01em'}}
-              onClick={()=>{setProjectId(p.id);setView('project-detail');}}>{p.title}</span>
-          </div>
-          <div style={{position:'relative',minHeight:44}}>
-            {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:1.5,background:'var(--danger)',zIndex:3,opacity:.45}}/>}
-            <div onClick={()=>{setProjectId(p.id);setView('project-detail');}}
-              style={{position:'absolute',left:`${left}%`,width:`${Math.max(w,.8)}%`,top:'50%',transform:'translateY(-50%)',height:26,borderRadius:999,background:sc+'18',border:`1.5px solid ${sc}35`,cursor:'pointer',overflow:'hidden'}}>
-              <div style={{width:`${pct}%`,height:'100%',background:sc,opacity:.3}}/>
-              {w>10&&<span style={{position:'absolute',left:9,top:'50%',transform:'translateY(-50%)',fontSize:10.5,color:sc,fontWeight:600,whiteSpace:'nowrap',letterSpacing:'-.01em'}}>{p.title}</span>}
+    </div>
+    <div className="gantt-wrap">
+      <MonthHeader/>
+      {mode==='projects'&&<>
+        {active.map(p=>{
+          const left=pos(p.startDate),right=pos(p.endDate),w=right-left;
+          const pct=fmt.elapsed(p.startDate,p.endDate);
+          const sc=statusColor(p.status);
+          const lav=(p.lavorazioni||[]).filter(l=>l.startDate&&l.endDate);
+          const rowH=lav.length>0?Math.max(44,lav.length*28+24):44;
+          return<div key={p.id}style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1px solid var(--rule)'}}>
+            <div style={{padding:'10px 14px',borderRight:'1px solid var(--rule)',display:'flex',alignItems:'flex-start',gap:8,background:'#fcfbf8',paddingTop:12}}>
+              <div style={{width:3,height:18,borderRadius:2,background:sc,flexShrink:0,marginTop:2}}/>
+              <div style={{minWidth:0}}>
+                <span style={{fontSize:13,fontWeight:500,cursor:'pointer',display:'block',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',letterSpacing:'-.01em'}}
+                  onClick={()=>{setProjectId(p.id);setView('project-detail');}}>{p.title}</span>
+                {lav.length>0&&<span style={{fontSize:10,color:'var(--ink-4)',marginTop:2,display:'block'}}>{lav.length} tasks</span>}
+              </div>
             </div>
-          </div>
-        </div>;
-      })}
+            <div style={{position:'relative',minHeight:rowH}}>
+              {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:1.5,background:'var(--danger)',zIndex:4,opacity:.45}}/>}
+              {/* project bar */}
+              <div onClick={()=>{setProjectId(p.id);setView('project-detail');}}
+                style={{position:'absolute',left:`${left}%`,width:`${Math.max(w,.8)}%`,top:9,height:22,borderRadius:999,background:sc+'18',border:`1.5px solid ${sc}35`,cursor:'pointer',overflow:'hidden',zIndex:2}}>
+                <div style={{width:`${pct}%`,height:'100%',background:sc,opacity:.3}}/>
+                {w>10&&<span style={{position:'absolute',left:9,top:'50%',transform:'translateY(-50%)',fontSize:10,color:sc,fontWeight:600,whiteSpace:'nowrap'}}>{p.title}</span>}
+              </div>
+              {/* lavorazioni sub-bars */}
+              {lav.map((lv,li)=>{
+                const lLeft=pos(lv.startDate),lW=Math.max(.5,pos(lv.endDate)-lLeft);
+                const color=CATEGORY_COLORS[lv.category]||'#6B7280';
+                return<div key={lv.id}style={{position:'absolute',left:`${lLeft}%`,width:`${lW}%`,top:38+li*24,height:18,borderRadius:4,background:color,opacity:.55,zIndex:1,overflow:'hidden',cursor:'pointer'}}
+                  title={`${lv.name} · ${lv.hoursTotal}h`}
+                  onClick={()=>{setProjectId(p.id);setView('project-detail');}}>
+                  {lW>8&&<span style={{position:'absolute',left:5,top:'50%',transform:'translateY(-50%)',fontSize:9,color:'#fff',fontWeight:600,whiteSpace:'nowrap'}}>{lv.name}</span>}
+                </div>;
+              })}
+            </div>
+          </div>;
+        })}
+      </>}
+      {mode==='tasks'&&<>
+        {allLav.length===0&&<div style={{textAlign:'center',padding:'32px',color:'var(--ink-4)',fontSize:13}}>No tasks with dates across active projects.</div>}
+        {allLav.map(lv=>{
+          const color=CATEGORY_COLORS[lv.category]||'#6B7280';
+          const lLeft=pos(lv.startDate),lW=Math.max(.8,pos(lv.endDate)-lLeft);
+          return<div key={lv.id}style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1px solid var(--rule)'}}>
+            <div style={{padding:'8px 14px',borderRight:'1px solid var(--rule)',display:'flex',alignItems:'center',gap:7,background:'#fcfbf8'}}>
+              <div style={{width:3,height:14,borderRadius:2,background:color,flexShrink:0}}/>
+              <div style={{minWidth:0}}>
+                <div style={{fontSize:12,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{lv.name}</div>
+                <div style={{fontSize:10,color:'var(--ink-4)',cursor:'pointer'}}onClick={()=>{setProjectId(lv.project.id);setView('project-detail');}}>{lv.project.title}</div>
+              </div>
+            </div>
+            <div style={{position:'relative',minHeight:40}}>
+              {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:1.5,background:'var(--danger)',zIndex:3,opacity:.45}}/>}
+              <div style={{position:'absolute',left:`${lLeft}%`,width:`${lW}%`,top:'50%',transform:'translateY(-50%)',height:22,borderRadius:4,background:color+'20',border:`1.5px solid ${color}50`,cursor:'pointer',overflow:'hidden'}}
+                onClick={()=>{setProjectId(lv.project.id);setView('project-detail');}}>
+                {lW>12&&<span style={{position:'absolute',left:7,top:'50%',transform:'translateY(-50%)',fontSize:10,color,fontWeight:600,whiteSpace:'nowrap'}}>{lv.name} · {lv.hoursTotal}h</span>}
+              </div>
+            </div>
+          </div>;
+        })}
+      </>}
       {noDate.length>0&&<div style={{padding:'12px 14px',borderTop:'1px solid var(--rule)',background:'var(--paper)',color:'var(--ink-4)',fontSize:12}}>
         <strong style={{color:'var(--ink-3)'}}>{noDate.length} project{noDate.length>1?'s':''} without dates:</strong> {noDate.map(p=>p.title).join(' · ')}
       </div>}
-      <div style={{padding:'8px 14px',background:'var(--paper)',display:'flex',gap:14,alignItems:'center',borderTop:'1px solid var(--rule)'}}>
+      <div style={{padding:'8px 14px',background:'var(--paper)',display:'flex',gap:14,flexWrap:'wrap',alignItems:'center',borderTop:'1px solid var(--rule)'}}>
         <div className="row"style={{gap:5}}><div style={{width:14,height:1.5,background:'var(--danger)',opacity:.45}}/><span style={{fontSize:11,color:'var(--ink-4)'}}>Today</span></div>
-        <span style={{fontSize:11,color:'var(--ink-4)'}}>Click any bar to open project</span>
+        {mode==='tasks'&&Object.entries(CATEGORY_COLORS).map(([cat,color])=>allLav.some(l=>l.category===cat)&&<div key={cat}style={{display:'flex',alignItems:'center',gap:4}}>
+          <div style={{width:8,height:8,borderRadius:2,background:color}}/><span style={{fontSize:11,color:'var(--ink-4)'}}>{cat}</span>
+        </div>)}
+        <span style={{fontSize:11,color:'var(--ink-4)',marginLeft:'auto'}}>Click any bar to open project</span>
       </div>
     </div>
   </div>;
