@@ -1382,8 +1382,8 @@ function ProjectDetail({id,store,me,setView,setEstimationId,setNavView}){
       </div>
       <div className="tabs">
         {['overview','timeline','team','log','files','links'].map(t=><button key={t}className={`tab ${tab===t?'active':''}`}onClick={()=>setTab(t)}style={{textTransform:'capitalize'}}>{t}</button>)}
-        {p.estimationId&&<button className={`tab ${tab==='estimator'?'active':''}`}onClick={()=>setTab('estimator')}style={{display:'flex',alignItems:'center',gap:5}}>
-          <i className="ti ti-calculator"style={{fontSize:12}}/>Estimator
+        {p.estimationId&&<button className={`tab ${tab==='estimator'?'active':''}`}onClick={()=>setTab('estimator')}style={{display:'flex',alignItems:'center',gap:5,color:tab==='estimator'?'var(--gold)':'var(--gold)',fontWeight:tab==='estimator'?600:500}}>
+          <i className="ti ti-calculator"style={{fontSize:13,color:'var(--gold)'}}/>Estimator
         </button>}
       </div>
     </div>
