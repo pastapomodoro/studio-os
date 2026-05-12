@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Studio OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -15,81 +16,100 @@
 html,body,#root{height:100%}
 
 :root{
-  --sidebar-w:232px;
-  --topbar-h:54px;
-  --ink:       #0E0D0B;
-  --ink-2:     #2E2C28;
-  --ink-3:     #6E6A62;
-  --ink-4:     #AAA49A;
-  --ink-5:     #C8C2B8;
-  --parchment: #EFEDE4;
-  --parchment-2:#E8E5DB;
-  --paper:     #F8F6F0;
-  --white:     #FDFCF8;
-  --rule:      #E2DDD3;
-  --rule-2:    #CCC7BB;
-  --sb-bg:     #0E0D0B;
-  --sb-border: rgba(255,255,255,0.055);
-  --sb-text:   #6A6860;
-  --sb-active: #EDE9E0;
+  --sidebar-w:224px;
+  --topbar-h:52px;
+
+  /* ── ZINC NEUTRAL BASE ── */
+  --ink:       #0F0F11;
+  --ink-2:     #27272A;
+  --ink-3:     #52525B;
+  --ink-4:     #A1A1AA;
+  --ink-5:     #D4D4D8;
+
+  --parchment:   #F4F4F5;
+  --parchment-2: #E4E4E7;
+  --paper:       #FAFAFA;
+  --white:       #FFFFFF;
+  --surface-2:   #F1F1F3;
+  --surface-3:   #E4E4E7;
+
+  --rule:   rgba(0,0,0,0.07);
+  --rule-2: rgba(0,0,0,0.11);
+
+  /* ── DARK SIDEBAR ── */
+  --sb-bg:     #111113;
+  --sb-border: rgba(255,255,255,0.06);
+  --sb-text:   #A1A1AA;
+  --sb-active: #F4F4F5;
   --sb-hover:  rgba(255,255,255,0.04);
-  --sb-accent: rgba(201,149,42,0.15);
+
+  /* ── STATUS ── */
   --s-planning: #3B5BDB;
-  --s-active:   #2A9D5C;
-  --s-hold:     #7C7C7C;
-  --s-done:     #1A1A18;
-  --gold:      #C9952A;
-  --gold-dk:   #A87820;
-  --gold-lt:   #FAF0DC;
-  --gold-mid:  #F0D99A;
-  --gold-text: #6B4A08;
-  --danger:    #C0392B;
-  --danger-lt: #FEF0EE;
-  --info:      #2563EB;
-  --info-lt:   #EFF4FF;
-  --r-xs: 4px;
-  --r-sm: 7px;
-  --r-md: 11px;
-  --r-lg: 16px;
-  --r-xl: 24px;
-  --r-pill: 999px;
-  --serif: 'Instrument Serif', Georgia, serif;
-  --sans:  'DM Sans', system-ui, sans-serif;
+  --s-active:   #16A34A;
+  --s-hold:     #71717A;
+  --s-done:     #27272A;
+
+  /* ── ACCENT: ELECTRIC BLUE (no purple) ── */
+  --gold:      #0066EE;
+  --gold-dk:   #0052CC;
+  --gold-lt:   rgba(0,102,238,0.07);
+  --gold-mid:  rgba(0,102,238,0.14);
+  --gold-text: #0044B3;
+
+  --danger:    #DC2626;
+  --danger-lt: rgba(220,38,38,0.07);
+  --info:      #0066EE;
+  --info-lt:   rgba(0,102,238,0.07);
+
+  --r-xs:  4px;
+  --r-sm:  7px;
+  --r-md:  10px;
+  --r-lg:  14px;
+  --r-xl:  18px;
+  --r-2xl: 24px;
+  --r-pill:999px;
+
+  --sans:  'Plus Jakarta Sans', system-ui, sans-serif;
   --mono:  'DM Mono', monospace;
-  --shadow-xs: 0 1px 3px rgba(14,13,11,.07);
-  --shadow-sm: 0 2px 8px rgba(14,13,11,.08), 0 0 0 1px rgba(14,13,11,.04);
-  --shadow-md: 0 6px 24px rgba(14,13,11,.11), 0 0 0 1px rgba(14,13,11,.05);
-  --shadow-lg: 0 20px 60px rgba(14,13,11,.18), 0 0 0 1px rgba(14,13,11,.07);
-  --shadow-card: 0 1px 3px rgba(14,13,11,.06), 0 0 0 1px var(--rule);
+
+  /* ── CLEAN SHADOWS (no colored glow) ── */
+  --shadow-xs:   0 1px 2px rgba(0,0,0,.05);
+  --shadow-sm:   0 1px 3px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.04);
+  --shadow-md:   0 4px 16px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04);
+  --shadow-lg:   0 16px 48px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.06);
+  --shadow-card: 0 0 0 1px rgba(0,0,0,.07);
 }
 
-body{font-family:var(--sans);background:var(--parchment);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:var(--sans);background:var(--parchment);color:var(--ink);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--rule-2);border-radius:2px}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.22)}
 
 /* ── INPUTS ── */
 input,select,textarea{
   font-family:var(--sans);font-size:13px;color:var(--ink);
-  background:var(--white);border:1.5px solid var(--rule-2);
-  border-radius:var(--r-sm);padding:8px 11px;outline:none;width:100%;
+  background:var(--white);border:1px solid var(--parchment-2);
+  border-radius:var(--r-sm);padding:9px 12px;outline:none;width:100%;
   transition:border-color .15s,box-shadow .15s
 }
 input:focus,select:focus,textarea:focus{
-  border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,149,42,.12)
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(0,102,238,.12)
 }
+input:hover:not(:focus),select:hover:not(:focus),textarea:hover:not(:focus){border-color:var(--rule-2)}
 input.err,select.err,textarea.err{border-color:var(--danger)!important}
-input::placeholder,textarea::placeholder{color:var(--ink-4)}
+input::placeholder,textarea::placeholder{color:var(--ink-5)}
 input[type=range]{padding:0;border:none;background:transparent;box-shadow:none;cursor:pointer;accent-color:var(--gold)}
 input[type=file]{display:none}
 textarea{resize:vertical;min-height:76px;line-height:1.65}
 select{
   cursor:pointer;appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23B8B4AC' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 9px center;padding-right:28px
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%2371717A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px
 }
-.form-group{margin-bottom:15px}
-.form-label{display:block;font-size:11.5px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px}
 .form-hint{font-size:11px;color:var(--ink-4);margin-top:4px}
 .err-msg{font-size:11.5px;color:var(--danger);margin-top:4px;display:flex;align-items:center;gap:4px}
 .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -100,24 +120,27 @@ select{
   display:inline-flex;align-items:center;gap:6px;
   font-family:var(--sans);font-size:13px;font-weight:500;
   padding:7px 14px;border-radius:var(--r-sm);
-  border:1.5px solid var(--rule-2);
-  background:var(--white);color:var(--ink-2);
-  cursor:pointer;transition:all .14s;white-space:nowrap;line-height:1;letter-spacing:-.01em
+  border:1px solid var(--parchment-2);
+  background:var(--white);color:var(--ink-3);
+  cursor:pointer;transition:all .15s cubic-bezier(.16,1,.3,1);white-space:nowrap;line-height:1;letter-spacing:-.01em
 }
-.btn:hover{background:var(--parchment);border-color:var(--rule-2);color:var(--ink)}
-.btn:active{transform:scale(.98)}
+.btn:hover{background:var(--surface-2);border-color:var(--rule-2);color:var(--ink)}
+.btn:active{transform:scale(.98);transition-duration:.08s}
 .btn i{font-size:15px}
-.btn-sm{padding:5px 10px;font-size:12px;border-radius:var(--r-xs)}
+.btn-sm{padding:5px 10px;font-size:12px}
 .btn-sm i{font-size:13px}
-.btn-xs{padding:3px 8px;font-size:11px;border-radius:var(--r-xs)}
-.btn-primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.btn-primary:hover{background:var(--ink-2);color:var(--paper)}
-.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold)}
-.btn-gold:hover{background:#b8841f;color:#fff}
-.btn-ghost{border-color:transparent;background:transparent}
-.btn-ghost:hover{background:var(--parchment);border-color:transparent}
-.btn-danger{color:var(--danger);border-color:rgba(201,42,42,.2)}
-.btn-danger:hover{background:var(--danger-lt)}
+.btn-xs{padding:3px 8px;font-size:11px}
+.btn-primary{
+  background:var(--gold);color:#fff;border-color:var(--gold);
+  box-shadow:0 1px 4px rgba(0,102,238,.2)
+}
+.btn-primary:hover{background:var(--gold-dk);border-color:var(--gold-dk);box-shadow:0 2px 8px rgba(0,102,238,.28)}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold);box-shadow:0 1px 4px rgba(0,102,238,.2)}
+.btn-gold:hover{background:var(--gold-dk);border-color:var(--gold-dk)}
+.btn-ghost{border-color:transparent;background:transparent;color:var(--ink-3)}
+.btn-ghost:hover{background:var(--surface-2);border-color:var(--rule);color:var(--ink)}
+.btn-danger{color:var(--danger);border-color:rgba(220,38,38,.2);background:transparent}
+.btn-danger:hover{background:var(--danger-lt);border-color:rgba(220,38,38,.3)}
 
 /* ── LAYOUT ── */
 .shell{display:flex;height:100vh;overflow:hidden}
@@ -126,82 +149,82 @@ select{
   background:var(--sb-bg);display:flex;flex-direction:column;
   border-right:1px solid var(--sb-border);overflow-y:auto
 }
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--parchment);background-image:radial-gradient(circle at 100% 0%,rgba(201,149,42,.03) 0%,transparent 50%)}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--parchment)}
 .topbar{
-  background:var(--white);border-bottom:1.5px solid var(--rule);
-  padding:0 32px;height:var(--topbar-h);display:flex;align-items:center;
+  background:var(--white);border-bottom:1px solid var(--rule);
+  padding:0 28px;height:var(--topbar-h);display:flex;align-items:center;
   gap:12px;flex-shrink:0;position:sticky;top:0;z-index:10
 }
-.page{flex:1;overflow-y:auto;padding:36px 32px;max-width:100%}
+.page{flex:1;overflow-y:auto;padding:32px 28px;max-width:100%}
 
 /* ── SIDEBAR ── */
 .sb-logo{
-  padding:22px 18px 16px;border-bottom:1px solid var(--sb-border);
+  padding:18px 14px 12px;border-bottom:1px solid var(--sb-border);
   display:flex;align-items:center;gap:10px
 }
 .sb-mark{
-  width:30px;height:30px;border-radius:8px;
-  background:linear-gradient(135deg,var(--gold) 0%,#E8A820 100%);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 2px 8px rgba(201,149,42,.35)
+  width:26px;height:26px;border-radius:6px;
+  background:var(--gold);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
 }
-.sb-wordmark{font-size:15px;font-family:var(--serif);color:var(--sb-active);letter-spacing:.01em;font-style:italic}
-.sb-subtitle{font-size:9.5px;color:rgba(255,255,255,.2);margin-top:1px;letter-spacing:.07em;text-transform:uppercase}
+.sb-wordmark{font-size:13px;font-family:var(--sans);font-weight:600;color:var(--sb-active);letter-spacing:-.02em}
+.sb-subtitle{font-size:9px;color:rgba(255,255,255,.16);margin-top:1px;letter-spacing:.08em;text-transform:uppercase}
 .sb-section{padding:14px 10px 4px;position:relative}
 .sb-section-label{
-  font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(255,255,255,.18);padding:0 8px 8px
+  font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.14);padding:0 8px 7px
 }
 .nav-btn{
   display:flex;align-items:center;gap:9px;
-  padding:8px 10px;border-radius:var(--r-sm);
-  cursor:pointer;transition:all .12s;
-  font-size:13px;color:var(--sb-text);
+  padding:7px 10px;border-radius:var(--r-sm);
+  cursor:pointer;transition:background .12s,color .12s;
+  font-size:13px;color:var(--sb-text);font-weight:400;
   border:none;background:none;width:100%;text-align:left;font-family:var(--sans);letter-spacing:-.01em;margin-bottom:1px
 }
-.nav-btn:hover{background:var(--sb-hover);color:#d4d0c8}
-.nav-btn.active{background:rgba(255,255,255,.07);color:var(--sb-active);font-weight:500;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.nav-btn i{font-size:15px;opacity:.55;flex-shrink:0}
-.nav-btn.active i{opacity:.9;color:var(--gold)}
-.sb-bottom{margin-top:auto;padding:12px 10px 18px;border-top:1px solid var(--sb-border)}
+.nav-btn:hover{background:rgba(255,255,255,.05);color:#D4D4D8}
+.nav-btn.active{background:rgba(255,255,255,.07);color:var(--sb-active);font-weight:500}
+.nav-btn i{font-size:15px;opacity:.55;flex-shrink:0;transition:opacity .12s}
+.nav-btn:hover i{opacity:.8}
+.nav-btn.active i{opacity:1;color:var(--gold)}
+.sb-bottom{margin-top:auto;padding:10px 10px 14px;border-top:1px solid var(--sb-border)}
 .sb-user{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--r-sm)}
-.sb-user-name{font-size:12.5px;font-weight:500;color:var(--sb-active);letter-spacing:-.02em}
+.sb-user-name{font-size:12px;font-weight:600;color:var(--sb-active);letter-spacing:-.02em}
 .sb-user-role{font-size:10px;color:var(--sb-text);text-transform:capitalize}
 
 /* ── AVATAR ── */
-.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;letter-spacing:.01em}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;letter-spacing:.01em;font-size:11px}
 
 /* ── STATUS SYSTEM ── */
-.s-planning{background:#EEF2FF;color:#3B5BDB;border:1px solid #BAC8FF}
-.s-active  {background:#EBFBEE;color:#2A9D5C;border:1px solid #8CE99A}
-.s-on_hold {background:#F4F4F4;color:#5C5C5C;border:1px solid #D0D0D0}
-.s-completed{background:#1A1A18;color:#E8E4DA;border:1px solid rgba(255,255,255,.08)}
+.s-planning {background:rgba(59,91,219,.1);color:#3B5BDB;border:1px solid rgba(59,91,219,.22)}
+.s-active   {background:rgba(22,163,74,.1);color:#16A34A;border:1px solid rgba(22,163,74,.22)}
+.s-on_hold  {background:rgba(113,113,122,.1);color:#71717A;border:1px solid rgba(113,113,122,.22)}
+.s-completed{background:var(--surface-2);color:var(--ink-4);border:1px solid var(--rule)}
 
-.status-dot-planning{background:var(--s-planning)}
-.status-dot-active  {background:var(--s-active)}
-.status-dot-on_hold {background:var(--s-hold)}
-.status-dot-completed{background:var(--s-done)}
+.status-dot-planning{background:#3B5BDB}
+.status-dot-active  {background:#16A34A}
+.status-dot-on_hold {background:#71717A}
+.status-dot-completed{background:#A1A1AA}
 
 /* ── STATUS ACCENT BARS ── */
-.accent-planning {background:var(--s-planning)}
-.accent-active   {background:var(--s-active)}
-.accent-on_hold  {background:var(--s-hold)}
-.accent-completed{background:var(--s-done)}
+.accent-planning {background:#3B5BDB}
+.accent-active   {background:#16A34A}
+.accent-on_hold  {background:#71717A}
+.accent-completed{background:#A1A1AA}
 
 /* ── BADGE ── */
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:var(--r-pill);white-space:nowrap;letter-spacing:.02em}
-.badge-gold  {background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(201,149,42,.2)}
-.badge-gray  {background:#F1F3F5;color:#495057;border:1px solid #DEE2E6}
-.badge-ink   {background:var(--ink);color:var(--paper)}
-.badge-green {background:#EBFBEE;color:#2F9E44;border:1px solid #B2F2BB}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:2px 8px;border-radius:var(--r-pill);white-space:nowrap;letter-spacing:.02em}
+.badge-gold  {background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(0,102,238,.18)}
+.badge-gray  {background:var(--surface-2);color:var(--ink-3);border:1px solid var(--rule)}
+.badge-ink   {background:var(--surface-3);color:var(--ink-2);border:1px solid var(--rule-2)}
+.badge-green {background:rgba(22,163,74,.1);color:#16A34A;border:1px solid rgba(22,163,74,.22)}
 
 /* ── CARD ── */
-.card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);padding:22px 24px;box-shadow:var(--shadow-xs)}
-.card-flat{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-md);padding:15px 17px;box-shadow:var(--shadow-xs)}
+.card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);padding:22px 24px;box-shadow:var(--shadow-card)}
+.card-flat{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-md);padding:14px 16px}
 
 /* ── MODAL ── */
 .modal-overlay{
-  position:fixed;inset:0;background:rgba(13,12,10,.55);backdrop-filter:blur(4px);
+  position:fixed;inset:0;background:rgba(0,0,0,.36);backdrop-filter:blur(6px);
   z-index:100;display:flex;align-items:center;justify-content:center;padding:20px
 }
 .modal-box{
@@ -209,63 +232,63 @@ select{
   width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg)
 }
 .modal-hd{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 24px 0;gap:12px}
-.modal-title{font-size:17px;font-weight:600;letter-spacing:-.03em;line-height:1.2}
+.modal-title{font-size:16px;font-weight:700;letter-spacing:-.03em;line-height:1.2;color:var(--ink)}
 .modal-body{padding:16px 24px}
-.modal-ft{padding:12px 24px 22px;display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.modal-ft{padding:12px 24px 22px;display:flex;gap:8px;justify-content:flex-end;align-items:center;border-top:1px solid var(--rule);margin-top:4px}
 
 /* ── TABLE ── */
 .tbl{width:100%;border-collapse:collapse}
 .tbl th{
-  font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);
-  padding:11px 16px;text-align:left;border-bottom:1.5px solid var(--rule);background:var(--paper);white-space:nowrap
+  font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4);
+  padding:10px 16px;text-align:left;border-bottom:1px solid var(--parchment-2);background:var(--paper);white-space:nowrap
 }
-.tbl td{padding:13px 16px;border-bottom:1px solid var(--rule);font-size:13px;vertical-align:middle}
+.tbl td{padding:13px 16px;border-bottom:1px solid var(--rule);font-size:13px;vertical-align:middle;color:var(--ink-2)}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tbody tr{cursor:pointer;transition:background .1s}
-.tbl tbody tr:hover td{background:#FAFAF6}
+.tbl tbody tr:hover td{background:var(--surface-2)}
 
 /* ── PROGRESS ── */
-.prog-track{background:var(--rule);border-radius:var(--r-pill);overflow:hidden}
-.prog-fill{height:100%;border-radius:var(--r-pill);transition:width .3s}
+.prog-track{background:var(--surface-3);border-radius:var(--r-pill);overflow:hidden}
+.prog-fill{height:100%;border-radius:var(--r-pill);transition:width .35s cubic-bezier(.4,0,.2,1)}
 
 /* ── TABS ── */
-.tabs{display:flex;border-bottom:1.5px solid var(--rule);gap:0}
+.tabs{display:flex;border-bottom:1px solid var(--rule);gap:0}
 .tab{
-  padding:12px 18px;font-size:13px;cursor:pointer;
-  border-bottom:2px solid transparent;margin-bottom:-1.5px;
-  color:var(--ink-4);transition:all .14s;font-weight:400;letter-spacing:-.01em;
+  padding:10px 15px;font-size:13px;cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  color:var(--ink-4);transition:color .15s,border-color .15s;font-weight:400;
   background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans)
 }
 .tab:hover{color:var(--ink-3)}
-.tab.active{color:var(--ink);border-bottom-color:var(--gold);font-weight:500}
+.tab.active{color:var(--ink);border-bottom-color:var(--gold);font-weight:600}
 
 /* ── EST TABLE ── */
 .est-tbl{width:100%;border-collapse:collapse}
-.est-tbl th{font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4);padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--rule);background:var(--paper);white-space:nowrap}
-.est-tbl td{padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:middle}
+.est-tbl th{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4);padding:9px 10px;text-align:left;border-bottom:1px solid var(--parchment-2);background:var(--paper);white-space:nowrap}
+.est-tbl td{padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:middle;color:var(--ink-2)}
 .est-tbl tr:last-child td{border-bottom:none}
-.est-tbl input,.est-tbl select{font-size:12px;padding:5px 7px;border-radius:var(--r-xs);border-color:transparent;background:transparent}
-.est-tbl tr:hover input,.est-tbl tr:hover select{background:var(--white);border-color:var(--rule-2)}
+.est-tbl input,.est-tbl select{font-size:12px;padding:5px 7px;border-radius:var(--r-xs);border-color:transparent;background:transparent;color:var(--ink)}
+.est-tbl tr:hover input,.est-tbl tr:hover select{background:var(--surface-2);border-color:var(--rule)}
+.est-tbl tbody tr:hover td{background:var(--surface-2)}
 
 /* ── PROJECT CARD ── */
 .proj-card{
   background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);
-  padding:20px 20px 17px 24px;cursor:pointer;
-  transition:box-shadow .18s,border-color .18s,transform .18s;
-  position:relative;overflow:hidden;display:flex;flex-direction:column;gap:13px;
-  box-shadow:var(--shadow-xs)
+  padding:20px 20px 18px 22px;cursor:pointer;
+  transition:box-shadow .2s cubic-bezier(.16,1,.3,1),border-color .2s,transform .2s;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px
 }
-.proj-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r-lg) 0 0 var(--r-lg)}
-.proj-card.s-planning::before{background:var(--s-planning)}
-.proj-card.s-active::before  {background:var(--s-active)}
-.proj-card.s-on_hold::before {background:var(--s-hold)}
-.proj-card.s-completed::before{background:var(--s-done)}
-.proj-card:hover{box-shadow:var(--shadow-md);border-color:var(--rule-2);transform:translateY(-1px)}
+.proj-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.proj-card.s-planning::before{background:#3B5BDB}
+.proj-card.s-active::before  {background:#16A34A}
+.proj-card.s-on_hold::before {background:#71717A}
+.proj-card.s-completed::before{background:#A1A1AA}
+.proj-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.06);transform:translateY(-2px)}
 
 /* ── GANTT ── */
-.gantt-wrap{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-xs)}
-.gantt-header-row{display:grid;border-bottom:1.5px solid var(--rule)}
-.gantt-person-col{padding:9px 14px;background:var(--paper);border-right:1px solid var(--rule);display:flex;align-items:center;gap:8px}
+.gantt-wrap{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden}
+.gantt-header-row{display:grid;border-bottom:1px solid var(--rule)}
+.gantt-person-col{padding:9px 14px;background:var(--paper);border-right:1px solid var(--rule);display:flex;align-items:center;gap:8px;color:var(--ink-3)}
 .gantt-track-area{position:relative;overflow:hidden}
 .gantt-row-wrap{display:grid;border-bottom:1px solid var(--rule)}
 .gantt-row-wrap:last-child{border-bottom:none}
@@ -273,37 +296,38 @@ select{
   position:absolute;border-radius:var(--r-pill);
   display:flex;align-items:center;padding:0 10px;
   font-size:10.5px;font-weight:500;overflow:hidden;white-space:nowrap;
-  cursor:pointer;transition:opacity .14s,transform .14s;top:9px;height:28px
+  cursor:pointer;transition:opacity .15s,transform .15s;top:9px;height:26px
 }
-.gantt-block:hover{opacity:.82;transform:scaleY(.96)}
-.gantt-today{position:absolute;top:0;bottom:0;width:1.5px;z-index:4;pointer-events:none}
+.gantt-block:hover{opacity:.8;transform:scaleY(.95)}
+.gantt-today{position:absolute;top:0;bottom:0;width:1px;z-index:4;pointer-events:none}
 
 /* ── LOG ── */
 .log-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--rule)}
 .log-item:last-child{border-bottom:none}
 .log-spine{display:flex;flex-direction:column;align-items:center;gap:0;padding-top:4px;flex-shrink:0}
-.log-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px var(--parchment)}
-.log-line{width:1px;flex:1;background:var(--rule-2);margin-top:4px;opacity:.6}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px var(--white)}
+.log-line{width:1px;flex:1;background:var(--rule);margin-top:5px}
 
 /* ── FILE ── */
 .file-row{
   display:flex;align-items:center;gap:10px;padding:10px 12px;
-  background:var(--white);border:1px solid var(--rule);border-radius:var(--r-md);
-  transition:border-color .14s;cursor:pointer
+  background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-md);
+  transition:border-color .15s,background .15s;cursor:pointer
 }
-.file-row:hover{border-color:var(--rule-2)}
+.file-row:hover{border-color:var(--rule-2);background:var(--surface-2)}
 
 /* ── UPLOAD ZONE ── */
 .drop-zone{
-  border:2px dashed var(--rule-2);border-radius:var(--r-md);
-  padding:32px;text-align:center;cursor:pointer;transition:all .15s;background:var(--paper)
+  border:1.5px dashed var(--parchment-2);border-radius:var(--r-md);
+  padding:32px;text-align:center;cursor:pointer;transition:all .18s;background:var(--paper)
 }
 .drop-zone:hover{border-color:var(--gold);background:var(--gold-lt)}
 
 /* ── STAT CARD ── */
-.stat-box{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-md);padding:16px 18px}
-.stat-label{font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px}
-.stat-num{font-family:var(--mono);font-size:26px;font-weight:400;letter-spacing:-.05em;color:var(--ink)}
+.stat-box{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-md);padding:16px 18px;transition:border-color .15s,box-shadow .15s}
+.stat-box:hover{border-color:var(--rule-2);box-shadow:var(--shadow-xs)}
+.stat-label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-4);margin-bottom:8px}
+.stat-num{font-family:var(--mono);font-size:26px;font-weight:400;letter-spacing:-.04em;color:var(--ink)}
 
 /* ── MISC ── */
 .divider{border:none;border-top:1px solid var(--rule);margin:16px 0}
@@ -313,33 +337,33 @@ select{
 .mono{font-family:var(--mono)}
 .trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .empty-state{text-align:center;padding:60px 20px;color:var(--ink-4)}
-.empty-state i{font-size:36px;margin-bottom:14px;display:block;opacity:.3}
-.empty-state p{font-size:15px;font-family:var(--serif);font-style:italic;color:var(--ink-3);margin-bottom:6px}
+.empty-state i{font-size:36px;margin-bottom:14px;display:block;opacity:.18}
+.empty-state p{font-size:15px;font-weight:600;letter-spacing:-.02em;color:var(--ink-3);margin-bottom:6px}
 .empty-state small{font-size:12px;color:var(--ink-5)}
-.banner{padding:11px 15px;border-radius:var(--r-sm);display:flex;align-items:flex-start;gap:10px;font-size:12.5px;line-height:1.55}
-.banner-amber{background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(201,149,42,.2)}
-.banner-green{background:#EBFBEE;color:#1e6630;border:1px solid #B2F2BB}
-.banner-blue {background:#EEF2FF;color:#1c3879;border:1px solid #C5D0FA}
-.link-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
+.banner{padding:12px 15px;border-radius:var(--r-md);display:flex;align-items:flex-start;gap:10px;font-size:12.5px;line-height:1.55}
+.banner-amber{background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(0,102,238,.18)}
+.banner-green{background:rgba(22,163,74,.08);color:#15803D;border:1px solid rgba(22,163,74,.2)}
+.banner-blue {background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(0,102,238,.15)}
+.link-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule)}
 .link-row:last-child{border-bottom:none}
-.color-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
-.tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 7px;border-radius:var(--r-xs);border:1px solid;font-weight:500;letter-spacing:.01em}
-.ph{font-family:var(--serif);font-style:italic}
-.page-hd{margin-bottom:32px}
-.page-title{font-size:28px;font-family:var(--serif);font-style:italic;letter-spacing:-.01em;line-height:1.1;color:var(--ink)}
-.page-sub{font-size:13px;color:var(--ink-4);margin-top:4px;font-family:var(--sans)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.color-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 7px;border-radius:var(--r-xs);border:1px solid;font-weight:500;letter-spacing:.02em}
+.ph{font-style:italic}
+.page-hd{margin-bottom:28px}
+.page-title{font-size:24px;font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--ink)}
+.page-sub{font-size:13px;color:var(--ink-4);margin-top:5px;line-height:1.5}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 
 /* ── MENTION TAG ── */
-.mention{display:inline-flex;align-items:center;gap:3px;background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(201,149,42,.25);border-radius:var(--r-xs);padding:1px 6px;font-size:12px;font-weight:500;cursor:default}
+.mention{display:inline-flex;align-items:center;gap:3px;background:var(--gold-lt);color:var(--gold-text);border:1px solid rgba(0,102,238,.18);border-radius:var(--r-xs);padding:1px 6px;font-size:12px;font-weight:500;cursor:default}
 .mention-picker{background:var(--white);border:1px solid var(--rule-2);border-radius:var(--r-md);box-shadow:var(--shadow-md);padding:6px;min-width:200px;z-index:200}
 .mention-option{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--r-sm);cursor:pointer;transition:background .1s}
-.mention-option:hover{background:var(--parchment)}
+.mention-option:hover{background:var(--surface-2)}
 /* ── SORT HEADER ── */
 .sort-th{cursor:pointer;user-select:none;white-space:nowrap}
-.sort-th:hover{color:var(--ink-2)}
+.sort-th:hover{color:var(--ink)}
 .sort-th.asc::after{content:' ↑'}
 .sort-th.desc::after{content:' ↓'}
 /* ── SEARCH INPUT ── */
@@ -348,46 +372,68 @@ select{
 .search-wrap input{padding-left:32px}
 /* ── ANIMATIONS ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.fade{animation:fadeUp .18s ease}
+.fade{animation:fadeUp .2s cubic-bezier(.16,1,.3,1)}
 
 /* ── LOGIN ── */
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--sb-bg);position:relative;overflow:hidden}
-.login-page::before{
-  content:'';position:absolute;width:800px;height:800px;
-  background:radial-gradient(circle,rgba(201,149,42,.08) 0%,rgba(201,149,42,.02) 40%,transparent 70%);
-  top:-200px;right:-200px;pointer-events:none
+.login-page{
+  min-height:100dvh;display:flex;align-items:center;justify-content:center;
+  background:var(--parchment);position:relative;overflow:hidden
 }
-.login-card{width:400px;background:linear-gradient(160deg,#1C1A16 0%,#141310 100%);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-xl);padding:40px 36px;position:relative;z-index:1;box-shadow:0 32px 80px rgba(0,0,0,.6)}
-.login-mark{width:36px;height:36px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center}
-.login-name{font-size:24px;color:#EDE8DE;letter-spacing:.01em;font-family:var(--serif);font-style:italic}
-.login-sub{font-size:11px;color:rgba(255,255,255,.25);margin-top:2px;letter-spacing:.04em;text-transform:uppercase}
-.login-label{font-size:11.5px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.35);display:block;margin-bottom:7px}
-.login-inp{width:100%;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:var(--r-sm);padding:10px 13px;font-size:14px;color:#F0EDE4;font-family:var(--sans);outline:none;transition:border-color .15s}
-.login-inp:focus{border-color:var(--gold)}
-.login-inp::placeholder{color:rgba(255,255,255,.18)}
-.login-err{font-size:12px;color:#ff6b6b;margin:6px 0}
-.login-btn{width:100%;background:var(--gold);color:#fff;border:none;border-radius:var(--r-sm);padding:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);margin-top:14px;transition:background .15s;letter-spacing:-.01em}
-.login-btn:hover{background:#b8841f}
-.login-divider{height:1px;background:rgba(255,255,255,.06);margin:22px 0;position:relative}
-.login-divider::after{content:'or sign in as';position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#1A1916;padding:0 10px;font-size:10.5px;color:rgba(255,255,255,.2);letter-spacing:.06em;text-transform:uppercase}
-.login-acc{display:flex;align-items:center;gap:9px;width:100%;background:transparent;border:1px solid rgba(255,255,255,.06);border-radius:var(--r-sm);padding:7px 10px;cursor:pointer;margin-bottom:5px;transition:background .12s;font-family:var(--sans)}
-.login-acc:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
-.login-acc-name{font-size:12.5px;font-weight:500;color:#c8c4bc;letter-spacing:-.01em}
-.login-acc-role{font-size:10px;color:rgba(255,255,255,.25);text-transform:capitalize}
+.login-card{
+  width:400px;background:var(--white);
+  border:1px solid var(--rule);border-radius:var(--r-2xl);
+  padding:36px 32px;position:relative;z-index:1;
+  box-shadow:0 20px 40px -12px rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.05)
+}
+.login-mark{width:30px;height:30px;border-radius:7px;background:var(--gold);display:flex;align-items:center;justify-content:center}
+.login-name{font-size:21px;color:var(--ink);letter-spacing:-.03em;font-family:var(--sans);font-weight:700;margin-top:2px}
+.login-sub{font-size:10px;color:var(--ink-4);margin-top:3px;letter-spacing:.05em;text-transform:uppercase}
+.login-label{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:6px}
+.login-inp{
+  width:100%;background:var(--surface-2);border:1px solid var(--parchment-2);
+  border-radius:var(--r-sm);padding:10px 13px;font-size:14px;color:var(--ink);
+  font-family:var(--sans);outline:none;transition:border-color .15s,box-shadow .15s
+}
+.login-inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(0,102,238,.12)}
+.login-inp::placeholder{color:var(--ink-5)}
+.login-err{font-size:12px;color:var(--danger);margin:6px 0}
+.login-btn{
+  width:100%;background:var(--gold);color:#fff;border:none;
+  border-radius:var(--r-sm);padding:11px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:var(--sans);margin-top:14px;
+  transition:background .15s,transform .08s;letter-spacing:-.01em
+}
+.login-btn:hover{background:var(--gold-dk)}
+.login-btn:active{transform:scale(.98)}
+.login-divider{height:1px;background:var(--rule);margin:22px 0;position:relative}
+.login-divider::after{
+  content:'or sign in as';position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  background:var(--white);padding:0 10px;
+  font-size:10px;color:var(--ink-4);letter-spacing:.05em;text-transform:uppercase
+}
+.login-acc{
+  display:flex;align-items:center;gap:9px;width:100%;
+  background:var(--surface-2);border:1px solid var(--rule);
+  border-radius:var(--r-sm);padding:8px 11px;cursor:pointer;margin-bottom:6px;
+  transition:background .12s,border-color .12s;font-family:var(--sans)
+}
+.login-acc:hover{background:var(--surface-3);border-color:var(--rule-2)}
+.login-acc-name{font-size:12.5px;font-weight:500;color:var(--ink-2);letter-spacing:-.01em}
+.login-acc-role{font-size:10px;color:var(--ink-4);text-transform:capitalize}
 
 /* ── PROJECT FULL PAGE ── */
 .proj-page{display:flex;flex-direction:column;height:100%;overflow:hidden}
-.proj-page-hd{background:var(--white);border-bottom:1.5px solid var(--rule);padding:24px 32px 0;flex-shrink:0}
-.proj-back{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-5);cursor:pointer;background:none;border:none;font-family:var(--sans);margin-bottom:16px;transition:color .14s;letter-spacing:.01em;text-transform:uppercase}
+.proj-page-hd{background:var(--white);border-bottom:1px solid var(--rule);padding:20px 28px 0;flex-shrink:0}
+.proj-back{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ink-4);cursor:pointer;background:none;border:none;font-family:var(--sans);margin-bottom:12px;transition:color .12s;letter-spacing:.04em;text-transform:uppercase}
 .proj-back:hover{color:var(--ink-3)}
-.proj-title-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
-.proj-accent-bar{width:4px;border-radius:2px;height:36px;flex-shrink:0;margin-top:3px}
-.proj-title{font-size:26px;font-family:var(--serif);font-style:italic;letter-spacing:-.01em;line-height:1.15}
+.proj-title-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.proj-accent-bar{width:3px;border-radius:2px;height:32px;flex-shrink:0;margin-top:4px}
+.proj-title{font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--ink)}
 .proj-meta{font-size:12px;color:var(--ink-4);margin-top:3px}
 
 /* ── STAFFING CARD ── */
-.staff-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--shadow-xs);transition:box-shadow .15s}
-.staff-card:hover{box-shadow:var(--shadow-sm)}
+.staff-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px 22px;transition:box-shadow .15s,border-color .15s}
+.staff-card:hover{box-shadow:var(--shadow-sm);border-color:var(--rule-2)}
 </style>
 </head>
 <body>
@@ -451,13 +497,13 @@ const SEED_PROJECTS=[
   {
     id:'p1',title:'Ferragamo E-com AI Content',
     description:'AI-generated e-commerce content including video SKUs, color changes, still life and ambience shots. POC to validate AI workflow for luxury goods.',
-    status:'active',startDate:'2025-03-10',endDate:'2025-06-30',
-    estimationId:'e1',budget:14680,totalHours:107,deliverables:35,
-    createdAt:'2025-03-10T09:00:00Z',updatedAt:'2025-05-01T14:00:00Z',archivedAt:null,
+    status:'active',startDate:'2026-02-03',endDate:'2026-08-29',deadline:'2026-07-15',
+    estimationId:'e1',budget:14680,totalHours:107,deliverables:35,pptFiles:[],
+    createdAt:'2026-02-03T09:00:00Z',updatedAt:'2026-05-01T14:00:00Z',archivedAt:null,
     log:[
-      {id:'l1',userId:'u1',text:'Project kicked off. Estimation confirmed and team briefed.',createdAt:'2025-03-10T09:30:00Z'},
-      {id:'l2',userId:'u6',text:'First batch of AI generation tests complete. Sharing samples with client.',createdAt:'2025-03-24T16:00:00Z'},
-      {id:'l3',userId:'u1',text:'Client approved direction. Moving to full production phase.',createdAt:'2025-04-02T11:00:00Z'},
+      {id:'l1',userId:'u1',text:'Project kicked off. Estimation confirmed and team briefed.',createdAt:'2026-02-03T09:30:00Z'},
+      {id:'l2',userId:'u6',text:'First batch of AI generation tests complete. Sharing samples with client.',createdAt:'2026-03-10T16:00:00Z'},
+      {id:'l3',userId:'u1',text:'Client approved direction. Moving to full production phase.',createdAt:'2026-04-02T11:00:00Z'},
     ],
     links:[
       {id:'lk1',label:'Brand Guidelines',url:'https://example.com/brand'},
@@ -465,57 +511,57 @@ const SEED_PROJECTS=[
     ],
     files:[],
     assignments:[
-      {id:'as1',userId:'u6',dutyId:'d2',startDate:'2025-03-10',endDate:'2025-04-20',allocationPct:100},
-      {id:'as2',userId:'u2',dutyId:'d3',startDate:'2025-04-07',endDate:'2025-06-15',allocationPct:80},
-      {id:'as3',userId:'u1',dutyId:'d1',startDate:'2025-03-10',endDate:'2025-06-30',allocationPct:20},
-      {id:'as4',userId:'u3',dutyId:'d5',startDate:'2025-03-10',endDate:'2025-04-05',allocationPct:50},
+      {id:'as1',userId:'u6',dutyId:'d2',startDate:'2026-02-03',endDate:'2026-05-10',allocationPct:100},
+      {id:'as2',userId:'u2',dutyId:'d3',startDate:'2026-04-07',endDate:'2026-07-30',allocationPct:80},
+      {id:'as3',userId:'u1',dutyId:'d1',startDate:'2026-02-03',endDate:'2026-08-29',allocationPct:20},
+      {id:'as4',userId:'u3',dutyId:'d5',startDate:'2026-02-03',endDate:'2026-03-20',allocationPct:50},
     ],
     lavorazioni:[
-      {id:'lav1',name:'Video e-com SKU indossati',category:'Animazione',quantity:2,hoursTotal:48,costPerUnit:0,assignedUserIds:['u6','u2'],startDate:'2025-03-10',endDate:'2025-03-28',notes:'Tracking + editing'},
-      {id:'lav2',name:'Color change borsa',category:'Generazione',quantity:5,hoursTotal:7.5,costPerUnit:0.15,assignedUserIds:['u6'],startDate:'2025-03-28',endDate:'2025-04-05',notes:''},
-      {id:'lav3',name:'Still e-commerce viste multiple',category:'Generazione',quantity:20,hoursTotal:26,costPerUnit:0.15,assignedUserIds:['u6'],startDate:'2025-04-05',endDate:'2025-04-25',notes:'Reference research'},
-      {id:'lav4',name:'Scatti ambientati',category:'Post-produzione',quantity:8,hoursTotal:31,costPerUnit:0,assignedUserIds:['u2','u3'],startDate:'2025-04-25',endDate:'2025-05-20',notes:'Complex compositing'},
+      {id:'lav1',name:'Video e-com SKU indossati',category:'Animazione',quantity:2,hoursTotal:48,costPerUnit:0,assignedUserIds:['u6','u2'],startDate:'2026-02-03',endDate:'2026-03-07',notes:'Tracking + editing'},
+      {id:'lav2',name:'Color change borsa',category:'Generazione',quantity:5,hoursTotal:7.5,costPerUnit:0.15,assignedUserIds:['u6'],startDate:'2026-03-10',endDate:'2026-03-25',notes:''},
+      {id:'lav3',name:'Still e-commerce viste multiple',category:'Generazione',quantity:20,hoursTotal:26,costPerUnit:0.15,assignedUserIds:['u6'],startDate:'2026-04-01',endDate:'2026-05-05',notes:'Reference research'},
+      {id:'lav4',name:'Scatti ambientati',category:'Post-produzione',quantity:8,hoursTotal:31,costPerUnit:0,assignedUserIds:['u2','u3'],startDate:'2026-05-12',endDate:'2026-06-20',notes:'Complex compositing'},
     ],
   },
   {
     id:'p2',title:'Website Redesign',
     description:'Full redesign of the studio website including portfolio, about, and contact pages. Focus on performance and mobile experience.',
-    status:'active',startDate:'2025-02-01',endDate:'2025-06-15',
+    status:'active',startDate:'2026-03-01',endDate:'2026-09-30',
     estimationId:null,budget:null,totalHours:null,deliverables:null,
-    createdAt:'2025-02-01T09:00:00Z',updatedAt:'2025-04-28T10:00:00Z',archivedAt:null,
-    log:[{id:'l4',userId:'u5',text:'Discovery phase started. Wireframes in progress.',createdAt:'2025-02-01T09:00:00Z'}],
+    createdAt:'2026-03-01T09:00:00Z',updatedAt:'2026-05-01T10:00:00Z',archivedAt:null,
+    log:[{id:'l4',userId:'u5',text:'Discovery phase started. Wireframes in progress.',createdAt:'2026-03-01T09:00:00Z'}],
     links:[{id:'lk3',label:'Staging Site',url:'https://example.com/staging'}],
     files:[],
     assignments:[
-      {id:'as5',userId:'u4',dutyId:'d3',startDate:'2025-02-01',endDate:'2025-06-15',allocationPct:100},
-      {id:'as6',userId:'u2',dutyId:'d3',startDate:'2025-04-01',endDate:'2025-06-15',allocationPct:30},
+      {id:'as5',userId:'u4',dutyId:'d3',startDate:'2026-03-01',endDate:'2026-09-30',allocationPct:100},
+      {id:'as6',userId:'u2',dutyId:'d3',startDate:'2026-05-01',endDate:'2026-09-30',allocationPct:30},
     ],
     lavorazioni:[],
   },
   {
-    id:'p3',title:'Social Campaign Q2',
-    description:'Multi-platform social media campaign for Q2 product launch across Instagram, LinkedIn, and TikTok.',
+    id:'p3',title:'Social Campaign Q3',
+    description:'Multi-platform social media campaign for Q3 product launch across Instagram, LinkedIn, and TikTok.',
     status:'planning',startDate:'',endDate:'',
     estimationId:null,budget:null,totalHours:null,deliverables:null,
-    createdAt:'2025-04-20T09:00:00Z',updatedAt:'2025-04-20T09:00:00Z',archivedAt:null,
-    log:[{id:'l5',userId:'u5',text:'Brief received. Starting planning phase.',createdAt:'2025-04-20T09:00:00Z'}],
+    createdAt:'2026-04-20T09:00:00Z',updatedAt:'2026-04-20T09:00:00Z',archivedAt:null,
+    log:[{id:'l5',userId:'u5',text:'Brief received. Starting planning phase.',createdAt:'2026-04-20T09:00:00Z'}],
     links:[],files:[],
     assignments:[
-      {id:'as7',userId:'u3',dutyId:'d4',startDate:'2025-05-15',endDate:'2025-06-15',allocationPct:50},
+      {id:'as7',userId:'u3',dutyId:'d4',startDate:'2026-06-15',endDate:'2026-08-15',allocationPct:50},
     ],
     lavorazioni:[],
   },
   {
-    id:'p4',title:'Annual Report 2024',
+    id:'p4',title:'Annual Report 2025',
     description:'40-page annual report including infographics, photography direction, and print production files.',
-    status:'completed',startDate:'2025-01-10',endDate:'2025-04-30',
+    status:'completed',startDate:'2026-01-10',endDate:'2026-04-30',
     estimationId:null,budget:null,totalHours:null,deliverables:null,
-    createdAt:'2025-01-10T09:00:00Z',updatedAt:'2025-04-30T17:00:00Z',archivedAt:'2025-04-30T17:00:00Z',
-    log:[{id:'l6',userId:'u1',text:'Project completed. Files sent to print.',createdAt:'2025-04-30T17:00:00Z'}],
+    createdAt:'2026-01-10T09:00:00Z',updatedAt:'2026-04-30T17:00:00Z',archivedAt:'2026-04-30T17:00:00Z',
+    log:[{id:'l6',userId:'u1',text:'Project completed. Files sent to print.',createdAt:'2026-04-30T17:00:00Z'}],
     links:[],files:[],
     assignments:[
-      {id:'as9', userId:'u3',dutyId:'d5',startDate:'2025-01-10',endDate:'2025-04-30',allocationPct:70},
-      {id:'as10',userId:'u2',dutyId:'d3',startDate:'2025-02-01',endDate:'2025-04-30',allocationPct:40},
+      {id:'as9', userId:'u3',dutyId:'d5',startDate:'2026-01-10',endDate:'2026-04-30',allocationPct:70},
+      {id:'as10',userId:'u2',dutyId:'d3',startDate:'2026-02-01',endDate:'2026-04-30',allocationPct:40},
     ],
     lavorazioni:[],
   },
@@ -524,7 +570,7 @@ const SEED_PROJECTS=[
 /* ═══════ UTILS ══════════════════════════════════════════ */
 const LS={
   get:(k,fb)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch{return fb}},
-  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.warn(e)}},
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){if(e.name==='QuotaExceededError')console.warn('localStorage quota exceeded — file too large');else console.warn(e);}},
 };
 const uid=()=>`${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
 const fmt={
@@ -586,14 +632,14 @@ const calcEst=(assets,resources,bufferPct,projectType='lcr')=>{
 
 /* ═══════ STORE ══════════════════════════════════════════ */
 function useStore(){
-  const[users,setUsers]=useState(()=>LS.get('so2_users',SEED_USERS));
-  const[duties,setDuties]=useState(()=>LS.get('so2_duties',SEED_DUTIES));
-  const[projects,setProjects]=useState(()=>LS.get('so2_projects',SEED_PROJECTS));
-  const[estimations,setEstimations]=useState(()=>LS.get('so2_estimations',SEED_ESTIMATIONS));
-  useEffect(()=>LS.set('so2_users',users),[users]);
-  useEffect(()=>LS.set('so2_duties',duties),[duties]);
-  useEffect(()=>LS.set('so2_projects',projects),[projects]);
-  useEffect(()=>LS.set('so2_estimations',estimations),[estimations]);
+  const[users,setUsers]=useState(()=>LS.get('so3_users',SEED_USERS));
+  const[duties,setDuties]=useState(()=>LS.get('so3_duties',SEED_DUTIES));
+  const[projects,setProjects]=useState(()=>LS.get('so3_projects',SEED_PROJECTS));
+  const[estimations,setEstimations]=useState(()=>LS.get('so3_estimations',SEED_ESTIMATIONS));
+  useEffect(()=>LS.set('so3_users',users),[users]);
+  useEffect(()=>LS.set('so3_duties',duties),[duties]);
+  useEffect(()=>LS.set('so3_projects',projects),[projects]);
+  useEffect(()=>LS.set('so3_estimations',estimations),[estimations]);
   const upsertProject=p=>setProjects(prev=>prev.find(x=>x.id===p.id)?prev.map(x=>x.id===p.id?p:x):[...prev,p]);
   const deleteProject=id=>setProjects(prev=>prev.filter(x=>x.id!==id));
   const upsertEstimation=e=>setEstimations(prev=>prev.find(x=>x.id===e.id)?prev.map(x=>x.id===e.id?e:x):[...prev,e]);
@@ -853,7 +899,7 @@ function EstimationList({store,setView,setDetailId}){
 }
 
 /* ═══════ ESTIMATION DETAIL ══════════════════════════════ */
-function EstimationDetail({id,store,me,setView,onConverted}){
+function EstimationDetail({id,store,me,setView,onConverted,embedded=false}){
   const{estimations,users,duties,projects,upsertEstimation,upsertProject}=store;
   const isNew=id==='new';
   const blank=()=>({id:uid(),clientName:'',projectName:'',status:'draft',bufferPct:20,projectType:'lcr',assets:[],resources:[],linkedProjectId:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
@@ -907,12 +953,18 @@ function EstimationDetail({id,store,me,setView,onConverted}){
   const subtotal=calc.resourceCost+calc.productionCost;
   const bufferAmt=calc.totalCost-subtotal;
   return<div className="fade">
-    <div className="row"style={{marginBottom:24}}>
+    {!embedded&&<div className="row"style={{marginBottom:24}}>
       <button className="btn btn-ghost btn-sm"onClick={()=>setView('estimations')}><i className="ti ti-arrow-left"/>Estimations</button>
       <span className="spacer"/>
       {dirty&&<button className="btn btn-primary"onClick={save}><i className="ti ti-device-floppy"/>Save</button>}
       {!dirty&&!isNew&&<span style={{fontSize:12,color:'var(--ink-4)'}}>All saved</span>}
-    </div>
+    </div>}
+    {embedded&&<div className="row"style={{marginBottom:20}}>
+      <span style={{fontSize:11,fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)'}}>Estimator</span>
+      <span className="spacer"/>
+      {dirty&&<button className="btn btn-primary btn-sm"onClick={save}><i className="ti ti-device-floppy"/>Save changes</button>}
+      {!dirty&&<span style={{fontSize:12,color:'var(--ink-4)',display:'flex',alignItems:'center',gap:5}}><i className="ti ti-circle-check"style={{fontSize:13,color:'var(--s-active)'}}/>All saved</span>}
+    </div>}
     <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:24,alignItems:'start'}}>
       <div>
         <div className="card"style={{marginBottom:16}}>
@@ -1055,7 +1107,7 @@ function EstimationDetail({id,store,me,setView,onConverted}){
             <div className="row"><span style={{fontSize:12,color:'var(--ink-4)'}}>Per asset</span><span className="spacer"/><span className="mono"style={{fontSize:12}}>{fmt.currency(calc.pricePerAsset)}</span></div>
           </div>
           <hr className="divider"/>
-          {linkedProject?(
+          {!embedded&&(linkedProject?(
             <div>
               <div className="banner banner-green"style={{marginBottom:10}}><i className="ti ti-link"style={{fontSize:13,flexShrink:0}}/><div>Linked to <strong>{linkedProject.title}</strong></div></div>
               <button className="btn btn-sm"style={{width:'100%',justifyContent:'center'}}onClick={()=>onConverted(linkedProject.id)}><i className="ti ti-arrow-right"/>Open project</button>
@@ -1064,7 +1116,7 @@ function EstimationDetail({id,store,me,setView,onConverted}){
             <button className="btn btn-primary"style={{width:'100%',justifyContent:'center'}}onClick={()=>setConverting(true)}><i className="ti ti-git-branch"/>Convert to project</button>
           ):isAdmin&&est.status==='draft'?(
             <div className="banner banner-amber"><i className="ti ti-info-circle"style={{fontSize:13,flexShrink:0}}/><span>Mark as Confirmed to convert to a project</span></div>
-          ):null}
+          ):null)}
         </div>
       </div>
     </div>
@@ -1330,15 +1382,19 @@ function ProjectDetail({id,store,me,setView,setEstimationId,setNavView}){
       </div>
       <div className="tabs">
         {['overview','timeline','team','log','files','links'].map(t=><button key={t}className={`tab ${tab===t?'active':''}`}onClick={()=>setTab(t)}style={{textTransform:'capitalize'}}>{t}</button>)}
+        {p.estimationId&&<button className={`tab ${tab==='estimator'?'active':''}`}onClick={()=>setTab('estimator')}style={{display:'flex',alignItems:'center',gap:5}}>
+          <i className="ti ti-calculator"style={{fontSize:12}}/>Estimator
+        </button>}
       </div>
     </div>
     <div style={{flex:1,overflowY:'auto',padding:28}}>
-      {tab==='overview' &&<ProjOverviewTab p={p}est={est}pct={pct}days={days}isAdmin={isAdmin}up={up}openEst={openEst}store={store}me={me}statusColor={statusColor}/>}
-      {tab==='timeline' &&<ProjTimelineTab p={p}store={store}isAdmin={isAdmin}up={up}me={me}/>}
-      {tab==='team'     &&<ProjTeamTab    p={p}store={store}isAdmin={isAdmin}up={up}/>}
-      {tab==='log'      &&<ProjLogTab     p={p}store={store}me={me}up={up}/>}
-      {tab==='files'    &&<ProjFilesTab   p={p}me={me}up={up}/>}
-      {tab==='links'    &&<ProjLinksTab   p={p}isAdmin={isAdmin}up={up}/>}
+      {tab==='overview'  &&<ProjOverviewTab p={p}est={est}pct={pct}days={days}isAdmin={isAdmin}up={up}openEst={()=>setTab('estimator')}store={store}me={me}statusColor={statusColor}/>}
+      {tab==='timeline'  &&<ProjTimelineTab p={p}store={store}isAdmin={isAdmin}up={up}me={me}/>}
+      {tab==='team'      &&<ProjTeamTab    p={p}store={store}isAdmin={isAdmin}up={up}/>}
+      {tab==='log'       &&<ProjLogTab     p={p}store={store}me={me}up={up}/>}
+      {tab==='files'     &&<ProjFilesTab   p={p}me={me}up={up}/>}
+      {tab==='links'     &&<ProjLinksTab   p={p}isAdmin={isAdmin}up={up}/>}
+      {tab==='estimator' &&p.estimationId&&<EstimationDetail id={p.estimationId}store={store}me={me}setView={()=>{}}onConverted={()=>{}}embedded={true}/>}
     </div>
   </div>;
 }
@@ -1464,9 +1520,83 @@ ${lav.length?`<div style="margin-bottom:32px"><div class="section-title">Task br
 }
 
 /* ── TAB: OVERVIEW ── */
+function BentoUploadCell({title,icon,fileList,accept,onAdd,onRemove,downloadIcon,maxMb=20}){
+  const inputRef=useRef();
+  const handleUpload=e=>{
+    const file=e.target.files[0];if(!file)return;
+    if(file.size>maxMb*1024*1024){alert(`File troppo grande — max ${maxMb}MB`);e.target.value='';return;}
+    const reader=new FileReader();
+    reader.onerror=()=>{alert('Errore lettura file. Riprova.');};
+    reader.onload=ev=>{
+      try{
+        onAdd({id:uid(),name:file.name,size:file.size,type:file.type,data:ev.target.result,uploadedAt:new Date().toISOString()});
+      }catch(err){
+        if(err.name==='QuotaExceededError'||String(err).includes('quota')){
+          alert('Storage pieno — il file è troppo grande per essere salvato nel browser. Prova con un file più piccolo.');
+        }else{
+          alert('Errore salvataggio: '+err.message);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value='';
+  };
+  const download=f=>{const a=document.createElement('a');a.href=f.data;a.download=f.name;a.click();};
+  const fmtSize=b=>b<1024?`${b}B`:b<1024*1024?`${Math.round(b/1024)}KB`:`${(b/1024/1024).toFixed(1)}MB`;
+  const getIcon=f=>{
+    if(f.name.match(/\.(pptx?|key)$/i))return'ti-presentation';
+    if(f.name.match(/\.pdf$/i))return'ti-file-type-pdf';
+    if(f.name.match(/\.(xlsx?|csv)$/i))return'ti-file-spreadsheet';
+    if(f.name.match(/\.(docx?)$/i))return'ti-file-word';
+    if(f.name.match(/\.(jpe?g|png|gif|webp)$/i))return'ti-photo';
+    if(f.name.match(/\.zip$/i))return'ti-file-zip';
+    return'ti-file';
+  };
+  return<div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',padding:'18px 20px',display:'flex',flexDirection:'column',gap:0,minHeight:120}}>
+    <div style={{display:'flex',alignItems:'center',marginBottom:10}}>
+      <i className={`ti ${icon}`}style={{fontSize:14,color:'var(--ink-4)',marginRight:7,flexShrink:0}}/>
+      <div style={{fontSize:10,fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',flex:1}}>{title}</div>
+      <span style={{fontSize:10,color:'var(--ink-5)',marginRight:8}}>{fileList.length} file{fileList.length!==1?'s':''}</span>
+      <button className="btn btn-ghost btn-xs"onClick={()=>inputRef.current.click()}><i className="ti ti-upload"style={{fontSize:12}}/>Upload</button>
+    </div>
+    <input type="file"ref={inputRef}style={{display:'none'}}onChange={handleUpload}accept={accept}/>
+    {fileList.length===0
+      ?<div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:5,
+          cursor:'pointer',border:'1.5px dashed var(--parchment-2)',borderRadius:'var(--r-md)',padding:'18px 12px',
+          transition:'border-color .15s,background .15s'}}
+          onClick={()=>inputRef.current.click()}
+          onMouseOver={e=>{e.currentTarget.style.borderColor='var(--gold)';e.currentTarget.style.background='var(--gold-lt)'}}
+          onMouseOut={e=>{e.currentTarget.style.borderColor='var(--parchment-2)';e.currentTarget.style.background='transparent'}}>
+        <i className={`ti ${icon}`}style={{fontSize:26,color:'var(--ink-5)',opacity:.4}}/>
+        <span style={{fontSize:11,color:'var(--ink-4)'}}>Click or drop to upload</span>
+        <span style={{fontSize:10,color:'var(--ink-5)'}}>{accept.replace(/\./g,'').replace(/,/g,' · ').toUpperCase()}</span>
+      </div>
+      :<div style={{display:'flex',flexDirection:'column',gap:5}}>
+        {fileList.map(f=><div key={f.id}style={{display:'flex',alignItems:'center',gap:8,padding:'7px 10px',borderRadius:'var(--r-sm)',background:'var(--paper)',border:'1px solid var(--rule)',cursor:'pointer',transition:'background .1s'}}
+            onClick={()=>download(f)}
+            onMouseOver={e=>e.currentTarget.style.background='var(--surface-2)'}
+            onMouseOut={e=>e.currentTarget.style.background='var(--paper)'}>
+          <i className={`ti ${getIcon(f)}`}style={{fontSize:18,color:'var(--ink-4)',flexShrink:0}}/>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:12,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.name}</div>
+            <div style={{fontSize:10,color:'var(--ink-5)'}}>{fmtSize(f.size)} · {fmt.dateShort(f.uploadedAt)}</div>
+          </div>
+          <button className="btn btn-ghost btn-xs"onClick={e=>{e.stopPropagation();download(f)}}title="Download"><i className={`ti ${downloadIcon||'ti-download'}`}style={{fontSize:13}}/></button>
+          <button className="btn btn-ghost btn-xs btn-danger"onClick={e=>{e.stopPropagation();onRemove(f.id)}}><i className="ti ti-x"style={{fontSize:11}}/></button>
+        </div>)}
+        <button className="btn btn-ghost btn-xs"style={{marginTop:2,justifyContent:'center',fontSize:11}}onClick={()=>inputRef.current.click()}>
+          <i className="ti ti-plus"/>Add more
+        </button>
+      </div>
+    }
+  </div>;
+}
+
 function ProjOverviewTab({p,est,pct,days,isAdmin,up,openEst,store,me,statusColor}){
   const{users,duties}=store;
   const[syncing,setSyncing]=useState(false);
+  const[editInfo,setEditInfo]=useState(false);
+  const[infoDraft,setInfoDraft]=useState({});
   const doResync=()=>{
     const calc=calcEst(est.assets,est.resources,est.bufferPct,est.projectType||'lcr');
     up({budget:calc.totalCost,totalHours:calc.totalH,deliverables:calc.totalDeliverables});
@@ -1481,79 +1611,317 @@ function ProjOverviewTab({p,est,pct,days,isAdmin,up,openEst,store,me,statusColor
     lav.forEach(l=>{m[l.category]=(m[l.category]||0)+l.hoursTotal;});
     return Object.entries(m).sort((a,b)=>b[1]-a[1]);
   },[lav]);
-  return<div>
-    {/* ── BENTO BOX ── */}
-    {(p.budget||hasLav)&&<div style={{marginBottom:28}}>
-      <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:12}}>Project metrics</div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(130px,1fr))',gap:10,marginBottom:hasLav?12:0}}>
-        {p.budget!=null&&<div className="stat-box"><div className="stat-label">Budget</div><div className="stat-num"style={{fontSize:17}}>{fmt.currency(p.budget)}</div></div>}
-        {p.totalHours!=null&&<div className="stat-box"><div className="stat-label">Total hours</div><div className="stat-num"style={{fontSize:17}}>{p.totalHours}h</div></div>}
-        {p.deliverables!=null&&<div className="stat-box"><div className="stat-label">Deliverables</div><div className="stat-num"style={{fontSize:17}}>{p.deliverables}</div></div>}
-        {hasLav&&<div className="stat-box"><div className="stat-label">Tasks</div><div className="stat-num"style={{fontSize:17}}>{lav.length}</div></div>}
-        {calc&&calc.productionCost>0&&<div className="stat-box"><div className="stat-label">API prod cost</div><div className="stat-num"style={{fontSize:17}}>{fmt.currency(calc.productionCost)}</div></div>}
-        {(p.projectType||est?.projectType)&&<div className="stat-box"><div className="stat-label">Project type</div>
-          <div style={{marginTop:6}}><span className={`badge ${(p.projectType||est?.projectType)==='lcr'?'badge-gold':'badge-gray'}`}>{(p.projectType||est?.projectType||'lcr').toUpperCase()}</span></div>
-        </div>}
+  const teamIds=[...new Set((p.assignments||[]).map(a=>a.userId))];
+  const teamUsers=teamIds.map(id=>users.find(u=>u.id===id)).filter(Boolean);
+
+  /* ── DEADLINE ── */
+  const dlDays=p.deadline?fmt.daysLeft(p.deadline):null;
+  const dlUrgency=dlDays==null?'none':dlDays<0?'overdue':dlDays<7?'critical':dlDays<21?'warning':'ok';
+  const dlColor={overdue:'var(--danger)',critical:'var(--danger)',warning:'var(--gold)',ok:'var(--s-active)',none:'var(--ink-4)'}[dlUrgency];
+  const dlBg={overdue:'rgba(220,38,38,.05)',critical:'rgba(220,38,38,.05)',warning:'rgba(0,102,238,.04)',ok:'rgba(22,163,74,.05)',none:'var(--white)'}[dlUrgency];
+  const dlPct=p.startDate&&p.deadline?fmt.elapsed(p.startDate,p.deadline):null;
+
+  const openEdit=()=>{setInfoDraft({deadline:p.deadline||'',startDate:p.startDate||'',endDate:p.endDate||''});setEditInfo(true);};
+
+  /* ── shared cell style ── */
+  const cell=(extra={})=>({
+    background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',
+    padding:'18px 20px',display:'flex',flexDirection:'column',gap:6,...extra
+  });
+  const lbl=(txt,_locked)=><div style={{fontSize:10,fontWeight:600,
+    letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:2}}>
+    {txt}
+  </div>;
+  const big=(v,size=28)=><div style={{fontFamily:'var(--mono)',fontSize:size,fontWeight:300,letterSpacing:'-.04em',lineHeight:1,color:'var(--ink)'}}>{v}</div>;
+
+  const projectType=p.projectType||est?.projectType;
+  /* live values — always from estimation when linked, fallback to stored */
+  const liveBudget=calc?calc.totalCost:p.budget;
+  const liveHours=calc?calc.totalH:p.totalHours;
+  const liveDeliverables=calc?calc.totalDeliverables:p.deliverables;
+  const liveProductionCost=calc?calc.productionCost:null;
+  const liveBuffer=calc?est?.bufferPct:null;
+  const liveBufferAmt=calc?(calc.totalCost-(calc.resourceCost+calc.productionCost)):null;
+
+  return<div style={{display:'flex',flexDirection:'column',gap:20}}>
+
+    {/* ════════ BENTO GRID ════════ */}
+    <div>
+      <div className="row"style={{marginBottom:12}}>
+        <span style={{fontSize:11,fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)'}}>Overview</span>
+        <span className="spacer"/>
+        {est&&<button className="btn btn-sm btn-primary btn-xs"onClick={openEst} style={{fontSize:11}}>
+          <i className="ti ti-calculator"style={{fontSize:12}}/>Open Estimation
+        </button>}
+        {isAdmin&&<button className="btn btn-ghost btn-xs"onClick={openEdit}><i className="ti ti-edit"style={{fontSize:12}}/>Edit info</button>}
+        {isAdmin&&<button className="btn btn-ghost btn-xs"onClick={()=>exportProjectPDF(p,est,users,duties)}><i className="ti ti-file-type-pdf"style={{fontSize:12}}/>PDF</button>}
       </div>
-      {hasLav&&<div style={{background:'var(--paper)',border:'1px solid var(--rule)',borderRadius:'var(--r-md)',padding:'12px 14px'}}>
-        <div style={{fontSize:10,fontWeight:600,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:8}}>Hours by category</div>
-        <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
-          {catSummary.map(([cat,h])=>{
-            const color=CATEGORY_COLORS[cat]||'#6B7280';
-            return<div key={cat}style={{display:'flex',alignItems:'center',gap:5,background:color+'12',border:`1px solid ${color}30`,borderRadius:'var(--r-xs)',padding:'3px 8px'}}>
-              <div style={{width:7,height:7,borderRadius:2,background:color,flexShrink:0}}/>
-              <span style={{fontSize:11,color:color,fontWeight:600}}>{cat}</span>
-              <span style={{fontSize:11,color:'var(--ink-3)',fontFamily:'var(--mono)'}}>{Math.round(h)}h</span>
-            </div>;
-          })}
-        </div>
-      </div>}
-      {isAdmin&&<div style={{marginTop:10,display:'flex',justifyContent:'flex-end'}}>
-        <button className="btn btn-sm"onClick={()=>exportProjectPDF(p,est,users,duties)}>
-          <i className="ti ti-file-type-pdf"/>Export PDF report
-        </button>
-      </div>}
-    </div>}
-    <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:28,alignItems:'start'}}>
-      <div>
-        <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Brief</div>
-        <p style={{fontSize:14,lineHeight:1.8,color:'var(--ink-2)',marginBottom:28,fontWeight:300}}>{p.description||<em style={{color:'var(--ink-4)'}}>No description added.</em>}</p>
-        <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Timeline progress</div>
-        {p.startDate&&p.endDate?<>
-          <Bar value={pct}color={statusColor}h={7}/>
-          <div className="row"style={{marginTop:8}}>
-            <span style={{fontSize:12,color:'var(--ink-4)'}}>{fmt.date(p.startDate)}</span><span className="spacer"/>
-            <span style={{fontSize:13,fontWeight:600,fontFamily:'var(--mono)',letterSpacing:'-.02em',color:days==null?'var(--ink-4)':days<0?'var(--danger)':days<14?'var(--gold)':'var(--ink)'}}>
-              {days==null?'—':days<0?`${Math.abs(days)}d overdue`:days===0?'Due today':`${days}d left`}
-            </span><span className="spacer"/>
-            <span style={{fontSize:12,color:'var(--ink-4)'}}>{fmt.date(p.endDate)}</span>
-          </div>
-        </>:<div className="banner banner-blue"style={{marginTop:4}}><i className="ti ti-calendar"style={{fontSize:13,flexShrink:0}}/><span>No dates set — edit the project to add a timeline</span></div>}
-      </div>
-      <div>
-        <div style={{fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:10}}>Estimation link</div>
-        {est?<div className="card-flat">
-          <div className="row"style={{marginBottom:estNewer?10:12}}>
-            <div style={{flex:1}}><div style={{fontWeight:600,fontSize:13,letterSpacing:'-.01em'}}>{est.clientName} — {est.projectName}</div>
-              <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2}}>{fmt.date(est.createdAt)}</div>
+
+      {/* ── ROW 1: Deadline hero + status strip ── */}
+      <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr',gap:10,marginBottom:10}}>
+
+        {/* Deadline — wide hero cell */}
+        <div style={{...cell({background:p.deadline?dlBg:'var(--white)',border:`1px solid ${p.deadline?dlColor+'33':'var(--rule)'}`,position:'relative',overflow:'hidden',cursor:isAdmin&&!p.deadline?'pointer':'default',borderStyle:isAdmin&&!p.deadline?'dashed':'solid'}),
+          ...(isAdmin&&!p.deadline?{alignItems:'center',justifyContent:'center',minHeight:130}:{minHeight:130})}}
+          onClick={isAdmin&&!p.deadline?openEdit:undefined}>
+          {p.deadline&&<div style={{position:'absolute',top:0,left:0,right:0,height:3,background:dlColor,borderRadius:'var(--r-lg) var(--r-lg) 0 0'}}/>}
+          {p.deadline?<>
+            {lbl('Deadline')}
+            <div style={{display:'flex',alignItems:'flex-end',gap:14,marginTop:4}}>
+              <div style={{fontFamily:'var(--mono)',fontSize:56,fontWeight:200,letterSpacing:'-.06em',lineHeight:1,color:dlColor}}>
+                {dlDays<0?Math.abs(dlDays):dlDays===0?'0':dlDays}
+              </div>
+              <div style={{paddingBottom:6}}>
+                <div style={{fontSize:14,fontWeight:700,color:'var(--ink)',letterSpacing:'-.02em',lineHeight:1.2}}>
+                  {dlDays<0?'days overdue':dlDays===0?'Due today':'days left'}
+                </div>
+                <div style={{fontSize:12,color:'var(--ink-4)',marginTop:4}}>{fmt.date(p.deadline)}</div>
+              </div>
             </div>
-            <span className={`badge ${est.status==='confirmed'?'badge-green':'badge-gray'}`}>{est.status}</span>
+            {dlPct!=null&&<div style={{marginTop:'auto',paddingTop:10}}>
+              <div style={{background:`${dlColor}18`,borderRadius:'var(--r-pill)',overflow:'hidden',height:4}}>
+                <div style={{width:`${dlPct}%`,height:4,background:dlColor,borderRadius:'var(--r-pill)',transition:'width .4s'}}/>
+              </div>
+              <div style={{display:'flex',justifyContent:'space-between',marginTop:5}}>
+                <span style={{fontSize:10,color:'var(--ink-4)'}}>{fmt.dateShort(p.startDate)}</span>
+                <span style={{fontSize:10,color:dlColor,fontWeight:600}}>{dlPct}% elapsed</span>
+                <span style={{fontSize:10,color:'var(--ink-4)'}}>{fmt.dateShort(p.deadline)}</span>
+              </div>
+            </div>}
+          </>:<>
+            <i className="ti ti-calendar-plus"style={{fontSize:26,color:'var(--ink-5)',marginBottom:4}}/>
+            <span style={{fontSize:12,color:'var(--ink-4)',fontWeight:500}}>Add deadline</span>
+            {isAdmin&&<span style={{fontSize:11,color:'var(--ink-5)'}}>Click to set a client deadline</span>}
+          </>}
+        </div>
+
+        {/* Status */}
+        <div style={cell()}>
+          {lbl('Status')}
+          <div style={{marginTop:4}}><StatusBadge status={p.status}/></div>
+          <div style={{marginTop:'auto'}}>
+            <div style={{background:`${days!=null&&days<0?'var(--danger)':statusColor}18`,borderRadius:'var(--r-pill)',overflow:'hidden',height:3}}>
+              <div style={{width:'100%',height:3,background:days!=null&&days<0?'var(--danger)':statusColor,borderRadius:'var(--r-pill)'}}/>
+            </div>
+            <div style={{fontSize:10,marginTop:5,color:days!=null&&days<0?'var(--danger)':'var(--ink-4)'}}>
+              {days==null?'No dates set':days<0?`${Math.abs(days)}d overdue`:days===0?'Due today':`${days}d left`}
+            </div>
           </div>
-          {estNewer&&<div className="banner banner-amber"style={{marginBottom:10}}>
-            <i className="ti ti-refresh"style={{fontSize:12,flexShrink:0}}/>
-            <div style={{flex:1}}>Estimation updated since linking.</div>
-            {isAdmin&&<button className="btn btn-xs"onClick={()=>setSyncing(true)}style={{flexShrink:0}}>Re-sync</button>}
-          </div>}
-          <button className="btn btn-sm btn-ghost"style={{width:'100%',justifyContent:'center'}}onClick={openEst}><i className="ti ti-calculator"/>Open estimation</button>
-        </div>:<div className="card-flat"style={{textAlign:'center',color:'var(--ink-4)'}}>
-          <i className="ti ti-calculator"style={{fontSize:22,marginBottom:8,display:'block',opacity:.35}}/>
-          <p style={{fontSize:13,marginBottom:2}}>No estimation linked</p>
-          <p style={{fontSize:12}}>Create an estimation and convert it</p>
-        </div>}
+        </div>
+
+        {/* Project type */}
+        <div style={cell()}>
+          {lbl('Type',!!projectType&&!!est)}
+          {projectType
+            ?<><span className={`badge ${projectType==='lcr'?'badge-gold':'badge-gray'}`}style={{alignSelf:'flex-start',marginTop:4}}>{projectType.toUpperCase()}</span>
+              <div style={{fontSize:11,color:'var(--ink-4)',marginTop:'auto',lineHeight:1.5}}>{projectType==='lcr'?'Client Revenue':'BD / Internal'}</div></>
+            :<div style={{fontSize:12,color:'var(--ink-5)',marginTop:4}}>—</div>}
+        </div>
+
+        {/* Team */}
+        <div style={cell()}>
+          {lbl('Team')}
+          <div style={{fontSize:28,fontFamily:'var(--mono)',fontWeight:300,letterSpacing:'-.04em',lineHeight:1,color:'var(--ink)',marginTop:4}}>{teamUsers.length||'—'}</div>
+          <div style={{display:'flex',flexWrap:'wrap',gap:4,marginTop:'auto'}}>
+            {teamUsers.slice(0,5).map(u=><Av key={u.id}user={u}size={24}/>)}
+            {teamUsers.length>5&&<div style={{width:24,height:24,borderRadius:'50%',background:'var(--surface-3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'var(--ink-3)',fontWeight:600}}>+{teamUsers.length-5}</div>}
+          </div>
+        </div>
       </div>
+
+      {/* ── ROW 2: Financial + scope ── */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr 1fr',gap:10,marginBottom:10}}>
+
+        {/* Budget */}
+        <div style={cell()}>
+          {lbl('Budget')}
+          {liveBudget!=null?<>
+            {big(fmt.currency(liveBudget),22)}
+            {calc&&<div style={{fontSize:11,color:'var(--ink-4)',marginTop:4}}>Resources {fmt.currency(calc.resourceCost)}</div>}
+          </>:<div style={{fontSize:12,color:'var(--ink-5)',marginTop:4}}>—</div>}
+        </div>
+
+        {/* API / prod cost */}
+        <div style={cell()}>
+          {lbl('API cost')}
+          {liveProductionCost!=null&&liveProductionCost>0
+            ?<>{big(fmt.currency(liveProductionCost),22)}
+              <div style={{fontSize:11,color:'var(--ink-4)',marginTop:4}}>Production spend</div></>
+            :<div style={{fontSize:12,color:'var(--ink-5)',marginTop:4}}>—</div>}
+        </div>
+
+        {/* Hours */}
+        <div style={cell()}>
+          {lbl('Total hours')}
+          {liveHours!=null
+            ?<>{big(`${liveHours}h`,22)}
+              {hasLav&&<div style={{fontSize:11,color:'var(--ink-4)',marginTop:4}}>{lav.length} task{lav.length!==1?'s':''}</div>}</>
+            :<div style={{fontSize:12,color:'var(--ink-5)',marginTop:4}}>—</div>}
+        </div>
+
+        {/* Deliverables */}
+        <div style={cell()}>
+          {lbl('Deliverables')}
+          {liveDeliverables!=null
+            ?<>{big(liveDeliverables,22)}
+              <div style={{fontSize:11,color:'var(--ink-4)',marginTop:4}}>assets total</div></>
+            :<div style={{fontSize:12,color:'var(--ink-5)',marginTop:4}}>—</div>}
+        </div>
+
+        {/* Buffer */}
+        <div style={cell()}>
+          {lbl('Buffer')}
+          {liveBuffer!=null
+            ?<>{big(`${liveBuffer}%`,22)}
+              <div style={{fontSize:11,color:'var(--ink-4)',marginTop:4}}>{fmt.currency(liveBufferAmt)} margin</div></>
+            :<div style={{fontSize:12,color:'var(--ink-5)',marginTop:4}}>—</div>}
+        </div>
+      </div>
+
+      {/* ── ROW 3: Brief + timeline + estimation ── */}
+      <div style={{display:'grid',gridTemplateColumns:'2fr 1.1fr 1fr',gap:10,marginBottom:10}}>
+
+        {/* Brief */}
+        <div style={cell({minHeight:130})}>
+          {lbl('Brief')}
+          <p style={{fontSize:13,lineHeight:1.75,color:p.description?'var(--ink-2)':'var(--ink-5)',fontWeight:300,flexGrow:1,marginTop:4}}>
+            {p.description||'No description added.'}
+          </p>
+        </div>
+
+        {/* Timeline */}
+        <div style={cell({minHeight:130})}>
+          {lbl('Timeline')}
+          {p.startDate&&p.endDate?<>
+            {/* Date strip */}
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginTop:6,marginBottom:10}}>
+              <div>
+                <div style={{fontSize:9,color:'var(--ink-5)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:2}}>Start</div>
+                <div style={{fontSize:13,fontWeight:700,color:'var(--ink)',letterSpacing:'-.02em'}}>{fmt.dateShort(p.startDate)}</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div style={{fontSize:9,color:'var(--ink-5)',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:2}}>End</div>
+                <div style={{fontSize:13,fontWeight:700,letterSpacing:'-.02em',
+                  color:days!=null&&days<0?'var(--danger)':days!=null&&days<14?'var(--gold)':'var(--ink)'}}>
+                  {fmt.dateShort(p.endDate)}
+                </div>
+              </div>
+            </div>
+            {/* Progress bar */}
+            <div style={{background:'var(--surface-3)',borderRadius:'var(--r-pill)',overflow:'hidden',height:6,marginBottom:8}}>
+              <div style={{width:`${pct}%`,height:6,borderRadius:'var(--r-pill)',transition:'width .4s',
+                background:days!=null&&days<0?'var(--danger)':days!=null&&days<14?'var(--gold)':statusColor}}/>
+            </div>
+            {/* Status line */}
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span style={{fontSize:10,color:'var(--ink-4)'}}>{pct}%</span>
+              <span style={{fontSize:11,fontWeight:600,fontFamily:'var(--mono)',
+                color:days==null?'var(--ink-4)':days<0?'var(--danger)':days<14?'var(--gold)':'var(--ink)'}}>
+                {days==null?'—':days<0?`${Math.abs(days)}d overdue`:days===0?'Due today':`${days}d left`}
+              </span>
+            </div>
+          </>:<div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:6,color:'var(--ink-5)'}}>
+            <i className="ti ti-calendar-off"style={{fontSize:22,opacity:.3}}/>
+            <span style={{fontSize:12}}>{isAdmin?'Set dates in Edit info':'No dates set'}</span>
+          </div>}
+        </div>
+
+        {/* Estimation link */}
+        <div style={cell({minHeight:130})}>
+          {lbl('Estimation')}
+          {est?<>
+            <div style={{marginTop:4,flex:1}}>
+              <div style={{fontWeight:600,fontSize:13,letterSpacing:'-.01em',color:'var(--ink)',lineHeight:1.3}}>{est.clientName}</div>
+              <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2,marginBottom:8}}>{est.projectName}</div>
+              <span className={`badge ${est.status==='confirmed'?'badge-green':'badge-gray'}`}>{est.status}</span>
+              {estNewer&&<div style={{fontSize:11,color:'var(--gold)',display:'flex',alignItems:'center',gap:4,marginTop:8}}>
+                <i className="ti ti-refresh"style={{fontSize:11}}/>Updated
+              </div>}
+            </div>
+            <div style={{display:'flex',gap:6,marginTop:10}}>
+              <button className="btn btn-sm btn-ghost"style={{flex:1,justifyContent:'center',fontSize:11}}onClick={openEst}>
+                <i className="ti ti-calculator"/>Open
+              </button>
+              {isAdmin&&estNewer&&<button className="btn btn-sm"style={{flex:1,justifyContent:'center',fontSize:11}}onClick={()=>setSyncing(true)}>
+                <i className="ti ti-refresh"/>Sync
+              </button>}
+            </div>
+          </>:<div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:6,color:'var(--ink-5)'}}>
+            <i className="ti ti-calculator"style={{fontSize:22,opacity:.3}}/>
+            <span style={{fontSize:12}}>No estimation linked</span>
+          </div>}
+        </div>
+
+      </div>
+
+      {/* ── ROW 4: PPT + Project Files ── */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
+        <BentoUploadCell
+          title="PPT"
+          icon="ti-presentation"
+          downloadIcon="ti-presentation-analytics"
+          fileList={p.pptFiles||[]}
+          accept=".ppt,.pptx,.pdf,.key,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/pdf"
+          maxMb={50}
+          onAdd={f=>up({pptFiles:[...(p.pptFiles||[]),f]})}
+          onRemove={id=>up({pptFiles:(p.pptFiles||[]).filter(f=>f.id!==id)})}
+        />
+        <BentoUploadCell
+          title="Project Files"
+          icon="ti-files"
+          downloadIcon="ti-folder-down"
+          fileList={p.files||[]}
+          accept=".xlsx,.xls,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.ppt,.pptx,.zip,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*,application/zip"
+          maxMb={50}
+          onAdd={f=>up({files:[...(p.files||[]),f]})}
+          onRemove={id=>up({files:(p.files||[]).filter(f=>f.id!==id)})}
+        />
+      </div>
+
+      {/* ── ROW 5: Hours by category (only if tasks exist) ── */}
+      {hasLav&&<div style={{...cell({flexDirection:'row',flexWrap:'wrap',alignItems:'center',gap:10})}}>
+        <span style={{fontSize:10,fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',marginRight:4,flexShrink:0}}>Hours by category</span>
+        {catSummary.map(([cat,h])=>{
+          const color=CATEGORY_COLORS[cat]||'#6B7280';
+          const total=lav.reduce((s,l)=>s+l.hoursTotal,0)||1;
+          return<div key={cat}style={{display:'flex',alignItems:'center',gap:8,background:color+'10',border:`1px solid ${color}28`,borderRadius:'var(--r-md)',padding:'8px 12px',flex:'0 0 auto'}}>
+            <div style={{width:8,height:8,borderRadius:2,background:color,flexShrink:0}}/>
+            <div>
+              <div style={{fontSize:11,color:color,fontWeight:600}}>{cat}</div>
+              <div style={{fontSize:13,color:'var(--ink)',fontFamily:'var(--mono)',fontWeight:400}}>{Math.round(h)}h<span style={{fontSize:10,color:'var(--ink-4)',marginLeft:4}}>{Math.round(h/total*100)}%</span></div>
+            </div>
+          </div>;
+        })}
+      </div>}
     </div>
+
+    {/* ── ADMIN: Edit project info modal ── */}
+    {editInfo&&isAdmin&&<Modal title="Project info"subtitle="Deadline and dates are admin-editable. Financial data comes from the linked estimation."onClose={()=>setEditInfo(false)}width={440}
+      footer={<><button className="btn"onClick={()=>setEditInfo(false)}>Cancel</button>
+        <button className="btn btn-primary"onClick={()=>{up(infoDraft);setEditInfo(false);}}>Save</button></>}>
+      <div className="form-group">
+        <div className="form-label">Deadline</div>
+        <input type="date"value={infoDraft.deadline||''}onChange={e=>setInfoDraft(d=>({...d,deadline:e.target.value}))}/>
+        <div className="form-hint">Key client deadline — drives the countdown in Overview</div>
+      </div>
+      <div className="form-row-2">
+        <div className="form-group">
+          <div className="form-label">Start date</div>
+          <input type="date"value={infoDraft.startDate||''}onChange={e=>setInfoDraft(d=>({...d,startDate:e.target.value}))}/>
+        </div>
+        <div className="form-group">
+          <div className="form-label">End date</div>
+          <input type="date"value={infoDraft.endDate||''}onChange={e=>setInfoDraft(d=>({...d,endDate:e.target.value}))}/>
+        </div>
+      </div>
+      {(p.budget!=null||p.totalHours!=null||p.deliverables!=null)&&<div className="banner banner-blue"style={{marginTop:4}}>
+        <i className="ti ti-lock"style={{fontSize:13,flexShrink:0}}/>
+        <span>Budget ({fmt.currency(p.budget)}), hours ({fmt.hours(p.totalHours)}) and deliverables ({p.deliverables}) are calculated by the Estimator and cannot be edited here.</span>
+      </div>}
+    </Modal>}
+
     {syncing&&<Confirm title="Re-sync from estimation"
-      message={`Update budget (${fmt.currency(calcEst(est.assets,est.resources,est.bufferPct,est.projectType||'lcr').totalCost)}), total hours and deliverables count from the estimation. Log entries, files, timeline and links are not affected.`}
+      message={`Update budget (${fmt.currency(calcEst(est.assets,est.resources,est.bufferPct,est.projectType||'lcr').totalCost)}), total hours and deliverables from the estimation. Log entries, files, timeline and links are not affected.`}
       onConfirm={doResync}onCancel={()=>setSyncing(false)}/>}
   </div>;
 }
@@ -1581,57 +1949,303 @@ function GanttGrid({pStart,pEnd,months,nowPos,children,colLabel='Person'}){
 }
 
 /* ── TAB: TIMELINE ── */
+/* ── TIME ESTIMATION HELPERS ── */
+const HOURS_PER_DAY=8;
+function addWorkDays(d,n){
+  const date=new Date(d);let added=0;
+  while(added<n){date.setDate(date.getDate()+1);if(date.getDay()!==0&&date.getDay()!==6)added++;}
+  return date;
+}
+function workDaysBetween(a,b){
+  if(!a||!b)return 0;
+  let s=new Date(a),e=new Date(b),count=0;
+  while(s<e){s.setDate(s.getDate()+1);if(s.getDay()!==0&&s.getDay()!==6)count++;}
+  return Math.max(count,1);
+}
+function autoSchedule(lavs,startDate){
+  let cursor=new Date(startDate||Date.now());
+  return lavs.map(lv=>{
+    const assigned=Math.max((lv.assignedUserIds||[]).length,1);
+    const realH=lv.hoursTotal/assigned;
+    const days=Math.max(Math.ceil(realH/HOURS_PER_DAY),1);
+    const s=new Date(cursor);
+    const e=addWorkDays(cursor,days);
+    cursor=new Date(e);
+    return{...lv,startDate:s.toISOString().split('T')[0],endDate:e.toISOString().split('T')[0]};
+  });
+}
+
 function ProjTimelineTab({p,store,isAdmin,up,me}){
   const{users,duties}=store;
-  const[subTab,setSubTab]=useState('phases');
+  const[subTab,setSubTab]=useState('tasks');
   const[editBlock,setEditBlock]=useState(null);
   const[addingBlock,setAddingBlock]=useState(false);
   const[editLav,setEditLav]=useState(null);
+  const[editDates,setEditDates]=useState(false);
+  const[draftStart,setDraftStart]=useState(p.startDate||'');
+  const[draftEnd,setDraftEnd]=useState(p.endDate||'');
+  const[dragState,setDragState]=useState(null);
+  const[dragOverride,setDragOverride]=useState(null);
+  const ganttRef=useRef(null);
+  const dragRef=useRef(null);
   const assignments=p.assignments||[];
   const lavorazioni=p.lavorazioni||[];
   const personIds=[...new Set(assignments.map(a=>a.userId))];
 
   const pStart=new Date(p.startDate||Date.now());
   const pEnd=new Date(p.endDate||(Date.now()+90*86400000));
-  const totalMs=pEnd-pStart;
+  const totalMs=pEnd-pStart||1;
   const posOf=d=>d?Math.max(0,Math.min(100,((new Date(d)-pStart)/totalMs)*100)):0;
-  const widthOf=(s,e)=>s&&e?Math.max(.8,posOf(e)-posOf(s)):.8;
+  const widthOf=(s,e)=>s&&e?Math.max(.5,posOf(e)-posOf(s)):.5;
   const nowPos=posOf(new Date());
+  const deadlinePos=p.endDate?posOf(new Date(p.endDate)):null;
 
-  const months=[];let cur=new Date(pStart);cur.setDate(1);
-  while(cur<=pEnd){months.push(new Date(cur));cur.setMonth(cur.getMonth()+1);}
+  const months=[];let mc=new Date(pStart);mc.setDate(1);
+  while(mc<=pEnd){months.push(new Date(mc));mc.setMonth(mc.getMonth()+1);}
 
-  const emptyBlock=()=>({id:uid(),userId:users[0]?.id||'',dutyId:duties[0]?.id||'',startDate:p.startDate||new Date().toISOString().split('T')[0],endDate:p.endDate||new Date(Date.now()+30*86400000).toISOString().split('T')[0],allocationPct:100});
+  /* ── DRAG & RESIZE ── */
+  useEffect(()=>{
+    if(!dragState)return;
+    dragRef.current=dragState;
+    const onMove=e=>{
+      const ds=dragRef.current;if(!ds||!ganttRef.current)return;
+      const trackW=ganttRef.current.offsetWidth-220;
+      if(trackW<=0)return;
+      const dx=e.clientX-ds.startX;
+      const dMs=(dx/trackW)*totalMs;
+      if(ds.type==='move'){
+        const ns=new Date(new Date(ds.origStart).getTime()+dMs);
+        const ne=new Date(new Date(ds.origEnd).getTime()+dMs);
+        setDragOverride({lavId:ds.lavId,startDate:ns.toISOString().split('T')[0],endDate:ne.toISOString().split('T')[0]});
+      }else{
+        const ne=new Date(new Date(ds.origEnd).getTime()+dMs);
+        const minE=new Date(new Date(ds.origStart).getTime()+86400000);
+        setDragOverride({lavId:ds.lavId,startDate:ds.origStart,endDate:(ne>minE?ne:minE).toISOString().split('T')[0]});
+      }
+    };
+    const onUp=()=>{
+      const ov=dragRef.current?._override;
+      setDragOverride(prev=>{
+        if(prev){
+          const updated=lavorazioni.map(x=>x.id===prev.lavId?{...x,startDate:prev.startDate,endDate:prev.endDate}:x);
+          up({lavorazioni:updated});
+        }
+        return null;
+      });
+      setDragState(null);
+      dragRef.current=null;
+    };
+    window.addEventListener('mousemove',onMove);
+    window.addEventListener('mouseup',onUp);
+    return()=>{window.removeEventListener('mousemove',onMove);window.removeEventListener('mouseup',onUp);};
+  },[dragState,totalMs]);
+
+  /* keep dragRef._override in sync so onUp can read latest value */
+  useEffect(()=>{if(dragRef.current)dragRef.current._override=dragOverride;},[dragOverride]);
+
+  const startDrag=(e,type,lv)=>{
+    if(!isAdmin||!lv.startDate||!lv.endDate)return;
+    e.stopPropagation();e.preventDefault();
+    setDragState({type,lavId:lv.id,startX:e.clientX,origStart:lv.startDate,origEnd:lv.endDate});
+  };
+
+  const saveDates=()=>{up({startDate:draftStart,endDate:draftEnd});setEditDates(false);};
+  const emptyBlock=()=>({id:uid(),userId:users[0]?.id||'',dutyId:duties[0]?.id||'',startDate:p.startDate||'',endDate:p.endDate||'',allocationPct:100});
   const saveBlock=b=>{const ex=assignments.find(a=>a.id===b.id);up({assignments:ex?assignments.map(a=>a.id===b.id?b:a):[...assignments,b]});setEditBlock(null);setAddingBlock(false);};
   const deleteBlock=id=>up({assignments:assignments.filter(a=>a.id!==id)});
   const saveLav=l=>{up({lavorazioni:lavorazioni.map(x=>x.id===l.id?l:x)});setEditLav(null);};
+  const doAutoSchedule=()=>{
+    if(!p.startDate)return alert('Set a project start date first');
+    up({lavorazioni:autoSchedule(lavorazioni,p.startDate)});
+  };
 
-  if(!p.startDate||!p.endDate)return<div className="empty-state"><i className="ti ti-calendar"/>
-    <p>No project dates set</p><small>Set start and end dates in the project settings to use the timeline</small>
+  /* ─ date header ─ */
+  const DateHeader=()=><div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16,padding:'11px 14px',background:'var(--surface-2)',border:'1px solid var(--rule)',borderRadius:'var(--r-md)'}}>
+    <i className="ti ti-calendar-event"style={{fontSize:16,color:'var(--gold)',flexShrink:0}}/>
+    {editDates?(
+      <>
+        <div style={{display:'flex',alignItems:'center',gap:6,flex:1,flexWrap:'wrap'}}>
+          <input type="date"value={draftStart}onChange={e=>setDraftStart(e.target.value)}style={{width:150}}/>
+          <span style={{color:'var(--ink-4)',fontSize:13}}>→</span>
+          <input type="date"value={draftEnd}onChange={e=>setDraftEnd(e.target.value)}style={{width:150}}/>
+        </div>
+        <button className="btn btn-primary btn-sm"onClick={saveDates}>Save</button>
+        <button className="btn btn-sm"onClick={()=>setEditDates(false)}>Cancel</button>
+      </>
+    ):(
+      <>
+        <div style={{flex:1}}>
+          {p.startDate&&p.endDate?(
+            <span style={{fontSize:13,fontWeight:600,color:'var(--ink-2)'}}>
+              {fmt.date(p.startDate)}
+              <span style={{color:'var(--ink-4)',margin:'0 6px'}}>→</span>
+              {fmt.date(p.endDate)}
+              <span style={{marginLeft:10,fontSize:11,color:'var(--ink-4)',fontWeight:400}}>
+                {workDaysBetween(p.startDate,p.endDate)} working days
+              </span>
+            </span>
+          ):(
+            <span style={{fontSize:13,color:'var(--ink-4)',fontStyle:'italic'}}>No start/deadline set</span>
+          )}
+        </div>
+        {isAdmin&&<button className="btn btn-ghost btn-sm"onClick={()=>{setDraftStart(p.startDate||'');setDraftEnd(p.endDate||'');setEditDates(true);}}>
+          <i className="ti ti-edit"/>Edit dates
+        </button>}
+      </>
+    )}
   </div>;
 
-  /* ── PHASES VIEW ── */
+  /* ─ tasks gantt ─ */
+  const TasksView=()=>{
+    const totalH=lavorazioni.reduce((s,l)=>s+(+l.hoursTotal||0),0);
+    return<div>
+      <DateHeader/>
+      <div className="row"style={{marginBottom:14,flexWrap:'wrap',gap:8}}>
+        <div style={{display:'flex',gap:12}}>
+          <span style={{fontSize:13,color:'var(--ink-3)'}}><b style={{color:'var(--ink-2)'}}>{lavorazioni.length}</b> tasks</span>
+          <span style={{fontSize:13,color:'var(--ink-3)'}}><b style={{color:'var(--ink-2)'}}>{totalH.toFixed(0)}h</b> total</span>
+        </div>
+        <span className="spacer"/>
+        {isAdmin&&p.startDate&&lavorazioni.length>0&&(
+          <button className="btn btn-sm"onClick={doAutoSchedule}title="Compute sequential dates from project start">
+            <i className="ti ti-wand"/>Auto-schedule
+          </button>
+        )}
+        {isAdmin&&<button className="btn btn-sm"onClick={()=>up({lavorazioni:[...lavorazioni,{id:uid(),name:'New task',category:'Altro',quantity:1,hoursTotal:8,costPerUnit:0,assignedUserIds:[],startDate:p.startDate||'',endDate:'',notes:''}]})}>
+          <i className="ti ti-plus"/>Add task
+        </button>}
+      </div>
+
+      {lavorazioni.length===0&&<div className="empty-state"><i className="ti ti-list-check"/>
+        <p>No tasks defined</p><small>Convert an estimation to populate tasks, or add one manually</small>
+      </div>}
+
+      {lavorazioni.length>0&&<div style={{overflowX:'auto'}}>
+        <div ref={ganttRef}className="gantt-wrap"style={{minWidth:600,cursor:dragState?dragState.type==='resize'?'ew-resize':'grabbing':'auto',userSelect:dragState?'none':'auto'}}>
+          {/* header */}
+          <div className="gantt-header-row"style={{gridTemplateColumns:'220px 1fr'}}>
+            <div style={{padding:'9px 14px',background:'var(--parchment-2)',borderRight:'1px solid var(--rule)',fontSize:10,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--ink-4)'}}>Task</div>
+            <div style={{position:'relative',height:36,background:'var(--parchment-2)'}}>
+              {months.map((m,i)=>{
+                const left=posOf(m);
+                const next=months[i+1]?posOf(months[i+1]):100;
+                const width=next-left;
+                return<div key={i}style={{position:'absolute',left:`${left}%`,width:`${width}%`,height:'100%',display:'flex',alignItems:'center',paddingLeft:8,fontSize:11,fontWeight:600,color:'var(--ink-4)',borderRight:'1px solid var(--rule)',whiteSpace:'nowrap',overflow:'hidden'}}>
+                  {m.toLocaleDateString('en',{month:'short',year:'2-digit'})}
+                </div>;
+              })}
+              {deadlinePos!==null&&<div style={{position:'absolute',left:`${deadlinePos}%`,top:0,bottom:0,width:2,background:'repeating-linear-gradient(to bottom,var(--danger) 0,var(--danger) 5px,transparent 5px,transparent 9px)',zIndex:4,opacity:.8}}/>}
+              {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:2,background:'var(--gold)',zIndex:5,opacity:.8}}/>}
+            </div>
+          </div>
+          {/* rows */}
+          {lavorazioni.map(lv=>{
+            const ov=dragOverride&&dragOverride.lavId===lv.id?dragOverride:null;
+            const lvD={...lv,...(ov||{})};
+            const color=CATEGORY_COLORS[lv.category]||'#6B7280';
+            const assigned=(lv.assignedUserIds||[]).map(uid2=>users.find(u=>u.id===uid2)).filter(Boolean);
+            const numAssigned=Math.max(assigned.length,1);
+            const realH=(+lv.hoursTotal||0)/numAssigned;
+            const workDays=Math.max(Math.ceil(realH/HOURS_PER_DAY),1);
+            const hasDate=lvD.startDate&&lvD.endDate;
+            const left=hasDate?posOf(lvD.startDate):0;
+            const width=hasDate?widthOf(lvD.startDate,lvD.endDate):0;
+            const isDragging=dragState&&dragState.lavId===lv.id;
+            return<div key={lv.id}className="gantt-row-wrap"style={{gridTemplateColumns:'220px 1fr'}}>
+              {/* label */}
+              <div className="gantt-person-col"style={{minHeight:56,alignItems:'flex-start',paddingTop:10,paddingBottom:8,gap:8,cursor:isAdmin?'pointer':'default',flexDirection:'column',justifyContent:'center'}}
+                onClick={()=>!dragState&&isAdmin&&setEditLav({...lv})}>
+                <div style={{display:'flex',alignItems:'center',gap:7,width:'100%'}}>
+                  <div style={{width:3,height:32,borderRadius:2,background:color,flexShrink:0}}/>
+                  <div style={{minWidth:0,flex:1}}>
+                    <div style={{fontSize:12,fontWeight:600,color:'var(--ink-2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{lv.name}</div>
+                    <div style={{display:'flex',alignItems:'center',gap:6,marginTop:2,flexWrap:'wrap'}}>
+                      <span style={{fontSize:10,color,fontWeight:600,letterSpacing:'.02em'}}>{lv.category}</span>
+                      <span style={{fontSize:10,color:'var(--ink-4)'}}>·</span>
+                      <span style={{fontSize:10,color:'var(--ink-4)',fontFamily:'var(--mono)'}}>{(+lv.hoursTotal||0).toFixed(0)}h</span>
+                      <span style={{fontSize:10,color:'var(--ink-4)'}}>·</span>
+                      <span style={{fontSize:10,color:'var(--ink-4)',fontFamily:'var(--mono)'}}>{workDays}d</span>
+                    </div>
+                  </div>
+                  {assigned.length>0&&<div style={{display:'flex',alignItems:'center',marginLeft:'auto',flexShrink:0}}>
+                    {assigned.slice(0,3).map((u,i)=><div key={u.id}style={{width:20,height:20,borderRadius:'50%',background:u.color,border:'2px solid var(--white)',marginLeft:i?-6:0,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,fontWeight:700,color:'#fff',zIndex:3-i,flexShrink:0}}>{u.avatar}</div>)}
+                    {assigned.length>3&&<div style={{width:20,height:20,borderRadius:'50%',background:'var(--surface-3)',border:'2px solid var(--white)',marginLeft:-6,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,fontWeight:700,color:'var(--ink-3)'}}>+{assigned.length-3}</div>}
+                  </div>}
+                </div>
+              </div>
+              {/* track */}
+              <div className="gantt-track-area"style={{height:56,position:'relative',background:'var(--paper)'}}>
+                {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:1,background:'var(--gold)',opacity:.6,zIndex:3,pointerEvents:'none'}}/>}
+                {deadlinePos!==null&&<div style={{position:'absolute',left:`${deadlinePos}%`,top:0,bottom:0,width:2,background:'repeating-linear-gradient(to bottom,var(--danger) 0,var(--danger) 5px,transparent 5px,transparent 9px)',zIndex:4,opacity:.8,pointerEvents:'none'}}/>}
+                {hasDate?(
+                  <div style={{position:'absolute',left:`${left}%`,width:`${Math.max(width,.5)}%`,top:10,height:36,borderRadius:'var(--r-sm)',background:color,display:'flex',alignItems:'center',paddingLeft:10,paddingRight:14,gap:6,cursor:isAdmin?'grab':'default',overflow:'visible',boxShadow:isDragging?`0 6px 16px ${color}60`:`0 2px 6px ${color}40`,opacity:isDragging?.9:1,transition:isDragging?'none':'box-shadow .15s',zIndex:isDragging?10:1}}
+                    onMouseDown={e=>startDrag(e,'move',lv)}
+                    onClick={e=>{if(!dragState)e.stopPropagation();}}>
+                    {/* bar content */}
+                    <div style={{display:'flex',alignItems:'center',gap:6,overflow:'hidden',flex:1,pointerEvents:'none'}}>
+                      {width>8&&<span style={{fontSize:11,fontWeight:700,color:'#fff',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',flex:1}}>{lv.name}</span>}
+                      {width>16&&<span style={{fontSize:10,fontWeight:600,background:'rgba(255,255,255,.22)',padding:'1px 6px',borderRadius:10,color:'#fff',flexShrink:0,whiteSpace:'nowrap'}}>{workDays}d</span>}
+                    </div>
+                    {/* resize handle */}
+                    {isAdmin&&<div
+                      style={{position:'absolute',right:0,top:0,width:12,height:'100%',cursor:'ew-resize',borderRadius:'0 var(--r-sm) var(--r-sm) 0',display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(255,255,255,.15)',flexShrink:0}}
+                      onMouseDown={e=>startDrag(e,'resize',lv)}>
+                      <div style={{width:2,height:14,background:'rgba(255,255,255,.75)',borderRadius:1}}/>
+                    </div>}
+                  </div>
+                ):(
+                  <div style={{position:'absolute',left:8,top:'50%',transform:'translateY(-50%)',fontSize:11,color:'var(--ink-5)',fontStyle:'italic'}}>
+                    No dates {isAdmin&&<span style={{cursor:'pointer',color:'var(--gold)',textDecoration:'underline'}}onClick={()=>setEditLav({...lv})}>— set</span>}
+                  </div>
+                )}
+              </div>
+            </div>;
+          })}
+          {/* legend */}
+          <div style={{padding:'10px 14px',display:'flex',gap:8,flexWrap:'wrap',borderTop:'1px solid var(--rule)',background:'var(--parchment-2)',alignItems:'center'}}>
+            <div style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'var(--ink-4)',marginRight:4}}>
+              <div style={{width:14,height:2,background:'var(--gold)'}}/>Today
+            </div>
+            {p.endDate&&<div style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'var(--ink-4)',marginRight:8}}>
+              <div style={{width:14,height:2,backgroundImage:'repeating-linear-gradient(to right,var(--danger) 0,var(--danger) 4px,transparent 4px,transparent 7px)'}}/>Deadline
+            </div>}
+            {[...new Set(lavorazioni.map(l=>l.category))].map(cat=>{
+              const color=CATEGORY_COLORS[cat]||'#6B7280';
+              return<div key={cat}style={{display:'flex',alignItems:'center',gap:5,background:color+'15',border:`1px solid ${color}30`,borderRadius:'var(--r-xs)',padding:'2px 7px'}}>
+                <div style={{width:7,height:7,borderRadius:2,background:color}}/>
+                <span style={{fontSize:10,color,fontWeight:600}}>{cat}</span>
+              </div>;
+            })}
+          </div>
+        </div>
+      </div>}
+      {editLav&&<LavModal lav={editLav}users={users}onSave={saveLav}onDelete={()=>{up({lavorazioni:lavorazioni.filter(x=>x.id!==editLav.id)});setEditLav(null);}}onClose={()=>setEditLav(null)}/>}
+    </div>;
+  };
+
+  /* ─ phases gantt (unchanged logic, updated look) ─ */
   const PhasesView=()=><div>
+    <DateHeader/>
     <div className="row"style={{marginBottom:14}}>
-      <div style={{fontSize:13,color:'var(--ink-3)'}}>{fmt.date(p.startDate)} → {fmt.date(p.endDate)}</div>
       <span className="spacer"/>
       {isAdmin&&<button className="btn btn-sm"onClick={()=>setAddingBlock(true)}><i className="ti ti-plus"/>Add phase</button>}
     </div>
     <GanttGrid pStart={pStart}pEnd={pEnd}months={months}nowPos={nowPos}>
-      {personIds.length===0&&<div style={{textAlign:'center',padding:'32px',color:'var(--ink-4)',fontSize:13}}>
+      {deadlinePos!==null&&<div style={{position:'absolute',left:`${deadlinePos}%`,top:0,bottom:0,width:2,background:'repeating-linear-gradient(to bottom,var(--danger) 0,var(--danger) 5px,transparent 5px,transparent 9px)',zIndex:4,opacity:.8,pointerEvents:'none'}}/>}
+      {personIds.length===0&&<div style={{textAlign:'center',padding:'32px',color:'var(--ink-4)',fontSize:13,gridColumn:'1/-1'}}>
         No phases added. {isAdmin&&'Click "Add phase" to define who is doing what and when.'}
       </div>}
       {personIds.map(uid2=>{
         const user=users.find(u=>u.id===uid2);if(!user)return null;
         const blocks=assignments.filter(a=>a.userId===uid2);
-        const rowH=Math.max(48,blocks.length*42+16);
+        const rowH=Math.max(52,blocks.length*42+16);
         return<div key={uid2}className="gantt-row-wrap"style={{gridTemplateColumns:'180px 1fr'}}>
           <div className="gantt-person-col"style={{alignSelf:'stretch'}}>
-            <Av user={user}size={28}/>
-            <div style={{minWidth:0}}><div style={{fontSize:12,fontWeight:600,letterSpacing:'-.01em'}}className="trunc">{user.name}</div></div>
+            <Av user={user}size={26}/>
+            <div style={{minWidth:0}}><div style={{fontSize:12,fontWeight:600}}className="trunc">{user.name}</div></div>
           </div>
           <div className="gantt-track-area"style={{height:rowH,position:'relative'}}>
-            {nowPos>0&&nowPos<100&&<div className="gantt-today"style={{left:`${nowPos}%`,background:'var(--danger)',opacity:.5}}/>}
+            {nowPos>0&&nowPos<100&&<div className="gantt-today"style={{left:`${nowPos}%`,background:'var(--gold)',opacity:.7}}/>}
             {blocks.map((b,bi)=>{
               const duty=duties.find(d=>d.id===b.dutyId);
               const left=posOf(b.startDate),width=widthOf(b.startDate,b.endDate);
@@ -1648,76 +2262,16 @@ function ProjTimelineTab({p,store,isAdmin,up,me}){
     {(editBlock||addingBlock)&&<BlockModal block={editBlock||emptyBlock()}users={users}duties={duties}onSave={saveBlock}onDelete={editBlock?()=>{deleteBlock(editBlock.id);setEditBlock(null);}:null}onClose={()=>{setEditBlock(null);setAddingBlock(false);}}/>}
   </div>;
 
-  /* ── TASKS VIEW ── */
-  const TasksView=()=>{
-    if(!lavorazioni.length)return<div className="empty-state"><i className="ti ti-list-check"/>
-      <p>No tasks defined</p><small>Convert an estimation to populate tasks, or add one manually</small>
-    </div>;
-    const cats=[...new Set(lavorazioni.map(l=>l.category))];
-    return<div>
-      <div className="row"style={{marginBottom:14}}>
-        <div style={{fontSize:13,color:'var(--ink-3)'}}>{lavorazioni.length} tasks · {lavorazioni.reduce((s,l)=>s+l.hoursTotal,0).toFixed(1)}h total</div>
-        <span className="spacer"/>
-        {isAdmin&&<button className="btn btn-sm"onClick={()=>up({lavorazioni:[...lavorazioni,{id:uid(),name:'New task',category:'Altro',quantity:1,hoursTotal:8,costPerUnit:0,assignedUserIds:[],startDate:p.startDate||'',endDate:'',notes:''}]})}>
-          <i className="ti ti-plus"/>Add task
-        </button>}
-      </div>
-      <GanttGrid pStart={pStart}pEnd={pEnd}months={months}nowPos={nowPos}colLabel="Task">
-        {cats.map(cat=>{
-          const catItems=lavorazioni.filter(l=>l.category===cat);
-          const color=CATEGORY_COLORS[cat]||'#6B7280';
-          return catItems.map((lv,li)=>{
-            const hasDate=lv.startDate&&lv.endDate;
-            const left=hasDate?posOf(lv.startDate):0;
-            const width=hasDate?widthOf(lv.startDate,lv.endDate):0;
-            const assigned=lv.assignedUserIds?.map(uid2=>users.find(u=>u.id===uid2)).filter(Boolean)||[];
-            return<div key={lv.id}className="gantt-row-wrap"style={{gridTemplateColumns:'180px 1fr'}}>
-              <div className="gantt-person-col"style={{alignSelf:'stretch',gap:6}}>
-                <div style={{width:3,height:16,borderRadius:2,background:color,flexShrink:0}}/>
-                <div style={{minWidth:0}}>
-                  <div style={{fontSize:11,fontWeight:600,letterSpacing:'-.01em',color:'var(--ink-2)'}}className="trunc">{lv.name}</div>
-                  <div style={{fontSize:10,color:color,fontWeight:500,marginTop:1}}>{cat}</div>
-                </div>
-              </div>
-              <div className="gantt-track-area"style={{height:48,position:'relative'}}>
-                {nowPos>0&&nowPos<100&&<div className="gantt-today"style={{left:`${nowPos}%`,background:'var(--danger)',opacity:.5}}/>}
-                {hasDate
-                  ?<div className="gantt-block"
-                    style={{left:`${left}%`,width:`${width}%`,top:9,background:color+'18',color,border:`1.5px solid ${color}30`}}
-                    onClick={()=>isAdmin&&setEditLav({...lv})}>
-                    {width>12&&`${lv.name} · ${lv.hoursTotal}h`}
-                  </div>
-                  :<div style={{position:'absolute',left:8,top:'50%',transform:'translateY(-50%)',fontSize:11,color:'var(--ink-5)',fontStyle:'italic'}}>
-                    No dates set {isAdmin&&<span style={{cursor:'pointer',color:'var(--gold)',textDecoration:'underline'}}onClick={()=>setEditLav({...lv})}>— set dates</span>}
-                  </div>
-                }
-              </div>
-            </div>;
-          });
-        })}
-      </GanttGrid>
-      {/* legend */}
-      <div style={{marginTop:12,display:'flex',gap:8,flexWrap:'wrap'}}>
-        {[...new Set(lavorazioni.map(l=>l.category))].map(cat=>{
-          const color=CATEGORY_COLORS[cat]||'#6B7280';
-          return<div key={cat}style={{display:'flex',alignItems:'center',gap:5,background:color+'12',border:`1px solid ${color}30`,borderRadius:'var(--r-xs)',padding:'3px 8px'}}>
-            <div style={{width:8,height:8,borderRadius:2,background:color}}/>
-            <span style={{fontSize:11,color,fontWeight:600}}>{cat}</span>
-          </div>;
-        })}
-      </div>
-      {editLav&&<LavModal lav={editLav}users={users}onSave={saveLav}onDelete={()=>{up({lavorazioni:lavorazioni.filter(x=>x.id!==editLav.id)});setEditLav(null);}}onClose={()=>setEditLav(null)}/>}
-    </div>;
-  };
-
   return<div>
-    <div style={{display:'flex',gap:2,background:'var(--rule)',borderRadius:'var(--r-xs)',padding:2,width:'fit-content',marginBottom:20}}>
-      <button className={`btn btn-sm ${subTab==='phases'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setSubTab('phases')}><i className="ti ti-users"/>Phases</button>
-      <button className={`btn btn-sm ${subTab==='tasks'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setSubTab('tasks')}>
+    <div style={{display:'flex',gap:2,background:'var(--surface-2)',border:'1px solid var(--rule)',borderRadius:'var(--r-sm)',padding:3,width:'fit-content',marginBottom:20}}>
+      <button className={`btn btn-sm${subTab==='tasks'?' btn-primary':''}`}style={{border:'none',borderRadius:'var(--r-xs)'}}onClick={()=>setSubTab('tasks')}>
         <i className="ti ti-list-check"/>Tasks {lavorazioni.length>0&&<span style={{fontSize:10,opacity:.7}}>({lavorazioni.length})</span>}
       </button>
+      <button className={`btn btn-sm${subTab==='phases'?' btn-primary':''}`}style={{border:'none',borderRadius:'var(--r-xs)'}}onClick={()=>setSubTab('phases')}>
+        <i className="ti ti-users"/>Phases
+      </button>
     </div>
-    {subTab==='phases'?<PhasesView/>:<TasksView/>}
+    {subTab==='tasks'?<TasksView/>:<PhasesView/>}
   </div>;
 }
 
@@ -1725,7 +2279,11 @@ function ProjTimelineTab({p,store,isAdmin,up,me}){
 function LavModal({lav,users,onSave,onDelete,onClose}){
   const[l,setL]=useState(lav);
   const up=p=>setL(x=>({...x,...p}));
-  return<Modal title="Edit task"onClose={onClose}width={460}
+  const numAssigned=Math.max((l.assignedUserIds||[]).length,1);
+  const realH=(+l.hoursTotal||0)/numAssigned;
+  const estDays=Math.max(Math.ceil(realH/HOURS_PER_DAY),1);
+  const color=CATEGORY_COLORS[l.category]||'#6B7280';
+  return<Modal title="Edit task"onClose={onClose}width={480}
     footer={<>
       <button className="btn btn-danger btn-sm"onClick={onDelete}><i className="ti ti-trash"/></button>
       <span className="spacer"/>
@@ -1736,7 +2294,7 @@ function LavModal({lav,users,onSave,onDelete,onClose}){
       <div className="form-group"><div className="form-label">Task name</div><input value={l.name}onChange={e=>up({name:e.target.value})}/></div>
       <div className="form-group"><div className="form-label">Category</div>
         <select value={l.category}onChange={e=>up({category:e.target.value})}
-          style={{background:(CATEGORY_COLORS[l.category]||'#6B7280')+'15',color:CATEGORY_COLORS[l.category]||'#6B7280',borderColor:(CATEGORY_COLORS[l.category]||'#6B7280')+'40',fontWeight:500}}>
+          style={{background:color+'15',color,borderColor:color+'50',fontWeight:600}}>
           {ASSET_CATEGORIES.map(c=><option key={c}value={c}>{c}</option>)}
         </select>
       </div>
@@ -1746,9 +2304,38 @@ function LavModal({lav,users,onSave,onDelete,onClose}){
       <div className="form-group"><div className="form-label">Hours total</div><input type="number"min={0}step={.5}value={l.hoursTotal}onChange={e=>up({hoursTotal:+e.target.value})}/></div>
       <div className="form-group"><div className="form-label">€/unit API</div><input type="number"min={0}step={.01}value={l.costPerUnit||0}onChange={e=>up({costPerUnit:+e.target.value})}/></div>
     </div>
+    {/* computed summary */}
+    <div style={{display:'flex',gap:10,marginBottom:14,padding:'9px 12px',background:'var(--surface-2)',border:'1px solid var(--rule)',borderRadius:'var(--r-sm)'}}>
+      <div style={{flex:1,textAlign:'center'}}>
+        <div style={{fontSize:10,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:3}}>Hours/person</div>
+        <div style={{fontFamily:'var(--mono)',fontSize:18,fontWeight:400,color:'var(--ink)'}}>{realH.toFixed(1)}h</div>
+      </div>
+      <div style={{width:1,background:'var(--rule)'}}/>
+      <div style={{flex:1,textAlign:'center'}}>
+        <div style={{fontSize:10,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:3}}>Est. duration</div>
+        <div style={{fontFamily:'var(--mono)',fontSize:18,fontWeight:400,color:color}}>{estDays}d</div>
+      </div>
+      <div style={{width:1,background:'var(--rule)'}}/>
+      <div style={{flex:1,textAlign:'center'}}>
+        <div style={{fontSize:10,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--ink-4)',marginBottom:3}}>Assigned</div>
+        <div style={{fontFamily:'var(--mono)',fontSize:18,fontWeight:400,color:'var(--ink)'}}>{numAssigned}</div>
+      </div>
+    </div>
+    <div className="form-group"><div className="form-label">Assigned people</div>
+      <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+        {users.map(u=>{
+          const sel=(l.assignedUserIds||[]).includes(u.id);
+          return<button key={u.id}onClick={()=>up({assignedUserIds:sel?(l.assignedUserIds||[]).filter(x=>x!==u.id):[...(l.assignedUserIds||[]),u.id]})}
+            style={{display:'flex',alignItems:'center',gap:6,padding:'4px 10px',borderRadius:'var(--r-pill)',border:`1.5px solid ${sel?u.color+'60':'var(--rule)'}`,background:sel?u.color+'15':'transparent',cursor:'pointer',fontSize:12,fontWeight:sel?600:400,color:sel?u.color:'var(--ink-3)',transition:'all .15s',fontFamily:'var(--sans)'}}>
+            <div style={{width:16,height:16,borderRadius:'50%',background:u.color,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,fontWeight:700,color:'#fff'}}>{u.avatar}</div>
+            {u.name.split(' ')[0]}
+          </button>;
+        })}
+      </div>
+    </div>
     <div className="form-row-2">
       <div className="form-group"><div className="form-label">Start date</div><input type="date"value={l.startDate||''}onChange={e=>up({startDate:e.target.value})}/></div>
-      <div className="form-group"><div className="form-label">End date</div><input type="date"value={l.endDate||''}onChange={e=>up({endDate:e.target.value})}/></div>
+      <div className="form-group"><div className="form-label">Deadline</div><input type="date"value={l.endDate||''}onChange={e=>up({endDate:e.target.value})}/></div>
     </div>
     <div className="form-group"><div className="form-label">Notes</div><textarea value={l.notes||''}onChange={e=>up({notes:e.target.value})}rows={2}/></div>
   </Modal>;
@@ -2229,7 +2816,8 @@ function App(){
     <Sidebar me={me}view={view}setView={navTo}onLogout={()=>setMe(null)}isAdmin={isAdmin}/>
     <div className="main">
       {!isFullPage&&<div className="topbar">
-        <span style={{fontSize:17,fontFamily:'var(--serif)',fontStyle:'italic',letterSpacing:'.01em',color:'var(--ink)'}}>{titles[view]||''}</span>
+        <span style={{fontSize:16,fontFamily:'var(--sans)',fontWeight:700,letterSpacing:'-.03em',color:'var(--ink)'}}>{titles[view]||''}</span>
+        <div style={{flex:1}}/>
       </div>}
       {view==='project-detail'?(
         <ProjectDetail id={projectId}store={store}me={me}setView={v=>setView(v)}setEstimationId={setEstimationId}setNavView={v=>setView(v)}/>
