@@ -275,15 +275,10 @@ select{
 .proj-card{
   background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);
   padding:20px 20px 18px 22px;cursor:pointer;
-  transition:box-shadow .2s cubic-bezier(.16,1,.3,1),border-color .2s,transform .2s;
-  position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px
+  transition:box-shadow .28s cubic-bezier(.16,1,.3,1),border-color .28s cubic-bezier(.16,1,.3,1),transform .28s cubic-bezier(.16,1,.3,1);
+  position:relative;display:flex;flex-direction:column;gap:14px;will-change:transform
 }
-.proj-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
-.proj-card.s-planning::before{background:#3B5BDB}
-.proj-card.s-active::before  {background:#16A34A}
-.proj-card.s-on_hold::before {background:#71717A}
-.proj-card.s-completed::before{background:#A1A1AA}
-.proj-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.06);transform:translateY(-2px)}
+.proj-card:hover{box-shadow:0 10px 28px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.06);transform:translateY(-3px)}
 
 /* ── GANTT ── */
 .gantt-wrap{background:var(--white);border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden}
@@ -756,8 +751,7 @@ function Sidebar({me,view,setView,onLogout,isAdmin}){
   ];
   return<div className="sidebar">
     <div className="sb-logo">
-      <div className="sb-mark"><i className="ti ti-layout-kanban"style={{fontSize:13,color:'#fff'}}/></div>
-      <div><div className="sb-wordmark">Studio OS</div></div>
+      <div><div className="sb-wordmark"style={{fontSize:16,letterSpacing:'-.03em'}}>Studio OS</div></div>
     </div>
     <div className="sb-section"style={{flex:1}}>
       {nav.map(item=><button key={item.id}className={`nav-btn ${view===item.id?'active':''}`}onClick={()=>setView(item.id)}>
@@ -912,6 +906,7 @@ function EstimationDetail({id,store,me,setView,onConverted,embedded=false}){
   });
   const[dirty,setDirty]=useState(false);
   const[converting,setConverting]=useState(false);
+  const[linking,setLinking]=useState(false);
   const up=patch=>{ setEst(e=>({...e,...patch,updatedAt:new Date().toISOString()})); setDirty(true); };
   const upAsset=(aid,patch)=>up({assets:est.assets.map(a=>a.id===aid?{...a,...patch}:a)});
   const upResource=(rid,patch)=>up({resources:est.resources.map(r=>r.id===rid?{...r,...patch}:r)});
@@ -946,6 +941,32 @@ function EstimationDetail({id,store,me,setView,onConverted,embedded=false}){
     setEst(e=>({...e,linkedProjectId:newP.id}));
     setConverting(false);
     onConverted(newP.id);
+  };
+  const linkToExisting=(projectId)=>{
+    const calc=calcEst(est.assets,est.resources,est.bufferPct,est.projectType);
+    const lavorazioni=est.assets.map(a=>({
+      id:uid(),name:a.name||'Unnamed',category:a.category||'Altro',
+      quantity:+a.volume||0,
+      hoursTotal:Math.round(((a.volume*a.genHPerAsset)+(a.volume*a.postHPerAsset)+(+a.extraH||0))*10)/10,
+      costPerUnit:+a.costPerUnit||0,
+      assignedUserIds:est.resources.filter(r=>r.userId).map(r=>r.userId),
+      startDate:'',endDate:'',notes:a.notes||'',
+    }));
+    const target=projects.find(p=>p.id===projectId);if(!target)return;
+    const merged={...target,
+      estimationId:est.id,
+      budget:(+target.budget||0)+calc.totalCost,
+      totalHours:(+target.totalHours||0)+calc.totalH,
+      deliverables:(+target.deliverables||0)+calc.totalDeliverables,
+      lavorazioni:[...(target.lavorazioni||[]),...lavorazioni],
+      log:[...(target.log||[]),{id:uid(),userId:me.id,text:`Estimation "${est.projectName||est.clientName}" linked to this project.`,createdAt:new Date().toISOString()}],
+      updatedAt:new Date().toISOString(),
+    };
+    upsertProject(merged);
+    upsertEstimation({...est,linkedProjectId:projectId});
+    setEst(e=>({...e,linkedProjectId:projectId}));
+    setLinking(false);
+    onConverted(projectId);
   };
   const calc=calcEst(est.assets,est.resources,est.bufferPct,est.projectType);
   const linkedProject=est.linkedProjectId?projects.find(p=>p.id===est.linkedProjectId):null;
@@ -1113,7 +1134,10 @@ function EstimationDetail({id,store,me,setView,onConverted,embedded=false}){
               <button className="btn btn-sm"style={{width:'100%',justifyContent:'center'}}onClick={()=>onConverted(linkedProject.id)}><i className="ti ti-arrow-right"/>Open project</button>
             </div>
           ):isAdmin&&est.status==='confirmed'?(
-            <button className="btn btn-primary"style={{width:'100%',justifyContent:'center'}}onClick={()=>setConverting(true)}><i className="ti ti-git-branch"/>Convert to project</button>
+            <div style={{display:'flex',flexDirection:'column',gap:6}}>
+              <button className="btn btn-primary"style={{width:'100%',justifyContent:'center'}}onClick={()=>setConverting(true)}><i className="ti ti-git-branch"/>Create new project</button>
+              <button className="btn btn-sm"style={{width:'100%',justifyContent:'center'}}onClick={()=>setLinking(true)}><i className="ti ti-link"/>Link to existing project</button>
+            </div>
           ):isAdmin&&est.status==='draft'?(
             <div className="banner banner-amber"><i className="ti ti-info-circle"style={{fontSize:13,flexShrink:0}}/><span>Mark as Confirmed to convert to a project</span></div>
           ):null)}
@@ -1123,6 +1147,32 @@ function EstimationDetail({id,store,me,setView,onConverted,embedded=false}){
     {converting&&<Confirm title="Convert to project"
       message={`This creates a new project "${est.projectName||est.clientName}" pre-filled with team, budget and hours from this estimation. Continue?`}
       onConfirm={convertToProject}onCancel={()=>setConverting(false)}/>}
+    {linking&&<Modal title="Link to existing project"onClose={()=>setLinking(false)}width={440}
+      footer={<><span className="spacer"/><button className="btn"onClick={()=>setLinking(false)}>Cancel</button></>}>
+      <div style={{fontSize:13,color:'var(--ink-3)',marginBottom:14,lineHeight:1.5}}>
+        Adds this estimation's tasks, hours and budget to an existing project. The project's totals will be incremented.
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:6,maxHeight:340,overflowY:'auto'}}>
+        {projects.filter(p=>p.status!=='completed').length===0&&
+          <div className="empty-state"style={{padding:'24px 12px'}}><i className="ti ti-folder-off"/><p>No active projects</p><small>Create a new project first</small></div>
+        }
+        {projects.filter(p=>p.status!=='completed').map(p=>(
+          <button key={p.id}onClick={()=>linkToExisting(p.id)}
+            style={{display:'flex',alignItems:'center',gap:10,padding:'12px 14px',background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-md)',cursor:'pointer',textAlign:'left',transition:'all .12s',fontFamily:'var(--sans)'}}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--gold)';e.currentTarget.style.background='var(--gold-lt)';}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--rule)';e.currentTarget.style.background='var(--white)';}}>
+            <div className={`status-dot-${p.status}`}style={{width:8,height:8,borderRadius:'50%',flexShrink:0}}/>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:13,fontWeight:600,color:'var(--ink)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.title}</div>
+              <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2}}>
+                {p.status} · {(p.lavorazioni||[]).length} tasks · {fmt.currency(+p.budget||0)}
+              </div>
+            </div>
+            <i className="ti ti-arrow-right"style={{fontSize:15,color:'var(--ink-4)'}}/>
+          </button>
+        ))}
+      </div>
+    </Modal>}
   </div>;
 }
 
@@ -1201,37 +1251,75 @@ function ProjectListView({projects,users,open}){
 }
 
 /* ═══════ PROJECTS OVERVIEW ══════════════════════════════ */
+const PROJ_COLORS=['#0066EE','#16A34A','#DC2626','#D97706','#7C3AED','#DB2777','#0EA5E9','#71717A'];
+
 function ProjectsOverview({store,me,setView,setProjectId}){
-  const{projects,users,upsertProject}=store;
+  const{projects,users,upsertProject,deleteProject}=store;
   const[viewMode,setViewMode]=useState('grid');
   const[filterStatus,setFilterStatus]=useState('all');
   const[filterPerson,setFilterPerson]=useState('all');
   const[showNew,setShowNew]=useState(false);
+  const[sortBy,setSortBy]=useState('manual');
+  const[dragId,setDragId]=useState(null);
   const visible=projects.filter(p=>{
     if(p.status==='completed')return false;
     if(filterStatus!=='all'&&p.status!==filterStatus)return false;
     if(filterPerson!=='all'&&!p.assignments?.some(a=>a.userId===filterPerson))return false;
     return true;
   }).sort((a,b)=>{
-    // put items without dates last
-    if(!a.endDate&&!b.endDate)return 0;
-    if(!a.endDate)return 1;
-    if(!b.endDate)return -1;
-    return new Date(a.endDate)-new Date(b.endDate);
+    // pinned always first
+    if((b.pinned?1:0)!==(a.pinned?1:0))return(b.pinned?1:0)-(a.pinned?1:0);
+    if(sortBy==='manual'){
+      const ao=a.order??9999,bo=b.order??9999;
+      if(ao!==bo)return ao-bo;
+      return new Date(a.createdAt||0)-new Date(b.createdAt||0);
+    }
+    if(sortBy==='deadline'){
+      if(!a.endDate&&!b.endDate)return 0;
+      if(!a.endDate)return 1;if(!b.endDate)return -1;
+      return new Date(a.endDate)-new Date(b.endDate);
+    }
+    if(sortBy==='title')return(a.title||'').localeCompare(b.title||'');
+    if(sortBy==='created')return new Date(b.createdAt||0)-new Date(a.createdAt||0);
+    return 0;
   });
   const open=id=>{setProjectId(id);setView('project-detail');};
   const isAdmin=me.role==='admin';
+  const onDragStart=id=>setDragId(id);
+  const onDragOver=(e,overId)=>{
+    e.preventDefault();
+    if(!dragId||dragId===overId)return;
+  };
+  const onDrop=(e,overId)=>{
+    e.preventDefault();
+    if(!dragId||dragId===overId)return;
+    const ids=visible.map(p=>p.id);
+    const from=ids.indexOf(dragId),to=ids.indexOf(overId);
+    if(from<0||to<0)return;
+    ids.splice(from,1);ids.splice(to,0,dragId);
+    ids.forEach((id,i)=>{
+      const p=projects.find(x=>x.id===id);
+      if(p)upsertProject({...p,order:i});
+    });
+    setDragId(null);setSortBy('manual');
+  };
   return<div className="fade">
     <div className="row page-hd">
       <div><div className="page-title">Projects</div><div className="page-sub">{visible.length} active</div></div>
       <span className="spacer"/>
+      <select value={sortBy}onChange={e=>setSortBy(e.target.value)}style={{width:'auto',fontSize:12}}title="Sort by">
+        <option value="manual">Manual order</option>
+        <option value="deadline">By deadline</option>
+        <option value="title">By title</option>
+        <option value="created">Recently created</option>
+      </select>
       <select value={filterStatus}onChange={e=>setFilterStatus(e.target.value)}style={{width:'auto',fontSize:12}}>
         <option value="all">All statuses</option><option value="planning">Planning</option><option value="active">Active</option><option value="on_hold">On Hold</option>
       </select>
       <select value={filterPerson}onChange={e=>setFilterPerson(e.target.value)}style={{width:'auto',fontSize:12}}>
         <option value="all">All people</option>{users.map(u=><option key={u.id}value={u.id}>{u.name}</option>)}
       </select>
-      <div className="row"style={{gap:2,background:'var(--rule)',borderRadius:'var(--r-xs)',padding:2}}>
+      <div className="row"style={{gap:2,background:'var(--surface-2)',border:'1px solid var(--rule)',borderRadius:'var(--r-xs)',padding:2}}>
         <button className={`btn btn-xs ${viewMode==='grid'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setViewMode('grid')}><i className="ti ti-layout-grid"/></button>
         <button className={`btn btn-xs ${viewMode==='list'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setViewMode('list')}><i className="ti ti-list"/></button>
       </div>
@@ -1239,28 +1327,74 @@ function ProjectsOverview({store,me,setView,setProjectId}){
     </div>
     {!visible.length&&<div className="empty-state"><i className="ti ti-layout-kanban"/><p>No projects match your filters</p></div>}
     {viewMode==='grid'&&<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))',gap:14}}>
-      {visible.map(p=><ProjCard key={p.id}project={p}store={store}onClick={()=>open(p.id)}/>)}
+      {visible.map(p=><ProjCard key={p.id}project={p}store={store}onClick={()=>open(p.id)}isAdmin={isAdmin}
+        dragId={dragId}sortBy={sortBy}
+        onDragStart={()=>onDragStart(p.id)}
+        onDragOver={e=>onDragOver(e,p.id)}
+        onDrop={e=>onDrop(e,p.id)}
+        onDragEnd={()=>setDragId(null)}/>)}
     </div>}
     {viewMode==='list'&&<ProjectListView projects={visible}users={users}open={open}/>}
     {showNew&&isAdmin&&<NewProjectModal store={store}me={me}onClose={()=>setShowNew(false)}onCreated={id=>{setShowNew(false);open(id);}}/>}
   </div>;
 }
 
-function ProjCard({project:p,store,onClick}){
-  const{users}=store;
+function ProjCard({project:p,store,onClick,isAdmin,dragId,sortBy,onDragStart,onDragOver,onDrop,onDragEnd}){
+  const{users,upsertProject,deleteProject}=store;
+  const[menu,setMenu]=useState(false);
   const days=fmt.daysLeft(p.endDate);
   const pct=fmt.elapsed(p.startDate,p.endDate);
-  const statusColor=p.status==='planning'?'var(--s-planning)':p.status==='active'?'var(--s-active)':p.status==='on_hold'?'var(--s-hold)':'var(--s-done)';
+  const statusCol=p.status==='planning'?'#3B5BDB':p.status==='active'?'#16A34A':p.status==='on_hold'?'#71717A':'#A1A1AA';
+  const accentColor=p.color||statusCol;
   const team=[...new Map((p.assignments||[]).map(a=>[a.userId,users.find(u=>u.id===a.userId)])).values()].filter(Boolean);
-  return<div className={`proj-card s-${p.status}`}onClick={onClick}>
-    <div className="row"style={{alignItems:'flex-start',gap:10}}>
+  const isDragging=dragId===p.id;
+  const stop=e=>e.stopPropagation();
+  const togglePin=e=>{stop(e);upsertProject({...p,pinned:!p.pinned});setMenu(false);};
+  const archive=e=>{stop(e);upsertProject({...p,status:'completed',archivedAt:new Date().toISOString()});setMenu(false);};
+  const del=e=>{stop(e);if(confirm(`Delete "${p.title}"? This cannot be undone.`)){deleteProject(p.id);}setMenu(false);};
+  const setColor=(c,e)=>{stop(e);upsertProject({...p,color:c});setMenu(false);};
+
+  useEffect(()=>{
+    if(!menu)return;
+    const close=()=>setMenu(false);
+    window.addEventListener('click',close);
+    return()=>window.removeEventListener('click',close);
+  },[menu]);
+
+  return<div className={`proj-card s-${p.status}`}onClick={onClick}
+    draggable={isAdmin&&sortBy==='manual'}
+    onDragStart={onDragStart}onDragOver={onDragOver}onDrop={onDrop}onDragEnd={onDragEnd}
+    style={{position:'relative',opacity:isDragging?.4:1,transition:'opacity .25s cubic-bezier(.16,1,.3,1),transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),border-color .25s',cursor:isAdmin&&sortBy==='manual'?'grab':'pointer',borderColor:p.color?accentColor+'55':undefined,boxShadow:p.pinned?`0 0 0 1.5px ${accentColor}55,0 2px 10px rgba(0,0,0,.04)`:undefined}}>
+    {/* accent bar — uses custom color if set, else status */}
+    <div style={{position:'absolute',left:0,top:0,bottom:0,width:3,background:accentColor,borderRadius:'2px 0 0 2px',transition:'background .25s'}}/>
+    {p.pinned&&<div style={{position:'absolute',top:0,right:32,background:accentColor,color:'#fff',padding:'3px 9px 4px',borderRadius:'0 0 8px 8px',display:'flex',alignItems:'center',gap:4,fontSize:10,fontWeight:700,letterSpacing:'.04em',boxShadow:'0 2px 6px rgba(0,0,0,.12)'}}>
+      <i className="ti ti-pin-filled"style={{fontSize:11,transform:'rotate(40deg)'}}/>PINNED
+    </div>}
+    {isAdmin&&<button onClick={e=>{stop(e);setMenu(m=>!m);}}
+      style={{position:'absolute',top:8,right:8,width:26,height:26,borderRadius:6,border:'none',background:menu?'var(--surface-2)':'transparent',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--ink-4)',transition:'background .12s',zIndex:3}}
+      onMouseEnter={e=>e.currentTarget.style.background='var(--surface-2)'}
+      onMouseLeave={e=>{if(!menu)e.currentTarget.style.background='transparent';}}>
+      <i className="ti ti-dots-vertical"style={{fontSize:15}}/>
+    </button>}
+    {menu&&<div onClick={stop}style={{position:'absolute',top:38,right:8,minWidth:170,background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-md)',boxShadow:'0 12px 32px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06)',padding:5,zIndex:20,animation:'fadeUp .18s cubic-bezier(.16,1,.3,1)',transformOrigin:'top right'}}>
+      <button onClick={togglePin}className="btn btn-ghost btn-sm"style={{width:'100%',justifyContent:'flex-start',fontWeight:500}}><i className="ti ti-pin"/>{p.pinned?'Unpin':'Pin to top'}</button>
+      <button onClick={archive}className="btn btn-ghost btn-sm"style={{width:'100%',justifyContent:'flex-start',fontWeight:500}}><i className="ti ti-archive"/>Archive</button>
+      <button onClick={del}className="btn btn-ghost btn-sm"style={{width:'100%',justifyContent:'flex-start',color:'var(--danger)',fontWeight:500}}><i className="ti ti-trash"/>Delete</button>
+      <div style={{height:1,background:'var(--rule)',margin:'5px 4px'}}/>
+      <div style={{padding:'6px 8px 4px',fontSize:10,fontWeight:600,color:'var(--ink-4)',textTransform:'uppercase',letterSpacing:'.05em'}}>Accent color</div>
+      <div style={{display:'flex',gap:6,padding:'4px 8px 8px',flexWrap:'wrap'}}>
+        {PROJ_COLORS.map(c=><button key={c}onClick={e=>setColor(c,e)}style={{width:22,height:22,background:c,borderRadius:'50%',border:p.color===c?'2px solid var(--ink)':'2px solid var(--white)',boxShadow:'0 0 0 1px var(--rule)',cursor:'pointer',padding:0}}/>)}
+        <button onClick={e=>setColor(null,e)}title="Use status color"style={{width:22,height:22,background:'var(--surface-2)',borderRadius:'50%',border:'2px solid var(--white)',boxShadow:'0 0 0 1px var(--rule)',cursor:'pointer',padding:0,display:'flex',alignItems:'center',justifyContent:'center',color:'var(--ink-4)',fontSize:11}}>×</button>
+      </div>
+    </div>}
+    <div className="row"style={{alignItems:'flex-start',gap:10,paddingRight:isAdmin?32:0}}>
       <div style={{flex:1,minWidth:0}}>
         <div style={{fontWeight:600,fontSize:15,letterSpacing:'-.02em',marginBottom:5,lineHeight:1.2}} className="trunc">{p.title}</div>
         <div style={{fontSize:12,color:'var(--ink-4)',lineHeight:1.55,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>{p.description}</div>
       </div>
       <StatusBadge status={p.status}/>
     </div>
-    {p.startDate&&p.endDate?<Bar value={pct}color={statusColor}height={4}/>:<div style={{height:4,background:'var(--rule)',borderRadius:'var(--r-pill)'}}/>}
+    {p.startDate&&p.endDate?<Bar value={pct}color={statusCol}height={4}/>:<div style={{height:4,background:'var(--rule)',borderRadius:'var(--r-pill)'}}/>}
     <div className="row">
       <div className="row"style={{gap:0}}>
         {team.slice(0,5).map((u,i)=><div key={u.id}style={{marginLeft:i?-6:0,border:'2px solid var(--white)',borderRadius:'50%',zIndex:5-i}}><Av user={u}size={24}/></div>)}
@@ -1520,7 +1654,7 @@ ${lav.length?`<div style="margin-bottom:32px"><div class="section-title">Task br
 }
 
 /* ── TAB: OVERVIEW ── */
-function BentoUploadCell({title,icon,fileList,accept,onAdd,onRemove,downloadIcon,maxMb=20}){
+function BentoUploadCell({title,icon,fileList,accept,onAdd,onRemove,downloadIcon,maxMb=20,accent='#0066EE'}){
   const inputRef=useRef();
   const handleUpload=e=>{
     const file=e.target.files[0];if(!file)return;
@@ -1552,41 +1686,38 @@ function BentoUploadCell({title,icon,fileList,accept,onAdd,onRemove,downloadIcon
     if(f.name.match(/\.zip$/i))return'ti-file-zip';
     return'ti-file';
   };
-  return<div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',padding:'18px 20px',display:'flex',flexDirection:'column',gap:0,minHeight:120}}>
-    <div style={{display:'flex',alignItems:'center',marginBottom:10}}>
-      <i className={`ti ${icon}`}style={{fontSize:14,color:'var(--ink-4)',marginRight:7,flexShrink:0}}/>
-      <div style={{fontSize:10,fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--ink-4)',flex:1}}>{title}</div>
-      <span style={{fontSize:10,color:'var(--ink-5)',marginRight:8}}>{fileList.length} file{fileList.length!==1?'s':''}</span>
-      <button className="btn btn-ghost btn-xs"onClick={()=>inputRef.current.click()}><i className="ti ti-upload"style={{fontSize:12}}/>Upload</button>
+  return<div style={{background:'var(--white)',border:'1px solid var(--rule)',borderRadius:'var(--r-md)',padding:'10px 12px',display:'flex',flexDirection:'column',gap:0,minHeight:84,position:'relative',overflow:'hidden'}}>
+    <div style={{position:'absolute',left:0,top:0,bottom:0,width:3,background:accent}}/>
+    <div style={{display:'flex',alignItems:'center',marginBottom:8,paddingLeft:6}}>
+      <i className={`ti ${icon}`}style={{fontSize:13,color:accent,marginRight:6,flexShrink:0}}/>
+      <div style={{fontSize:10,fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--ink-2)',flex:1}}>{title}</div>
+      <span style={{fontSize:10,color:'var(--ink-4)',marginRight:6,fontFamily:'var(--mono)'}}>{fileList.length}</span>
+      <button className="btn btn-ghost btn-xs"onClick={()=>inputRef.current.click()}style={{padding:'2px 6px'}}><i className="ti ti-upload"style={{fontSize:11}}/></button>
     </div>
     <input type="file"ref={inputRef}style={{display:'none'}}onChange={handleUpload}accept={accept}/>
     {fileList.length===0
-      ?<div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:5,
-          cursor:'pointer',border:'1.5px dashed var(--parchment-2)',borderRadius:'var(--r-md)',padding:'18px 12px',
+      ?<div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',gap:6,
+          cursor:'pointer',border:'1.5px dashed var(--parchment-2)',borderRadius:'var(--r-sm)',padding:'10px 12px',marginLeft:6,
           transition:'border-color .15s,background .15s'}}
           onClick={()=>inputRef.current.click()}
-          onMouseOver={e=>{e.currentTarget.style.borderColor='var(--gold)';e.currentTarget.style.background='var(--gold-lt)'}}
+          onMouseOver={e=>{e.currentTarget.style.borderColor=accent;e.currentTarget.style.background=accent+'10'}}
           onMouseOut={e=>{e.currentTarget.style.borderColor='var(--parchment-2)';e.currentTarget.style.background='transparent'}}>
-        <i className={`ti ${icon}`}style={{fontSize:26,color:'var(--ink-5)',opacity:.4}}/>
+        <i className={`ti ${icon}`}style={{fontSize:16,color:accent,opacity:.5,flexShrink:0}}/>
         <span style={{fontSize:11,color:'var(--ink-4)'}}>Click or drop to upload</span>
-        <span style={{fontSize:10,color:'var(--ink-5)'}}>{accept.replace(/\./g,'').replace(/,/g,' · ').toUpperCase()}</span>
       </div>
-      :<div style={{display:'flex',flexDirection:'column',gap:5}}>
-        {fileList.map(f=><div key={f.id}style={{display:'flex',alignItems:'center',gap:8,padding:'7px 10px',borderRadius:'var(--r-sm)',background:'var(--paper)',border:'1px solid var(--rule)',cursor:'pointer',transition:'background .1s'}}
+      :<div style={{display:'flex',flexDirection:'column',gap:3,marginLeft:6}}>
+        {fileList.map(f=><div key={f.id}style={{display:'flex',alignItems:'center',gap:6,padding:'5px 8px',borderRadius:'var(--r-sm)',background:'var(--paper)',border:'1px solid var(--rule)',cursor:'pointer',transition:'background .1s'}}
             onClick={()=>download(f)}
             onMouseOver={e=>e.currentTarget.style.background='var(--surface-2)'}
             onMouseOut={e=>e.currentTarget.style.background='var(--paper)'}>
-          <i className={`ti ${getIcon(f)}`}style={{fontSize:18,color:'var(--ink-4)',flexShrink:0}}/>
+          <i className={`ti ${getIcon(f)}`}style={{fontSize:14,color:accent,flexShrink:0}}/>
           <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:12,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.name}</div>
-            <div style={{fontSize:10,color:'var(--ink-5)'}}>{fmtSize(f.size)} · {fmt.dateShort(f.uploadedAt)}</div>
+            <div style={{fontSize:11.5,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.name}</div>
+            <div style={{fontSize:9.5,color:'var(--ink-5)'}}>{fmtSize(f.size)} · {fmt.dateShort(f.uploadedAt)}</div>
           </div>
-          <button className="btn btn-ghost btn-xs"onClick={e=>{e.stopPropagation();download(f)}}title="Download"><i className={`ti ${downloadIcon||'ti-download'}`}style={{fontSize:13}}/></button>
-          <button className="btn btn-ghost btn-xs btn-danger"onClick={e=>{e.stopPropagation();onRemove(f.id)}}><i className="ti ti-x"style={{fontSize:11}}/></button>
+          <button className="btn btn-ghost btn-xs"onClick={e=>{e.stopPropagation();download(f)}}title="Download"style={{padding:'2px 5px'}}><i className={`ti ${downloadIcon||'ti-download'}`}style={{fontSize:12}}/></button>
+          <button className="btn btn-ghost btn-xs btn-danger"onClick={e=>{e.stopPropagation();onRemove(f.id)}}style={{padding:'2px 5px'}}><i className="ti ti-x"style={{fontSize:10}}/></button>
         </div>)}
-        <button className="btn btn-ghost btn-xs"style={{marginTop:2,justifyContent:'center',fontSize:11}}onClick={()=>inputRef.current.click()}>
-          <i className="ti ti-plus"/>Add more
-        </button>
       </div>
     }
   </div>;
@@ -1657,41 +1788,32 @@ function ProjOverviewTab({p,est,pct,days,isAdmin,up,openEst,store,me,statusColor
         {isAdmin&&<button className="btn btn-ghost btn-xs"onClick={()=>exportProjectPDF(p,est,users,duties)}><i className="ti ti-file-type-pdf"style={{fontSize:12}}/>PDF</button>}
       </div>
 
-      {/* ── ROW 1: Deadline hero + status strip ── */}
-      <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr',gap:10,marginBottom:10}}>
+      {/* ── ROW 1: Deadline + status strip ── */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10,marginBottom:10}}>
 
-        {/* Deadline — wide hero cell */}
-        <div style={{...cell({background:p.deadline?dlBg:'var(--white)',border:`1px solid ${p.deadline?dlColor+'33':'var(--rule)'}`,position:'relative',overflow:'hidden',cursor:isAdmin&&!p.deadline?'pointer':'default',borderStyle:isAdmin&&!p.deadline?'dashed':'solid'}),
-          ...(isAdmin&&!p.deadline?{alignItems:'center',justifyContent:'center',minHeight:130}:{minHeight:130})}}
+        {/* Deadline */}
+        <div style={{...cell({background:'var(--white)',border:'1px solid var(--rule)',position:'relative',overflow:'hidden',cursor:isAdmin&&!p.deadline?'pointer':'default',borderStyle:isAdmin&&!p.deadline?'dashed':'solid'})}}
           onClick={isAdmin&&!p.deadline?openEdit:undefined}>
-          {p.deadline&&<div style={{position:'absolute',top:0,left:0,right:0,height:3,background:dlColor,borderRadius:'var(--r-lg) var(--r-lg) 0 0'}}/>}
           {p.deadline?<>
             {lbl('Deadline')}
-            <div style={{display:'flex',alignItems:'flex-end',gap:14,marginTop:4}}>
-              <div style={{fontFamily:'var(--mono)',fontSize:56,fontWeight:200,letterSpacing:'-.06em',lineHeight:1,color:dlColor}}>
+            <div style={{display:'flex',alignItems:'baseline',gap:6,marginTop:4}}>
+              <div style={{fontFamily:'var(--mono)',fontSize:28,fontWeight:400,letterSpacing:'-.04em',lineHeight:1,color:dlColor}}>
                 {dlDays<0?Math.abs(dlDays):dlDays===0?'0':dlDays}
               </div>
-              <div style={{paddingBottom:6}}>
-                <div style={{fontSize:14,fontWeight:700,color:'var(--ink)',letterSpacing:'-.02em',lineHeight:1.2}}>
-                  {dlDays<0?'days overdue':dlDays===0?'Due today':'days left'}
-                </div>
-                <div style={{fontSize:12,color:'var(--ink-4)',marginTop:4}}>{fmt.date(p.deadline)}</div>
-              </div>
+              <span style={{fontSize:12,fontWeight:600,color:'var(--ink-3)'}}>
+                {dlDays<0?'d overdue':dlDays===0?'today':'days left'}
+              </span>
             </div>
-            {dlPct!=null&&<div style={{marginTop:'auto',paddingTop:10}}>
-              <div style={{background:`${dlColor}18`,borderRadius:'var(--r-pill)',overflow:'hidden',height:4}}>
-                <div style={{width:`${dlPct}%`,height:4,background:dlColor,borderRadius:'var(--r-pill)',transition:'width .4s'}}/>
+            <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2}}>{fmt.date(p.deadline)}</div>
+            {dlPct!=null&&<div style={{marginTop:'auto',paddingTop:8}}>
+              <div style={{background:'var(--surface-3)',borderRadius:'var(--r-pill)',overflow:'hidden',height:3}}>
+                <div style={{width:`${Math.min(dlPct,100)}%`,height:3,background:dlColor,borderRadius:'var(--r-pill)',transition:'width .4s'}}/>
               </div>
-              <div style={{display:'flex',justifyContent:'space-between',marginTop:5}}>
-                <span style={{fontSize:10,color:'var(--ink-4)'}}>{fmt.dateShort(p.startDate)}</span>
-                <span style={{fontSize:10,color:dlColor,fontWeight:600}}>{dlPct}% elapsed</span>
-                <span style={{fontSize:10,color:'var(--ink-4)'}}>{fmt.dateShort(p.deadline)}</span>
-              </div>
+              <div style={{fontSize:10,color:'var(--ink-4)',marginTop:4}}>{dlPct}% elapsed</div>
             </div>}
           </>:<>
-            <i className="ti ti-calendar-plus"style={{fontSize:26,color:'var(--ink-5)',marginBottom:4}}/>
+            <i className="ti ti-calendar-plus"style={{fontSize:22,color:'var(--ink-5)',marginBottom:4}}/>
             <span style={{fontSize:12,color:'var(--ink-4)',fontWeight:500}}>Add deadline</span>
-            {isAdmin&&<span style={{fontSize:11,color:'var(--ink-5)'}}>Click to set a client deadline</span>}
           </>}
         </div>
 
@@ -1855,10 +1977,11 @@ function ProjOverviewTab({p,est,pct,days,isAdmin,up,openEst,store,me,statusColor
       </div>
 
       {/* ── ROW 4: PPT + Project Files ── */}
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6,marginBottom:10}}>
         <BentoUploadCell
           title="PPT"
           icon="ti-presentation"
+          accent="#D97706"
           downloadIcon="ti-presentation-analytics"
           fileList={p.pptFiles||[]}
           accept=".ppt,.pptx,.pdf,.key,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/pdf"
@@ -1869,6 +1992,7 @@ function ProjOverviewTab({p,est,pct,days,isAdmin,up,openEst,store,me,statusColor
         <BentoUploadCell
           title="Project Files"
           icon="ti-files"
+          accent="#0066EE"
           downloadIcon="ti-folder-down"
           fileList={p.files||[]}
           accept=".xlsx,.xls,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.ppt,.pptx,.zip,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,image/*,application/zip"
@@ -1984,69 +2108,120 @@ function ProjTimelineTab({p,store,isAdmin,up,me}){
   const[editDates,setEditDates]=useState(false);
   const[draftStart,setDraftStart]=useState(p.startDate||'');
   const[draftEnd,setDraftEnd]=useState(p.endDate||'');
-  const[dragState,setDragState]=useState(null);
-  const[dragOverride,setDragOverride]=useState(null);
+  const[dragging,setDragging]=useState(null);
+  const[fitDeadline,setFitDeadline]=useState(true);
+  const[colW,setColW]=useState(38);
   const ganttRef=useRef(null);
-  const dragRef=useRef(null);
+  const barRefs=useRef({});
   const assignments=p.assignments||[];
   const lavorazioni=p.lavorazioni||[];
   const personIds=[...new Set(assignments.map(a=>a.userId))];
 
-  const pStart=new Date(p.startDate||Date.now());
-  const pEnd=new Date(p.endDate||(Date.now()+90*86400000));
+  const LABEL_W=260;
+  const ROW_H=92;
+  const BAR_TOP=22;
+  const BAR_H=48;
+  const today=new Date();today.setHours(0,0,0,0);
+
+  const pStart=new Date(p.startDate||Date.now());pStart.setHours(0,0,0,0);
+  const pEnd=new Date(p.endDate||(Date.now()+90*86400000));pEnd.setHours(0,0,0,0);
+
+  const maxTaskEnd=lavorazioni.reduce((mx,lv)=>{
+    if(!lv.endDate)return mx;const d=new Date(lv.endDate);return d>mx?d:mx;
+  },pEnd);
+  const cropDays=Math.max(7,Math.ceil((pEnd-pStart)/86400000))+7;
+  const fullDays=Math.max(cropDays,Math.ceil((maxTaskEnd-pStart)/86400000)+7);
+  const TOTAL_DAYS=fitDeadline?cropDays:fullDays;
+
+  /* measure container → auto-fit COL_W */
+  useEffect(()=>{
+    if(!ganttRef.current)return;
+    const measure=()=>{
+      const avail=ganttRef.current.offsetWidth||800;
+      const computed=Math.max(28,Math.floor((avail-LABEL_W)/TOTAL_DAYS));
+      setColW(Math.min(computed,64));
+    };
+    measure();
+    window.addEventListener('resize',measure);
+    return()=>window.removeEventListener('resize',measure);
+  },[TOTAL_DAYS]);
+
+  /* build day array */
+  const days=[];
+  for(let i=0;i<TOTAL_DAYS;i++)days.push(new Date(pStart.getTime()+i*86400000));
+
+  /* month bands for header (with alternating index) */
+  const bands=[];
+  const dayBandIdx=[];
+  days.forEach((d,i)=>{
+    const mk=d.getFullYear()+'-'+d.getMonth();
+    if(!bands.length||bands[bands.length-1].key!==mk)
+      bands.push({key:mk,label:d.toLocaleDateString('en-GB',{month:'long',year:'numeric'}),start:i,count:0});
+    bands[bands.length-1].count++;
+    dayBandIdx[i]=bands.length-1;
+  });
+  const MONTH_TINT='rgba(0,102,238,.04)';
+
+  const dateToCol=d=>Math.round((new Date(d)-pStart)/86400000);
+  const isWE=d=>{const w=d.getDay();return w===0||w===6;};
+  const todayCol=dateToCol(today);
+  const deadlineCol=p.endDate?dateToCol(new Date(p.endDate)):null;
+  const wdBetween=(s,e)=>{let d=new Date(s),n=0;while(d<new Date(e)){d=new Date(d.getTime()+86400000);if(d.getDay()&&d.getDay()<6)n++;}return n;};
+
+  /* legacy vars still used by PhasesView */
   const totalMs=pEnd-pStart||1;
   const posOf=d=>d?Math.max(0,Math.min(100,((new Date(d)-pStart)/totalMs)*100)):0;
   const widthOf=(s,e)=>s&&e?Math.max(.5,posOf(e)-posOf(s)):.5;
   const nowPos=posOf(new Date());
   const deadlinePos=p.endDate?posOf(new Date(p.endDate)):null;
-
   const months=[];let mc=new Date(pStart);mc.setDate(1);
   while(mc<=pEnd){months.push(new Date(mc));mc.setMonth(mc.getMonth()+1);}
 
-  /* ── DRAG & RESIZE ── */
-  useEffect(()=>{
-    if(!dragState)return;
-    dragRef.current=dragState;
-    const onMove=e=>{
-      const ds=dragRef.current;if(!ds||!ganttRef.current)return;
-      const trackW=ganttRef.current.offsetWidth-220;
-      if(trackW<=0)return;
-      const dx=e.clientX-ds.startX;
-      const dMs=(dx/trackW)*totalMs;
-      if(ds.type==='move'){
-        const ns=new Date(new Date(ds.origStart).getTime()+dMs);
-        const ne=new Date(new Date(ds.origEnd).getTime()+dMs);
-        setDragOverride({lavId:ds.lavId,startDate:ns.toISOString().split('T')[0],endDate:ne.toISOString().split('T')[0]});
-      }else{
-        const ne=new Date(new Date(ds.origEnd).getTime()+dMs);
-        const minE=new Date(new Date(ds.origStart).getTime()+86400000);
-        setDragOverride({lavId:ds.lavId,startDate:ds.origStart,endDate:(ne>minE?ne:minE).toISOString().split('T')[0]});
-      }
+  /* ── DRAG & RESIZE: direct DOM manipulation (no React re-render during drag) ── */
+  const startDrag=(e,type,lv,pxPerDay)=>{
+    if(!isAdmin||!lv.startDate||!lv.endDate)return;
+    e.stopPropagation();e.preventDefault();
+    const bar=barRefs.current[lv.id];if(!bar)return;
+    const origLeft=parseFloat(bar.style.left)||0;
+    const origWidth=parseFloat(bar.style.width)||pxPerDay;
+    const startX=e.clientX;
+    let dDays=0;
+    setDragging({lavId:lv.id,type});
+    bar.style.transition='none';bar.style.zIndex='30';bar.style.opacity='.92';
+    const onMove=ev=>{
+      const dx=ev.clientX-startX;
+      dDays=Math.round(dx/pxPerDay);
+      const dPx=dDays*pxPerDay;
+      if(type==='move'){bar.style.left=(origLeft+dPx)+'px';}
+      else{bar.style.width=Math.max(pxPerDay,origWidth+dPx)+'px';}
     };
     const onUp=()=>{
-      const ov=dragRef.current?._override;
-      setDragOverride(prev=>{
-        if(prev){
-          const updated=lavorazioni.map(x=>x.id===prev.lavId?{...x,startDate:prev.startDate,endDate:prev.endDate}:x);
-          up({lavorazioni:updated});
-        }
-        return null;
-      });
-      setDragState(null);
-      dragRef.current=null;
+      window.removeEventListener('mousemove',onMove);
+      window.removeEventListener('mouseup',onUp);
+      setDragging(null);
+      if(dDays===0){
+        // no movement → treat as click: restore style and open editor
+        bar.style.left=origLeft+'px';bar.style.width=origWidth+'px';
+        bar.style.zIndex='';bar.style.opacity='';bar.style.transition='';
+        if(type==='move')setEditLav({...lv});
+        return;
+      }
+      const cur=lavorazioni.find(x=>x.id===lv.id);if(!cur){return;}
+      const fmt=d=>d.toISOString().split('T')[0];
+      let ns=cur.startDate,ne=cur.endDate;
+      if(type==='move'){
+        const s=new Date(cur.startDate);s.setDate(s.getDate()+dDays);
+        const e2=new Date(cur.endDate);e2.setDate(e2.getDate()+dDays);
+        ns=fmt(s);ne=fmt(e2);
+      }else{
+        const e2=new Date(cur.endDate);e2.setDate(e2.getDate()+dDays);
+        const minE=new Date(cur.startDate);minE.setDate(minE.getDate()+1);
+        ne=fmt(e2<minE?minE:e2);
+      }
+      up({lavorazioni:lavorazioni.map(x=>x.id===lv.id?{...x,startDate:ns,endDate:ne}:x)});
     };
     window.addEventListener('mousemove',onMove);
     window.addEventListener('mouseup',onUp);
-    return()=>{window.removeEventListener('mousemove',onMove);window.removeEventListener('mouseup',onUp);};
-  },[dragState,totalMs]);
-
-  /* keep dragRef._override in sync so onUp can read latest value */
-  useEffect(()=>{if(dragRef.current)dragRef.current._override=dragOverride;},[dragOverride]);
-
-  const startDrag=(e,type,lv)=>{
-    if(!isAdmin||!lv.startDate||!lv.endDate)return;
-    e.stopPropagation();e.preventDefault();
-    setDragState({type,lavId:lv.id,startX:e.clientX,origStart:lv.startDate,origEnd:lv.endDate});
   };
 
   const saveDates=()=>{up({startDate:draftStart,endDate:draftEnd});setEditDates(false);};
@@ -2095,172 +2270,272 @@ function ProjTimelineTab({p,store,isAdmin,up,me}){
     )}
   </div>;
 
-  /* ─ tasks gantt ─ */
+  /* ─ tasks gantt — CSS Grid, time_manager style ─ */
   const TasksView=()=>{
     const totalH=lavorazioni.reduce((s,l)=>s+(+l.hoursTotal||0),0);
+    const gridCols=`${LABEL_W}px repeat(${TOTAL_DAYS},${colW}px)`;
+    const canvasW=LABEL_W+TOTAL_DAYS*colW;
+    const AV_PAL=[['#DBEAFE','#1D4ED8'],['#FCE7F3','#BE185D'],['#D1FAE5','#065F46'],['#FEF3C7','#92400E'],['#FEE2E2','#991B1B'],['#E0F2FE','#0369A1']];
+
     return<div>
       <DateHeader/>
-      <div className="row"style={{marginBottom:14,flexWrap:'wrap',gap:8}}>
-        <div style={{display:'flex',gap:12}}>
-          <span style={{fontSize:13,color:'var(--ink-3)'}}><b style={{color:'var(--ink-2)'}}>{lavorazioni.length}</b> tasks</span>
-          <span style={{fontSize:13,color:'var(--ink-3)'}}><b style={{color:'var(--ink-2)'}}>{totalH.toFixed(0)}h</b> total</span>
-        </div>
+      {/* toolbar */}
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14,flexWrap:'wrap'}}>
+        <span style={{fontSize:13,color:'var(--ink-3)'}}><b style={{color:'var(--ink)',fontWeight:700}}>{lavorazioni.length}</b> tasks · <b style={{color:'var(--ink)',fontWeight:700}}>{totalH.toFixed(0)}h</b></span>
+        {p.endDate&&<label style={{display:'flex',alignItems:'center',gap:6,fontSize:12,fontWeight:600,color:fitDeadline?'var(--gold)':'var(--ink-3)',cursor:'pointer',padding:'4px 10px',borderRadius:6,border:`1.5px solid ${fitDeadline?'var(--gold)':'var(--parchment-2)'}`,background:'var(--white)',transition:'all .15s',userSelect:'none'}}>
+          <input type="checkbox" checked={fitDeadline} onChange={e=>setFitDeadline(e.target.checked)} style={{accentColor:'var(--gold)',width:13,height:13}}/>
+          Fit to deadline
+        </label>}
         <span className="spacer"/>
-        {isAdmin&&p.startDate&&lavorazioni.length>0&&(
-          <button className="btn btn-sm"onClick={doAutoSchedule}title="Compute sequential dates from project start">
-            <i className="ti ti-wand"/>Auto-schedule
-          </button>
-        )}
-        {isAdmin&&<button className="btn btn-sm"onClick={()=>up({lavorazioni:[...lavorazioni,{id:uid(),name:'New task',category:'Altro',quantity:1,hoursTotal:8,costPerUnit:0,assignedUserIds:[],startDate:p.startDate||'',endDate:'',notes:''}]})}>
-          <i className="ti ti-plus"/>Add task
-        </button>}
+        {isAdmin&&p.startDate&&lavorazioni.length>0&&<button className="btn btn-sm"onClick={doAutoSchedule}><i className="ti ti-wand"/>Auto-schedule</button>}
+        {isAdmin&&<button className="btn btn-sm"onClick={()=>up({lavorazioni:[...lavorazioni,{id:uid(),name:'New task',category:'Altro',quantity:1,hoursTotal:8,costPerUnit:0,assignedUserIds:[],startDate:p.startDate||'',endDate:'',notes:''}]})}><i className="ti ti-plus"/>Add task</button>}
       </div>
 
-      {lavorazioni.length===0&&<div className="empty-state"><i className="ti ti-list-check"/>
-        <p>No tasks defined</p><small>Convert an estimation to populate tasks, or add one manually</small>
-      </div>}
+      {lavorazioni.length===0&&<div className="empty-state"><i className="ti ti-list-check"/><p>No tasks defined</p><small>Convert an estimation to populate tasks, or add one manually</small></div>}
 
-      {lavorazioni.length>0&&<div style={{overflowX:'auto'}}>
-        <div ref={ganttRef}className="gantt-wrap"style={{minWidth:600,cursor:dragState?dragState.type==='resize'?'ew-resize':'grabbing':'auto',userSelect:dragState?'none':'auto'}}>
-          {/* header */}
-          <div className="gantt-header-row"style={{gridTemplateColumns:'220px 1fr'}}>
-            <div style={{padding:'9px 14px',background:'var(--parchment-2)',borderRight:'1px solid var(--rule)',fontSize:10,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--ink-4)'}}>Task</div>
-            <div style={{position:'relative',height:36,background:'var(--parchment-2)'}}>
-              {months.map((m,i)=>{
-                const left=posOf(m);
-                const next=months[i+1]?posOf(months[i+1]):100;
-                const width=next-left;
-                return<div key={i}style={{position:'absolute',left:`${left}%`,width:`${width}%`,height:'100%',display:'flex',alignItems:'center',paddingLeft:8,fontSize:11,fontWeight:600,color:'var(--ink-4)',borderRight:'1px solid var(--rule)',whiteSpace:'nowrap',overflow:'hidden'}}>
-                  {m.toLocaleDateString('en',{month:'short',year:'2-digit'})}
-                </div>;
-              })}
-              {deadlinePos!==null&&<div style={{position:'absolute',left:`${deadlinePos}%`,top:0,bottom:0,width:2,background:'repeating-linear-gradient(to bottom,var(--danger) 0,var(--danger) 5px,transparent 5px,transparent 9px)',zIndex:4,opacity:.8}}/>}
-              {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:2,background:'var(--gold)',zIndex:5,opacity:.8}}/>}
-            </div>
-          </div>
-          {/* rows */}
-          {lavorazioni.map(lv=>{
-            const ov=dragOverride&&dragOverride.lavId===lv.id?dragOverride:null;
-            const lvD={...lv,...(ov||{})};
-            const color=CATEGORY_COLORS[lv.category]||'#6B7280';
-            const assigned=(lv.assignedUserIds||[]).map(uid2=>users.find(u=>u.id===uid2)).filter(Boolean);
-            const numAssigned=Math.max(assigned.length,1);
-            const realH=(+lv.hoursTotal||0)/numAssigned;
-            const workDays=Math.max(Math.ceil(realH/HOURS_PER_DAY),1);
-            const hasDate=lvD.startDate&&lvD.endDate;
-            const left=hasDate?posOf(lvD.startDate):0;
-            const width=hasDate?widthOf(lvD.startDate,lvD.endDate):0;
-            const isDragging=dragState&&dragState.lavId===lv.id;
-            return<div key={lv.id}className="gantt-row-wrap"style={{gridTemplateColumns:'220px 1fr'}}>
-              {/* label */}
-              <div className="gantt-person-col"style={{minHeight:56,alignItems:'flex-start',paddingTop:10,paddingBottom:8,gap:8,cursor:isAdmin?'pointer':'default',flexDirection:'column',justifyContent:'center'}}
-                onClick={()=>!dragState&&isAdmin&&setEditLav({...lv})}>
-                <div style={{display:'flex',alignItems:'center',gap:7,width:'100%'}}>
-                  <div style={{width:3,height:32,borderRadius:2,background:color,flexShrink:0}}/>
-                  <div style={{minWidth:0,flex:1}}>
-                    <div style={{fontSize:12,fontWeight:600,color:'var(--ink-2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{lv.name}</div>
-                    <div style={{display:'flex',alignItems:'center',gap:6,marginTop:2,flexWrap:'wrap'}}>
-                      <span style={{fontSize:10,color,fontWeight:600,letterSpacing:'.02em'}}>{lv.category}</span>
-                      <span style={{fontSize:10,color:'var(--ink-4)'}}>·</span>
-                      <span style={{fontSize:10,color:'var(--ink-4)',fontFamily:'var(--mono)'}}>{(+lv.hoursTotal||0).toFixed(0)}h</span>
-                      <span style={{fontSize:10,color:'var(--ink-4)'}}>·</span>
-                      <span style={{fontSize:10,color:'var(--ink-4)',fontFamily:'var(--mono)'}}>{workDays}d</span>
-                    </div>
+      {lavorazioni.length>0&&<div ref={ganttRef} style={{border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden',background:'var(--white)',cursor:dragging?dragging.type==='resize'?'ew-resize':'grabbing':'auto',userSelect:dragging?'none':'auto'}}>
+        <div style={{overflowX:'auto',WebkitOverflowScrolling:'touch'}}>
+          <div style={{display:'grid',gridTemplateColumns:gridCols,width:canvasW,position:'relative'}}>
+
+            {/* ── CORNER ── */}
+            <div style={{gridColumn:1,gridRow:'1/3',background:'var(--paper)',borderRight:'2px solid var(--parchment-2)',borderBottom:'2px solid var(--parchment-2)',display:'flex',alignItems:'flex-end',padding:'8px 14px',fontSize:10,fontWeight:700,color:'var(--ink-4)',textTransform:'uppercase',letterSpacing:'.06em'}}>Task</div>
+
+            {/* ── MONTH BANDS (alternating tint) ── */}
+            {bands.map((b,i)=>{
+              const alt=i%2===1;
+              return<div key={i} style={{gridColumn:`${b.start+2}/${b.start+b.count+2}`,gridRow:1,background:alt?MONTH_TINT:'var(--paper)',borderRight:'1px solid var(--parchment-2)',borderBottom:'1px solid var(--parchment-2)',padding:'10px 14px',fontSize:13,fontWeight:700,color:alt?'var(--gold-text)':'var(--ink-2)',whiteSpace:'nowrap',overflow:'hidden',letterSpacing:'-.01em'}}>{b.label}</div>;
+            })}
+
+            {/* ── DAY HEADERS ── */}
+            {days.map((d,i)=>{
+              const isT=d.getTime()===today.getTime();
+              const we=isWE(d);
+              const alt=dayBandIdx[i]%2===1;
+              const bg=isT?'rgba(0,102,238,.1)':we?(alt?'rgba(0,102,238,.06)':'rgba(0,0,0,.03)'):alt?MONTH_TINT:'var(--paper)';
+              return<div key={i} style={{gridColumn:i+2,gridRow:2,background:bg,borderRight:'1px solid rgba(0,0,0,.04)',borderBottom:'2px solid var(--parchment-2)',padding:'6px 0',fontSize:12,fontWeight:isT?800:600,color:isT?'var(--gold)':we?'var(--ink-5)':'var(--ink-4)',textAlign:'center',fontFamily:'var(--mono)',position:'relative'}}>
+                {d.getDate()}
+                {isT&&<div style={{position:'absolute',bottom:-2,left:'50%',transform:'translateX(-50%)',width:5,height:5,borderRadius:'50%',background:'var(--gold)'}}/>}
+              </div>;
+            })}
+
+            {/* ── TASK ROWS ── */}
+            {lavorazioni.map((lv,idx)=>{
+              const lvD=lv;
+              const color=CATEGORY_COLORS[lv.category]||'#6B7280';
+              const assigned=(lv.assignedUserIds||[]).map(uid2=>users.find(u=>u.id===uid2)).filter(Boolean);
+              const numA=Math.max(assigned.length,1);
+              const realH=(+lv.hoursTotal||0)/numA;
+              const wDays=Math.max(Math.ceil(realH/HOURS_PER_DAY),1);
+              const hasDate=lvD.startDate&&lvD.endDate;
+              const barCol=hasDate?Math.max(0,dateToCol(lvD.startDate)):0;
+              const barDur=hasDate?Math.max(1,Math.round((new Date(lvD.endDate)-new Date(lvD.startDate))/86400000)):1;
+              const barLeft=barCol*colW;
+              const barWpx=Math.max(barDur*colW,colW*0.8);
+              const isDrag=dragging&&dragging.lavId===lv.id;
+              const gridRow=3+idx;
+
+              return[
+                /* Label cell */
+                <div key={`lc${lv.id}`} style={{gridColumn:1,gridRow,display:'flex',alignItems:'center',gap:8,padding:'0 10px 0 14px',borderRight:'2px solid var(--parchment-2)',borderBottom:'1px solid var(--rule)',background:'var(--white)',minHeight:ROW_H,cursor:isAdmin?'pointer':'default',transition:'background .1s'}}
+                  onClick={()=>!dragging&&isAdmin&&setEditLav({...lv})}
+                  onMouseEnter={e=>e.currentTarget.style.background='var(--surface-2)'}
+                  onMouseLeave={e=>e.currentTarget.style.background='var(--white)'}>
+                  <div style={{width:4,height:48,borderRadius:2,background:color,flexShrink:0}}/>
+                  <div style={{overflow:'hidden',flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:600,color:'var(--ink)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',letterSpacing:'-.01em'}}>{lv.name}</div>
+                    <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{assigned.length?assigned.map(u=>u.name).join(', '):'Unassigned'}</div>
+                    {lv.notes&&<div style={{fontSize:10.5,color:'var(--ink-3)',marginTop:3,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontStyle:'italic',display:'flex',alignItems:'center',gap:4}} title={lv.notes}><i className="ti ti-note"style={{fontSize:11,color:color,flexShrink:0}}/>{lv.notes}</div>}
                   </div>
-                  {assigned.length>0&&<div style={{display:'flex',alignItems:'center',marginLeft:'auto',flexShrink:0}}>
-                    {assigned.slice(0,3).map((u,i)=><div key={u.id}style={{width:20,height:20,borderRadius:'50%',background:u.color,border:'2px solid var(--white)',marginLeft:i?-6:0,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,fontWeight:700,color:'#fff',zIndex:3-i,flexShrink:0}}>{u.avatar}</div>)}
-                    {assigned.length>3&&<div style={{width:20,height:20,borderRadius:'50%',background:'var(--surface-3)',border:'2px solid var(--white)',marginLeft:-6,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,fontWeight:700,color:'var(--ink-3)'}}>+{assigned.length-3}</div>}
-                  </div>}
-                </div>
-              </div>
-              {/* track */}
-              <div className="gantt-track-area"style={{height:56,position:'relative',background:'var(--paper)'}}>
-                {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:1,background:'var(--gold)',opacity:.6,zIndex:3,pointerEvents:'none'}}/>}
-                {deadlinePos!==null&&<div style={{position:'absolute',left:`${deadlinePos}%`,top:0,bottom:0,width:2,background:'repeating-linear-gradient(to bottom,var(--danger) 0,var(--danger) 5px,transparent 5px,transparent 9px)',zIndex:4,opacity:.8,pointerEvents:'none'}}/>}
-                {hasDate?(
-                  <div style={{position:'absolute',left:`${left}%`,width:`${Math.max(width,.5)}%`,top:10,height:36,borderRadius:'var(--r-sm)',background:color,display:'flex',alignItems:'center',paddingLeft:10,paddingRight:14,gap:6,cursor:isAdmin?'grab':'default',overflow:'visible',boxShadow:isDragging?`0 6px 16px ${color}60`:`0 2px 6px ${color}40`,opacity:isDragging?.9:1,transition:isDragging?'none':'box-shadow .15s',zIndex:isDragging?10:1}}
-                    onMouseDown={e=>startDrag(e,'move',lv)}
-                    onClick={e=>{if(!dragState)e.stopPropagation();}}>
-                    {/* bar content */}
-                    <div style={{display:'flex',alignItems:'center',gap:6,overflow:'hidden',flex:1,pointerEvents:'none'}}>
-                      {width>8&&<span style={{fontSize:11,fontWeight:700,color:'#fff',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',flex:1}}>{lv.name}</span>}
-                      {width>16&&<span style={{fontSize:10,fontWeight:600,background:'rgba(255,255,255,.22)',padding:'1px 6px',borderRadius:10,color:'#fff',flexShrink:0,whiteSpace:'nowrap'}}>{workDays}d</span>}
+                  <div style={{display:'flex',alignItems:'center',flexShrink:0,marginLeft:'auto'}}>
+                    {assigned.slice(0,3).map((u,ai)=>{
+                      const[bg]=AV_PAL[ai%AV_PAL.length];
+                      return<div key={u.id} style={{width:24,height:24,borderRadius:'50%',background:u.color||bg,color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,border:'2px solid var(--white)',marginLeft:ai?-6:0,flexShrink:0}}>{u.avatar}</div>;
+                    })}
+                    {assigned.length>3&&<div style={{width:24,height:24,borderRadius:'50%',background:'var(--surface-3)',color:'var(--ink-3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,border:'2px solid var(--white)',marginLeft:-6}}>+{assigned.length-3}</div>}
+                  </div>
+                </div>,
+
+                /* Track cells (one per day) */
+                ...days.map((d,i)=>{
+                  const we=isWE(d);const isT=d.getTime()===today.getTime();
+                  const alt=dayBandIdx[i]%2===1;
+                  const bg=isT?'rgba(0,102,238,.04)':we?(alt?'rgba(0,102,238,.035)':'rgba(0,0,0,.02)'):alt?'rgba(0,102,238,.022)':'var(--white)';
+                  return<div key={`tc${lv.id}-${i}`} style={{gridColumn:i+2,gridRow,borderRight:'1px solid rgba(0,0,0,.04)',borderBottom:'1px solid var(--rule)',background:bg,minHeight:ROW_H,position:'relative'}}/>;
+                }),
+
+                /* Bar overlay — spans all day columns in this row */
+                <div key={`bo${lv.id}`} style={{gridColumn:`2/${TOTAL_DAYS+2}`,gridRow,position:'relative',pointerEvents:'none',zIndex:5}}>
+                  {/* deadline slice */}
+                  {deadlineCol!==null&&deadlineCol>=0&&deadlineCol<=TOTAL_DAYS&&<div style={{position:'absolute',left:deadlineCol*colW,top:0,bottom:0,width:2,background:'repeating-linear-gradient(to bottom,var(--danger) 0,var(--danger) 6px,transparent 6px,transparent 10px)',zIndex:6,pointerEvents:'none'}}/>}
+                  {/* today line slice */}
+                  {todayCol>=0&&todayCol<TOTAL_DAYS&&<div style={{position:'absolute',left:todayCol*colW+colW/2,top:0,bottom:0,width:1.5,background:'var(--gold)',opacity:.6,zIndex:6,pointerEvents:'none'}}/>}
+                  {/* bar */}
+                  {hasDate?<div ref={el=>{if(el)barRefs.current[lv.id]=el;}} style={{position:'absolute',left:barLeft+'px',top:BAR_TOP,width:barWpx+'px',height:BAR_H,borderRadius:8,background:color,display:'flex',alignItems:'center',paddingLeft:12,paddingRight:10,cursor:isAdmin?'grab':'default',boxShadow:`0 2px 6px ${color}30,0 1px 2px rgba(0,0,0,.1)`,transition:'box-shadow .12s',zIndex:5,overflow:'hidden',whiteSpace:'nowrap',pointerEvents:'auto'}}
+                    onMouseDown={e=>startDrag(e,'move',lv,colW)}
+                    onClick={e=>{if(!dragging)e.stopPropagation();}}>
+                    <div style={{display:'flex',alignItems:'center',gap:6,overflow:'hidden',flex:1,pointerEvents:'none',minWidth:0}}>
+                      {barWpx>50&&<span style={{fontSize:13,fontWeight:700,color:'#fff',overflow:'hidden',textOverflow:'ellipsis',flex:1,letterSpacing:'-.01em'}}>{lv.name}</span>}
+                      {lv.notes&&barWpx>60&&<i className="ti ti-note"style={{fontSize:14,color:'rgba(255,255,255,.85)',flexShrink:0}}title={lv.notes}/>}
+                      {barWpx>110&&<span style={{fontSize:11,fontWeight:700,background:'rgba(255,255,255,.22)',padding:'2px 7px',borderRadius:10,color:'#fff',flexShrink:0,whiteSpace:'nowrap'}}>{wdBetween(lv.startDate,lv.endDate)}d</span>}
                     </div>
-                    {/* resize handle */}
-                    {isAdmin&&<div
-                      style={{position:'absolute',right:0,top:0,width:12,height:'100%',cursor:'ew-resize',borderRadius:'0 var(--r-sm) var(--r-sm) 0',display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(255,255,255,.15)',flexShrink:0}}
-                      onMouseDown={e=>startDrag(e,'resize',lv)}>
+                    {isAdmin&&<div style={{position:'absolute',right:0,top:0,width:10,height:'100%',cursor:'ew-resize',borderRadius:'0 8px 8px 0',display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(255,255,255,.15)',pointerEvents:'auto'}}
+                      onMouseDown={e=>startDrag(e,'resize',lv,colW)}>
                       <div style={{width:2,height:14,background:'rgba(255,255,255,.75)',borderRadius:1}}/>
                     </div>}
                   </div>
-                ):(
-                  <div style={{position:'absolute',left:8,top:'50%',transform:'translateY(-50%)',fontSize:11,color:'var(--ink-5)',fontStyle:'italic'}}>
-                    No dates {isAdmin&&<span style={{cursor:'pointer',color:'var(--gold)',textDecoration:'underline'}}onClick={()=>setEditLav({...lv})}>— set</span>}
-                  </div>
-                )}
-              </div>
-            </div>;
-          })}
-          {/* legend */}
-          <div style={{padding:'10px 14px',display:'flex',gap:8,flexWrap:'wrap',borderTop:'1px solid var(--rule)',background:'var(--parchment-2)',alignItems:'center'}}>
-            <div style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'var(--ink-4)',marginRight:4}}>
-              <div style={{width:14,height:2,background:'var(--gold)'}}/>Today
-            </div>
-            {p.endDate&&<div style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'var(--ink-4)',marginRight:8}}>
-              <div style={{width:14,height:2,backgroundImage:'repeating-linear-gradient(to right,var(--danger) 0,var(--danger) 4px,transparent 4px,transparent 7px)'}}/>Deadline
-            </div>}
-            {[...new Set(lavorazioni.map(l=>l.category))].map(cat=>{
-              const color=CATEGORY_COLORS[cat]||'#6B7280';
-              return<div key={cat}style={{display:'flex',alignItems:'center',gap:5,background:color+'15',border:`1px solid ${color}30`,borderRadius:'var(--r-xs)',padding:'2px 7px'}}>
-                <div style={{width:7,height:7,borderRadius:2,background:color}}/>
-                <span style={{fontSize:10,color,fontWeight:600}}>{cat}</span>
-              </div>;
+                  :<div style={{position:'absolute',left:8,top:'50%',transform:'translateY(-50%)',fontSize:11,color:'var(--ink-5)',fontStyle:'italic',pointerEvents:'auto',zIndex:5}}>
+                    No dates{isAdmin&&<span style={{cursor:'pointer',color:'var(--gold)',marginLeft:4,textDecoration:'underline'}}onClick={()=>setEditLav({...lv})}>set dates</span>}
+                  </div>}
+                </div>
+              ];
             })}
           </div>
+        </div>
+
+        {/* Legend */}
+        <div style={{borderTop:'1px solid var(--rule)',background:'var(--paper)',padding:'8px 14px',display:'flex',gap:10,flexWrap:'wrap',alignItems:'center'}}>
+          <div style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'var(--ink-4)'}}><div style={{width:12,height:2,background:'var(--gold)',borderRadius:1}}/>Today</div>
+          {p.endDate&&<div style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'var(--ink-4)'}}><div style={{width:12,height:2,backgroundImage:'repeating-linear-gradient(to right,var(--danger) 0,var(--danger) 4px,transparent 4px,transparent 7px)'}}/>Deadline</div>}
+          {[...new Set(lavorazioni.map(l=>l.category))].map(cat=>{
+            const c=CATEGORY_COLORS[cat]||'#6B7280';
+            return<div key={cat}style={{display:'flex',alignItems:'center',gap:5,background:c+'14',border:`1px solid ${c}28`,borderRadius:'var(--r-xs)',padding:'2px 7px'}}>
+              <div style={{width:7,height:7,borderRadius:2,background:c}}/><span style={{fontSize:10,color:c,fontWeight:600}}>{cat}</span>
+            </div>;
+          })}
         </div>
       </div>}
       {editLav&&<LavModal lav={editLav}users={users}onSave={saveLav}onDelete={()=>{up({lavorazioni:lavorazioni.filter(x=>x.id!==editLav.id)});setEditLav(null);}}onClose={()=>setEditLav(null)}/>}
     </div>;
   };
 
-  /* ─ phases gantt (unchanged logic, updated look) ─ */
-  const PhasesView=()=><div>
-    <DateHeader/>
-    <div className="row"style={{marginBottom:14}}>
-      <span className="spacer"/>
-      {isAdmin&&<button className="btn btn-sm"onClick={()=>setAddingBlock(true)}><i className="ti ti-plus"/>Add phase</button>}
-    </div>
-    <GanttGrid pStart={pStart}pEnd={pEnd}months={months}nowPos={nowPos}>
-      {deadlinePos!==null&&<div style={{position:'absolute',left:`${deadlinePos}%`,top:0,bottom:0,width:2,background:'repeating-linear-gradient(to bottom,var(--danger) 0,var(--danger) 5px,transparent 5px,transparent 9px)',zIndex:4,opacity:.8,pointerEvents:'none'}}/>}
-      {personIds.length===0&&<div style={{textAlign:'center',padding:'32px',color:'var(--ink-4)',fontSize:13,gridColumn:'1/-1'}}>
-        No phases added. {isAdmin&&'Click "Add phase" to define who is doing what and when.'}
-      </div>}
-      {personIds.map(uid2=>{
-        const user=users.find(u=>u.id===uid2);if(!user)return null;
-        const blocks=assignments.filter(a=>a.userId===uid2);
-        const rowH=Math.max(52,blocks.length*42+16);
-        return<div key={uid2}className="gantt-row-wrap"style={{gridTemplateColumns:'180px 1fr'}}>
-          <div className="gantt-person-col"style={{alignSelf:'stretch'}}>
-            <Av user={user}size={26}/>
-            <div style={{minWidth:0}}><div style={{fontSize:12,fontWeight:600}}className="trunc">{user.name}</div></div>
-          </div>
-          <div className="gantt-track-area"style={{height:rowH,position:'relative'}}>
-            {nowPos>0&&nowPos<100&&<div className="gantt-today"style={{left:`${nowPos}%`,background:'var(--gold)',opacity:.7}}/>}
-            {blocks.map((b,bi)=>{
+  /* ─ phase drag (same DOM-direct technique) ─ */
+  const startDragPhase=(e,type,b,pxPerDay)=>{
+    if(!isAdmin||!b.startDate||!b.endDate)return;
+    e.stopPropagation();e.preventDefault();
+    const bar=barRefs.current['ph_'+b.id];if(!bar)return;
+    const origLeft=parseFloat(bar.style.left)||0;
+    const origWidth=parseFloat(bar.style.width)||pxPerDay;
+    const startX=e.clientX;
+    let dDays=0;
+    setDragging({lavId:'ph_'+b.id,type});
+    bar.style.transition='none';bar.style.zIndex='30';bar.style.opacity='.92';
+    const onMove=ev=>{
+      const dx=ev.clientX-startX;
+      dDays=Math.round(dx/pxPerDay);
+      const dPx=dDays*pxPerDay;
+      if(type==='move')bar.style.left=(origLeft+dPx)+'px';
+      else bar.style.width=Math.max(pxPerDay,origWidth+dPx)+'px';
+    };
+    const onUp=()=>{
+      window.removeEventListener('mousemove',onMove);
+      window.removeEventListener('mouseup',onUp);
+      setDragging(null);
+      if(dDays===0){
+        bar.style.left=origLeft+'px';bar.style.width=origWidth+'px';
+        bar.style.zIndex='';bar.style.opacity='';bar.style.transition='';
+        if(type==='move')setEditBlock({...b});
+        return;
+      }
+      const fmt=d=>d.toISOString().split('T')[0];
+      let ns=b.startDate,ne=b.endDate;
+      if(type==='move'){
+        const s=new Date(b.startDate);s.setDate(s.getDate()+dDays);
+        const e2=new Date(b.endDate);e2.setDate(e2.getDate()+dDays);
+        ns=fmt(s);ne=fmt(e2);
+      }else{
+        const e2=new Date(b.endDate);e2.setDate(e2.getDate()+dDays);
+        const minE=new Date(b.startDate);minE.setDate(minE.getDate()+1);
+        ne=fmt(e2<minE?minE:e2);
+      }
+      up({assignments:assignments.map(a=>a.id===b.id?{...a,startDate:ns,endDate:ne}:a)});
+    };
+    window.addEventListener('mousemove',onMove);
+    window.addEventListener('mouseup',onUp);
+  };
+
+  /* ─ phases gantt — CSS Grid, same time_manager style ─ */
+  const PhasesView=()=>{
+    const gridCols=`${LABEL_W}px repeat(${TOTAL_DAYS},${colW}px)`;
+    const canvasW=LABEL_W+TOTAL_DAYS*colW;
+    const phROW_H=72;
+    const phBAR_TOP=14;
+    const phBAR_H=44;
+    return<div>
+      <DateHeader/>
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14,flexWrap:'wrap'}}>
+        <span style={{fontSize:13,color:'var(--ink-3)'}}><b style={{color:'var(--ink)',fontWeight:700}}>{assignments.length}</b> phases · <b style={{color:'var(--ink)',fontWeight:700}}>{personIds.length}</b> people</span>
+        {p.endDate&&<label style={{display:'flex',alignItems:'center',gap:6,fontSize:12,fontWeight:600,color:fitDeadline?'var(--gold)':'var(--ink-3)',cursor:'pointer',padding:'4px 10px',borderRadius:6,border:`1.5px solid ${fitDeadline?'var(--gold)':'var(--parchment-2)'}`,background:'var(--white)',userSelect:'none'}}>
+          <input type="checkbox" checked={fitDeadline} onChange={e=>setFitDeadline(e.target.checked)} style={{accentColor:'var(--gold)',width:13,height:13}}/>
+          Fit to deadline
+        </label>}
+        <span className="spacer"/>
+        {isAdmin&&<button className="btn btn-sm"onClick={()=>setAddingBlock(true)}><i className="ti ti-plus"/>Add phase</button>}
+      </div>
+
+      {assignments.length===0&&<div className="empty-state"><i className="ti ti-users"/><p>No phases added</p><small>{isAdmin?'Click "Add phase" to define who is doing what and when.':'Phases will appear here once added.'}</small></div>}
+
+      {assignments.length>0&&<div ref={ganttRef} style={{border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden',background:'var(--white)',cursor:dragging?dragging.type==='resize'?'ew-resize':'grabbing':'auto',userSelect:dragging?'none':'auto'}}>
+        <div style={{overflowX:'auto'}}>
+          <div style={{display:'grid',gridTemplateColumns:gridCols,width:canvasW,position:'relative'}}>
+            {/* CORNER */}
+            <div style={{gridColumn:1,gridRow:'1/3',background:'var(--paper)',borderRight:'2px solid var(--parchment-2)',borderBottom:'2px solid var(--parchment-2)',display:'flex',alignItems:'flex-end',padding:'8px 14px',fontSize:10,fontWeight:700,color:'var(--ink-4)',textTransform:'uppercase',letterSpacing:'.06em'}}>Phase</div>
+            {/* MONTH BANDS */}
+            {bands.map((b,i)=>{const alt=i%2===1;return<div key={i}style={{gridColumn:`${b.start+2}/${b.start+b.count+2}`,gridRow:1,background:alt?MONTH_TINT:'var(--paper)',borderRight:'1px solid var(--parchment-2)',borderBottom:'1px solid var(--parchment-2)',padding:'10px 14px',fontSize:13,fontWeight:700,color:alt?'var(--gold-text)':'var(--ink-2)',whiteSpace:'nowrap',overflow:'hidden',letterSpacing:'-.01em'}}>{b.label}</div>;})}
+            {/* DAY HEADERS */}
+            {days.map((d,i)=>{const isT=d.getTime()===today.getTime();const we=isWE(d);const alt=dayBandIdx[i]%2===1;const bg=isT?'rgba(0,102,238,.1)':we?(alt?'rgba(0,102,238,.06)':'rgba(0,0,0,.03)'):alt?MONTH_TINT:'var(--paper)';return<div key={i}style={{gridColumn:i+2,gridRow:2,background:bg,borderRight:'1px solid rgba(0,0,0,.04)',borderBottom:'2px solid var(--parchment-2)',padding:'6px 0',fontSize:12,fontWeight:isT?800:600,color:isT?'var(--gold)':we?'var(--ink-5)':'var(--ink-4)',textAlign:'center',fontFamily:'var(--mono)',position:'relative'}}>{d.getDate()}{isT&&<div style={{position:'absolute',bottom:-2,left:'50%',transform:'translateX(-50%)',width:5,height:5,borderRadius:'50%',background:'var(--gold)'}}/>}</div>;})}
+
+            {/* ROWS */}
+            {assignments.map((b,idx)=>{
+              const user=users.find(u=>u.id===b.userId);
               const duty=duties.find(d=>d.id===b.dutyId);
-              const left=posOf(b.startDate),width=widthOf(b.startDate,b.endDate);
-              return<div key={b.id}className="gantt-block"
-                style={{left:`${left}%`,width:`${width}%`,top:8+bi*40,background:duty?.color+'18',color:duty?.color,border:`1.5px solid ${duty?.color}30`}}
-                onClick={()=>isAdmin&&setEditBlock({...b})}>
-                {width>8&&`${duty?.name||'—'} · ${b.allocationPct}%`}
-              </div>;
+              const color=duty?.color||'#6B7280';
+              const hasDate=b.startDate&&b.endDate;
+              const barCol=hasDate?Math.max(0,dateToCol(b.startDate)):0;
+              const barDur=hasDate?Math.max(1,Math.round((new Date(b.endDate)-new Date(b.startDate))/86400000)):1;
+              const barLeft=barCol*colW;
+              const barWpx=Math.max(barDur*colW,colW*0.8);
+              const gridRow=3+idx;
+              return[
+                <div key={`plc${b.id}`} style={{gridColumn:1,gridRow,display:'flex',alignItems:'center',gap:8,padding:'0 10px 0 14px',borderRight:'2px solid var(--parchment-2)',borderBottom:'1px solid var(--rule)',background:'var(--white)',minHeight:phROW_H,cursor:isAdmin?'pointer':'default'}}
+                  onClick={()=>!dragging&&isAdmin&&setEditBlock({...b})}
+                  onMouseEnter={e=>e.currentTarget.style.background='var(--surface-2)'}
+                  onMouseLeave={e=>e.currentTarget.style.background='var(--white)'}>
+                  <div style={{width:4,height:36,borderRadius:2,background:color,flexShrink:0}}/>
+                  {user&&<Av user={user}size={28}/>}
+                  <div style={{overflow:'hidden',flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:600,color:'var(--ink)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user?.name||'—'}</div>
+                    <div style={{fontSize:11,color,marginTop:2,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontWeight:600}}>{duty?.name||'—'} · {b.allocationPct}%</div>
+                  </div>
+                </div>,
+                ...days.map((d,i)=>{
+                  const we=isWE(d);const isT=d.getTime()===today.getTime();
+                  const alt=dayBandIdx[i]%2===1;
+                  const bg=isT?'rgba(0,102,238,.04)':we?(alt?'rgba(0,102,238,.035)':'rgba(0,0,0,.02)'):alt?'rgba(0,102,238,.022)':'var(--white)';
+                  return<div key={`ptc${b.id}-${i}`} style={{gridColumn:i+2,gridRow,borderRight:'1px solid rgba(0,0,0,.04)',borderBottom:'1px solid var(--rule)',background:bg,minHeight:phROW_H,position:'relative'}}/>;
+                }),
+                <div key={`pbo${b.id}`} style={{gridColumn:`2/${TOTAL_DAYS+2}`,gridRow,position:'relative',pointerEvents:'none',zIndex:5}}>
+                  {deadlineCol!==null&&deadlineCol>=0&&deadlineCol<=TOTAL_DAYS&&<div style={{position:'absolute',left:deadlineCol*colW,top:0,bottom:0,width:2,background:'repeating-linear-gradient(to bottom,var(--danger) 0,var(--danger) 6px,transparent 6px,transparent 10px)',zIndex:6,pointerEvents:'none'}}/>}
+                  {todayCol>=0&&todayCol<TOTAL_DAYS&&<div style={{position:'absolute',left:todayCol*colW+colW/2,top:0,bottom:0,width:1.5,background:'var(--gold)',opacity:.6,zIndex:6,pointerEvents:'none'}}/>}
+                  {hasDate&&<div ref={el=>{if(el)barRefs.current['ph_'+b.id]=el;}} style={{position:'absolute',left:barLeft+'px',top:phBAR_TOP,width:barWpx+'px',height:phBAR_H,borderRadius:8,background:color,display:'flex',alignItems:'center',paddingLeft:12,paddingRight:10,cursor:isAdmin?'grab':'default',boxShadow:`0 2px 6px ${color}30,0 1px 2px rgba(0,0,0,.1)`,transition:'box-shadow .12s',zIndex:5,overflow:'hidden',whiteSpace:'nowrap',pointerEvents:'auto'}}
+                    onMouseDown={e=>startDragPhase(e,'move',b,colW)}>
+                    <div style={{display:'flex',alignItems:'center',gap:6,overflow:'hidden',flex:1,pointerEvents:'none',minWidth:0}}>
+                      {barWpx>50&&<span style={{fontSize:12,fontWeight:700,color:'#fff',overflow:'hidden',textOverflow:'ellipsis',flex:1}}>{duty?.name||'—'}</span>}
+                      {barWpx>90&&<span style={{fontSize:10,fontWeight:700,background:'rgba(255,255,255,.22)',padding:'1px 6px',borderRadius:10,color:'#fff',flexShrink:0}}>{b.allocationPct}%</span>}
+                    </div>
+                    {isAdmin&&<div style={{position:'absolute',right:0,top:0,width:10,height:'100%',cursor:'ew-resize',borderRadius:'0 8px 8px 0',display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(255,255,255,.15)',pointerEvents:'auto'}}
+                      onMouseDown={e=>startDragPhase(e,'resize',b,colW)}>
+                      <div style={{width:2,height:14,background:'rgba(255,255,255,.75)',borderRadius:1}}/>
+                    </div>}
+                  </div>}
+                </div>
+              ];
             })}
           </div>
-        </div>;
-      })}
-    </GanttGrid>
-    {(editBlock||addingBlock)&&<BlockModal block={editBlock||emptyBlock()}users={users}duties={duties}onSave={saveBlock}onDelete={editBlock?()=>{deleteBlock(editBlock.id);setEditBlock(null);}:null}onClose={()=>{setEditBlock(null);setAddingBlock(false);}}/>}
-  </div>;
+        </div>
+      </div>}
+      {(editBlock||addingBlock)&&<BlockModal block={editBlock||emptyBlock()}users={users}duties={duties}onSave={saveBlock}onDelete={editBlock?()=>{deleteBlock(editBlock.id);setEditBlock(null);}:null}onClose={()=>{setEditBlock(null);setAddingBlock(false);}}/>}
+    </div>;
+  };
 
   return<div>
     <div style={{display:'flex',gap:2,background:'var(--surface-2)',border:'1px solid var(--rule)',borderRadius:'var(--r-sm)',padding:3,width:'fit-content',marginBottom:20}}>
@@ -2337,7 +2612,7 @@ function LavModal({lav,users,onSave,onDelete,onClose}){
       <div className="form-group"><div className="form-label">Start date</div><input type="date"value={l.startDate||''}onChange={e=>up({startDate:e.target.value})}/></div>
       <div className="form-group"><div className="form-label">Deadline</div><input type="date"value={l.endDate||''}onChange={e=>up({endDate:e.target.value})}/></div>
     </div>
-    <div className="form-group"><div className="form-label">Notes</div><textarea value={l.notes||''}onChange={e=>up({notes:e.target.value})}rows={2}/></div>
+    <div className="form-group"><div className="form-label">Notes</div><textarea value={l.notes||''}onChange={e=>up({notes:e.target.value})}rows={4}placeholder="Add any context, references, or special instructions for this task…"style={{minHeight:96,lineHeight:1.55}}/></div>
   </Modal>;
 }
 
@@ -2552,118 +2827,138 @@ function ProjLinksTab({p,isAdmin,up}){
 function GlobalTimeline({store,setProjectId,setView}){
   const{projects}=store;
   const[mode,setMode]=useState('projects');
+  const[colW,setColW]=useState(40);
+  const gtRef=useRef(null);
   const active=projects.filter(p=>p.status!=='completed'&&p.startDate&&p.endDate);
   const noDate=projects.filter(p=>p.status!=='completed'&&(!p.startDate||!p.endDate));
-  if(!active.length&&!noDate.length)return<div className="empty-state"><i className="ti ti-calendar"/><p>No active projects</p></div>;
-  const allDates=active.flatMap(p=>[new Date(p.startDate),new Date(p.endDate)]);
-  const minD=new Date(Math.min(...allDates));minD.setDate(1);
-  const maxD=new Date(Math.max(...allDates));maxD.setMonth(maxD.getMonth()+1,1);
-  const totalMs=maxD-minD;
-  const pos=d=>Math.max(0,Math.min(100,((new Date(d)-minD)/totalMs)*100));
-  const nowPos=pos(new Date());
-  const months=[];let cur=new Date(minD);
-  while(cur<maxD){months.push(new Date(cur));cur.setMonth(cur.getMonth()+1);}
-  const statusColor=s=>s==='planning'?'var(--s-planning)':s==='active'?'var(--s-active)':s==='on_hold'?'var(--s-hold)':'var(--s-done)';
-
-  // Tasks mode: flatten all lavorazioni with dates across projects
   const allLav=active.flatMap(p=>(p.lavorazioni||[]).filter(l=>l.startDate&&l.endDate).map(l=>({...l,project:p})));
 
-  const MonthHeader=()=><div style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1.5px solid var(--rule)'}}>
-    <div style={{padding:'9px 14px',background:'var(--paper)',borderRight:'1px solid var(--rule)'}}>
-      <span style={{fontSize:10.5,fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--ink-4)'}}>{mode==='tasks'?'Task':'Project'}</span>
-    </div>
-    <div style={{background:'var(--paper)',padding:'9px 0'}}>
-      <div style={{display:'flex'}}>{months.map((m,i)=><div key={i}style={{flex:`0 0 ${100/months.length}%`,borderLeft:'1px solid var(--rule)',padding:'0 7px'}}>
-        <span style={{fontSize:10,color:'var(--ink-4)'}}>{m.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</span>
-      </div>)}</div>
-    </div>
-  </div>;
+  /* date range */
+  const allDates=mode==='tasks'?allLav.flatMap(l=>[new Date(l.startDate),new Date(l.endDate)]):active.flatMap(p=>[new Date(p.startDate),new Date(p.endDate)]);
+  const today=new Date();today.setHours(0,0,0,0);
+  let rStart,rEnd;
+  if(allDates.length){
+    rStart=new Date(Math.min(...allDates));rStart.setHours(0,0,0,0);
+    rEnd=new Date(Math.max(...allDates));rEnd.setDate(rEnd.getDate()+7);rEnd.setHours(0,0,0,0);
+  }else{rStart=new Date(today);rEnd=new Date(today.getTime()+30*86400000);}
+  const TOTAL_DAYS=Math.max(14,Math.ceil((rEnd-rStart)/86400000));
+  const LABEL_W=240;
+  const ROW_H=68;
+  const BAR_TOP=12;
+  const BAR_H=44;
+
+  useEffect(()=>{
+    if(!gtRef.current)return;
+    const measure=()=>{
+      const avail=gtRef.current.offsetWidth||800;
+      const computed=Math.max(22,Math.floor((avail-LABEL_W)/TOTAL_DAYS));
+      setColW(Math.min(computed,52));
+    };
+    measure();window.addEventListener('resize',measure);
+    return()=>window.removeEventListener('resize',measure);
+  },[TOTAL_DAYS]);
+
+  if(!active.length&&!noDate.length)return<div className="empty-state"><i className="ti ti-calendar"/><p>No active projects</p></div>;
+
+  /* days + bands */
+  const days=[];for(let i=0;i<TOTAL_DAYS;i++)days.push(new Date(rStart.getTime()+i*86400000));
+  const bands=[];const dayBandIdx=[];
+  days.forEach((d,i)=>{
+    const mk=d.getFullYear()+'-'+d.getMonth();
+    if(!bands.length||bands[bands.length-1].key!==mk)
+      bands.push({key:mk,label:d.toLocaleDateString('en-GB',{month:'long',year:'numeric'}),start:i,count:0});
+    bands[bands.length-1].count++;dayBandIdx[i]=bands.length-1;
+  });
+  const MONTH_TINT='rgba(0,102,238,.04)';
+  const dateToCol=d=>Math.round((new Date(d)-rStart)/86400000);
+  const isWE=d=>{const w=d.getDay();return w===0||w===6;};
+  const todayCol=dateToCol(today);
+  const statusColor=s=>s==='planning'?'#3B5BDB':s==='active'?'#16A34A':s==='on_hold'?'#71717A':'#A1A1AA';
+
+  const gridCols=`${LABEL_W}px repeat(${TOTAL_DAYS},${colW}px)`;
+  const canvasW=LABEL_W+TOTAL_DAYS*colW;
+  const rows=mode==='projects'?active:allLav;
 
   return<div className="fade">
     <div className="row page-hd">
       <div><div className="page-title">Timeline</div><div className="page-sub">All active projects at a glance</div></div>
       <span className="spacer"/>
-      <div className="row"style={{gap:2,background:'var(--rule)',borderRadius:'var(--r-xs)',padding:2}}>
-        <button className={`btn btn-xs ${mode==='projects'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setMode('projects')}><i className="ti ti-layout-kanban"/>Projects</button>
-        <button className={`btn btn-xs ${mode==='tasks'?'btn-primary':''}`}style={{border:'none'}}onClick={()=>setMode('tasks')}>
+      <div className="row"style={{gap:2,background:'var(--surface-2)',border:'1px solid var(--rule)',borderRadius:'var(--r-sm)',padding:3}}>
+        <button className={`btn btn-sm ${mode==='projects'?'btn-primary':''}`}style={{border:'none',borderRadius:'var(--r-xs)'}}onClick={()=>setMode('projects')}><i className="ti ti-layout-kanban"/>Projects</button>
+        <button className={`btn btn-sm ${mode==='tasks'?'btn-primary':''}`}style={{border:'none',borderRadius:'var(--r-xs)'}}onClick={()=>setMode('tasks')}>
           <i className="ti ti-list-check"/>Tasks {allLav.length>0&&<span style={{fontSize:9,opacity:.7}}>({allLav.length})</span>}
         </button>
       </div>
     </div>
-    <div className="gantt-wrap">
-      <MonthHeader/>
-      {mode==='projects'&&<>
-        {active.map(p=>{
-          const left=pos(p.startDate),right=pos(p.endDate),w=right-left;
-          const pct=fmt.elapsed(p.startDate,p.endDate);
-          const sc=statusColor(p.status);
-          const lav=(p.lavorazioni||[]).filter(l=>l.startDate&&l.endDate);
-          const rowH=lav.length>0?Math.max(44,lav.length*28+24):44;
-          return<div key={p.id}style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1px solid var(--rule)'}}>
-            <div style={{padding:'10px 14px',borderRight:'1px solid var(--rule)',display:'flex',alignItems:'flex-start',gap:8,background:'#fcfbf8',paddingTop:12}}>
-              <div style={{width:3,height:18,borderRadius:2,background:sc,flexShrink:0,marginTop:2}}/>
-              <div style={{minWidth:0}}>
-                <span style={{fontSize:13,fontWeight:500,cursor:'pointer',display:'block',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',letterSpacing:'-.01em'}}
-                  onClick={()=>{setProjectId(p.id);setView('project-detail');}}>{p.title}</span>
-                {lav.length>0&&<span style={{fontSize:10,color:'var(--ink-4)',marginTop:2,display:'block'}}>{lav.length} tasks</span>}
+
+    {rows.length===0?<div className="empty-state"><i className="ti ti-calendar"/><p>No {mode} with dates</p></div>:
+    <div ref={gtRef} style={{border:'1px solid var(--rule)',borderRadius:'var(--r-lg)',overflow:'hidden',background:'var(--white)'}}>
+      <div style={{overflowX:'auto'}}>
+        <div style={{display:'grid',gridTemplateColumns:gridCols,width:canvasW,position:'relative'}}>
+          {/* CORNER */}
+          <div style={{gridColumn:1,gridRow:'1/3',background:'var(--paper)',borderRight:'2px solid var(--parchment-2)',borderBottom:'2px solid var(--parchment-2)',display:'flex',alignItems:'flex-end',padding:'8px 14px',fontSize:10,fontWeight:700,color:'var(--ink-4)',textTransform:'uppercase',letterSpacing:'.06em'}}>{mode==='tasks'?'Task':'Project'}</div>
+          {/* MONTH BANDS */}
+          {bands.map((b,i)=>{const alt=i%2===1;return<div key={i}style={{gridColumn:`${b.start+2}/${b.start+b.count+2}`,gridRow:1,background:alt?MONTH_TINT:'var(--paper)',borderRight:'1px solid var(--parchment-2)',borderBottom:'1px solid var(--parchment-2)',padding:'10px 14px',fontSize:13,fontWeight:700,color:alt?'var(--gold-text)':'var(--ink-2)',whiteSpace:'nowrap',overflow:'hidden',letterSpacing:'-.01em'}}>{b.label}</div>;})}
+          {/* DAY HEADERS */}
+          {days.map((d,i)=>{const isT=d.getTime()===today.getTime();const we=isWE(d);const alt=dayBandIdx[i]%2===1;const bg=isT?'rgba(0,102,238,.1)':we?(alt?'rgba(0,102,238,.06)':'rgba(0,0,0,.03)'):alt?MONTH_TINT:'var(--paper)';return<div key={i}style={{gridColumn:i+2,gridRow:2,background:bg,borderRight:'1px solid rgba(0,0,0,.04)',borderBottom:'2px solid var(--parchment-2)',padding:'6px 0',fontSize:12,fontWeight:isT?800:600,color:isT?'var(--gold)':we?'var(--ink-5)':'var(--ink-4)',textAlign:'center',fontFamily:'var(--mono)',position:'relative'}}>{d.getDate()}{isT&&<div style={{position:'absolute',bottom:-2,left:'50%',transform:'translateX(-50%)',width:5,height:5,borderRadius:'50%',background:'var(--gold)'}}/>}</div>;})}
+
+          {/* ROWS */}
+          {rows.map((r,idx)=>{
+            const isProj=mode==='projects';
+            const color=isProj?statusColor(r.status):(CATEGORY_COLORS[r.category]||'#6B7280');
+            const sd=isProj?r.startDate:r.startDate;
+            const ed=isProj?r.endDate:r.endDate;
+            const projId=isProj?r.id:r.project.id;
+            const title=isProj?r.title:r.name;
+            const sub=isProj?`${r.status} · ${(r.lavorazioni||[]).filter(l=>l.startDate&&l.endDate).length} tasks`:r.project.title;
+            const barCol=Math.max(0,dateToCol(sd));
+            const barDur=Math.max(1,Math.round((new Date(ed)-new Date(sd))/86400000));
+            const barLeft=barCol*colW;
+            const barWpx=Math.max(barDur*colW,colW*0.8);
+            const gridRow=3+idx;
+            return[
+              <div key={`gtlc${idx}`} style={{gridColumn:1,gridRow,display:'flex',alignItems:'center',gap:8,padding:'0 10px 0 14px',borderRight:'2px solid var(--parchment-2)',borderBottom:'1px solid var(--rule)',background:'var(--white)',minHeight:ROW_H,cursor:'pointer'}}
+                onClick={()=>{setProjectId(projId);setView('project-detail');}}
+                onMouseEnter={e=>e.currentTarget.style.background='var(--surface-2)'}
+                onMouseLeave={e=>e.currentTarget.style.background='var(--white)'}>
+                <div style={{width:4,height:38,borderRadius:2,background:color,flexShrink:0}}/>
+                <div style={{overflow:'hidden',flex:1,minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:600,color:'var(--ink)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',letterSpacing:'-.01em'}}>{title}</div>
+                  <div style={{fontSize:11,color:'var(--ink-4)',marginTop:2,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{sub}</div>
+                  {!isProj&&r.notes&&<div style={{fontSize:10.5,color:'var(--ink-3)',marginTop:2,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontStyle:'italic',display:'flex',alignItems:'center',gap:4}} title={r.notes}><i className="ti ti-note"style={{fontSize:11,color,flexShrink:0}}/>{r.notes}</div>}
+                </div>
+              </div>,
+              ...days.map((d,i)=>{
+                const we=isWE(d);const isT=d.getTime()===today.getTime();
+                const alt=dayBandIdx[i]%2===1;
+                const bg=isT?'rgba(0,102,238,.04)':we?(alt?'rgba(0,102,238,.035)':'rgba(0,0,0,.02)'):alt?'rgba(0,102,238,.022)':'var(--white)';
+                return<div key={`gttc${idx}-${i}`} style={{gridColumn:i+2,gridRow,borderRight:'1px solid rgba(0,0,0,.04)',borderBottom:'1px solid var(--rule)',background:bg,minHeight:ROW_H,position:'relative'}}/>;
+              }),
+              <div key={`gtbo${idx}`} style={{gridColumn:`2/${TOTAL_DAYS+2}`,gridRow,position:'relative',pointerEvents:'none',zIndex:5}}>
+                {todayCol>=0&&todayCol<TOTAL_DAYS&&<div style={{position:'absolute',left:todayCol*colW+colW/2,top:0,bottom:0,width:1.5,background:'var(--gold)',opacity:.6,zIndex:6,pointerEvents:'none'}}/>}
+                <div style={{position:'absolute',left:barLeft+'px',top:BAR_TOP,width:barWpx+'px',height:BAR_H,borderRadius:8,background:color,display:'flex',alignItems:'center',paddingLeft:12,paddingRight:10,cursor:'pointer',boxShadow:`0 2px 6px ${color}30,0 1px 2px rgba(0,0,0,.1)`,zIndex:5,overflow:'hidden',whiteSpace:'nowrap',pointerEvents:'auto'}}
+                  onClick={()=>{setProjectId(projId);setView('project-detail');}}>
+                  <div style={{display:'flex',alignItems:'center',gap:6,overflow:'hidden',flex:1,pointerEvents:'none',minWidth:0}}>
+                    {barWpx>50&&<span style={{fontSize:12,fontWeight:700,color:'#fff',overflow:'hidden',textOverflow:'ellipsis',flex:1,letterSpacing:'-.01em'}}>{title}</span>}
+                    {!isProj&&r.notes&&barWpx>60&&<i className="ti ti-note"style={{fontSize:13,color:'rgba(255,255,255,.85)',flexShrink:0}}title={r.notes}/>}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div style={{position:'relative',minHeight:rowH}}>
-              {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:1.5,background:'var(--danger)',zIndex:4,opacity:.45}}/>}
-              {/* project bar */}
-              <div onClick={()=>{setProjectId(p.id);setView('project-detail');}}
-                style={{position:'absolute',left:`${left}%`,width:`${Math.max(w,.8)}%`,top:9,height:22,borderRadius:999,background:sc+'18',border:`1.5px solid ${sc}35`,cursor:'pointer',overflow:'hidden',zIndex:2}}>
-                <div style={{width:`${pct}%`,height:'100%',background:sc,opacity:.3}}/>
-                {w>10&&<span style={{position:'absolute',left:9,top:'50%',transform:'translateY(-50%)',fontSize:10,color:sc,fontWeight:600,whiteSpace:'nowrap'}}>{p.title}</span>}
-              </div>
-              {/* lavorazioni sub-bars */}
-              {lav.map((lv,li)=>{
-                const lLeft=pos(lv.startDate),lW=Math.max(.5,pos(lv.endDate)-lLeft);
-                const color=CATEGORY_COLORS[lv.category]||'#6B7280';
-                return<div key={lv.id}style={{position:'absolute',left:`${lLeft}%`,width:`${lW}%`,top:38+li*24,height:18,borderRadius:4,background:color,opacity:.55,zIndex:1,overflow:'hidden',cursor:'pointer'}}
-                  title={`${lv.name} · ${lv.hoursTotal}h`}
-                  onClick={()=>{setProjectId(p.id);setView('project-detail');}}>
-                  {lW>8&&<span style={{position:'absolute',left:5,top:'50%',transform:'translateY(-50%)',fontSize:9,color:'#fff',fontWeight:600,whiteSpace:'nowrap'}}>{lv.name}</span>}
-                </div>;
-              })}
-            </div>
-          </div>;
-        })}
-      </>}
-      {mode==='tasks'&&<>
-        {allLav.length===0&&<div style={{textAlign:'center',padding:'32px',color:'var(--ink-4)',fontSize:13}}>No tasks with dates across active projects.</div>}
-        {allLav.map(lv=>{
-          const color=CATEGORY_COLORS[lv.category]||'#6B7280';
-          const lLeft=pos(lv.startDate),lW=Math.max(.8,pos(lv.endDate)-lLeft);
-          return<div key={lv.id}style={{display:'grid',gridTemplateColumns:'200px 1fr',borderBottom:'1px solid var(--rule)'}}>
-            <div style={{padding:'8px 14px',borderRight:'1px solid var(--rule)',display:'flex',alignItems:'center',gap:7,background:'#fcfbf8'}}>
-              <div style={{width:3,height:14,borderRadius:2,background:color,flexShrink:0}}/>
-              <div style={{minWidth:0}}>
-                <div style={{fontSize:12,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{lv.name}</div>
-                <div style={{fontSize:10,color:'var(--ink-4)',cursor:'pointer'}}onClick={()=>{setProjectId(lv.project.id);setView('project-detail');}}>{lv.project.title}</div>
-              </div>
-            </div>
-            <div style={{position:'relative',minHeight:40}}>
-              {nowPos>0&&nowPos<100&&<div style={{position:'absolute',left:`${nowPos}%`,top:0,bottom:0,width:1.5,background:'var(--danger)',zIndex:3,opacity:.45}}/>}
-              <div style={{position:'absolute',left:`${lLeft}%`,width:`${lW}%`,top:'50%',transform:'translateY(-50%)',height:22,borderRadius:4,background:color+'20',border:`1.5px solid ${color}50`,cursor:'pointer',overflow:'hidden'}}
-                onClick={()=>{setProjectId(lv.project.id);setView('project-detail');}}>
-                {lW>12&&<span style={{position:'absolute',left:7,top:'50%',transform:'translateY(-50%)',fontSize:10,color,fontWeight:600,whiteSpace:'nowrap'}}>{lv.name} · {lv.hoursTotal}h</span>}
-              </div>
-            </div>
-          </div>;
-        })}
-      </>}
+            ];
+          })}
+        </div>
+      </div>
       {noDate.length>0&&<div style={{padding:'12px 14px',borderTop:'1px solid var(--rule)',background:'var(--paper)',color:'var(--ink-4)',fontSize:12}}>
         <strong style={{color:'var(--ink-3)'}}>{noDate.length} project{noDate.length>1?'s':''} without dates:</strong> {noDate.map(p=>p.title).join(' · ')}
       </div>}
-      <div style={{padding:'8px 14px',background:'var(--paper)',display:'flex',gap:14,flexWrap:'wrap',alignItems:'center',borderTop:'1px solid var(--rule)'}}>
-        <div className="row"style={{gap:5}}><div style={{width:14,height:1.5,background:'var(--danger)',opacity:.45}}/><span style={{fontSize:11,color:'var(--ink-4)'}}>Today</span></div>
-        {mode==='tasks'&&Object.entries(CATEGORY_COLORS).map(([cat,color])=>allLav.some(l=>l.category===cat)&&<div key={cat}style={{display:'flex',alignItems:'center',gap:4}}>
-          <div style={{width:8,height:8,borderRadius:2,background:color}}/><span style={{fontSize:11,color:'var(--ink-4)'}}>{cat}</span>
+      <div style={{padding:'10px 14px',background:'var(--paper)',display:'flex',gap:14,flexWrap:'wrap',alignItems:'center',borderTop:'1px solid var(--rule)'}}>
+        <div style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'var(--ink-4)'}}><div style={{width:12,height:2,background:'var(--gold)',borderRadius:1}}/>Today</div>
+        {mode==='tasks'&&Object.entries(CATEGORY_COLORS).map(([cat,color])=>allLav.some(l=>l.category===cat)&&<div key={cat}style={{display:'flex',alignItems:'center',gap:5,background:color+'14',border:`1px solid ${color}28`,borderRadius:'var(--r-xs)',padding:'2px 7px'}}>
+          <div style={{width:7,height:7,borderRadius:2,background:color}}/><span style={{fontSize:10,color,fontWeight:600}}>{cat}</span>
         </div>)}
-        <span style={{fontSize:11,color:'var(--ink-4)',marginLeft:'auto'}}>Click any bar to open project</span>
+        <span style={{fontSize:11,color:'var(--ink-4)',marginLeft:'auto'}}>Click any row to open project</span>
       </div>
-    </div>
+    </div>}
   </div>;
 }
 
